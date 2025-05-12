@@ -1,0 +1,49 @@
+{
+	"compilerOptions": {
+		// === Build Info ===
+		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo", // Cache file for incremental builds
+
+		// === Output Settings ===
+		"outDir": "./dist", // Directory for compiled output
+		"rootDir": "src", // Root directory of source files
+		"noEmit": false, // Emit output (Vite handles bundling)
+		"composite": true, // Enable project references and incremental builds
+
+		// === Target & Module System ===
+		"target": "ES2020", // Target modern JavaScript features
+		"module": "ESNext", // Use modern module syntax (used by bundlers like Vite)
+
+		// === Environment & Language Features ===
+		"lib": ["ES2020", "DOM", "DOM.Iterable"], // Use browser + ES libs
+		"useDefineForClassFields": true, // Use `define` semantics for class fields
+
+		// === Module Resolution / Bundler ===
+		"moduleResolution": "bundler", // Special resolution for bundlers like Vite
+		"verbatimModuleSyntax": true, // Keep ES import/export syntax as-is
+		"moduleDetection": "force", // Treat all files as modules regardless of imports
+
+		// === JSX & JavaScript Support ===
+		"jsx": "react-jsx", // Use the modern React JSX transform
+		"allowJs": true, // Allow JavaScript files alongside TypeScript
+
+		// === Type Definitions ===
+		"types": ["react", "vite/client", "node"], // Include global types for React, Vite, and Node
+
+		// === Path Aliases ===
+		"baseUrl": ".", // Base for module resolution
+		"paths": {
+			"@/*": ["./src/*"] // Alias: import from "@/..." maps to "src/..."
+		},
+
+		// === Type Safety & Linting ===
+		"strict": true, // Enable all strict type-checking options
+		"noUnusedLocals": true, // Error on unused local variables
+		"noUnusedParameters": true, // Error on unused function parameters
+		"noImplicitReturns": true, // Ensure all code paths return in functions
+		"erasableSyntaxOnly": true, // Report code that can be removed with no effect
+		"noFallthroughCasesInSwitch": true, // Catch unintentional fall-through in switch statements
+		"noUncheckedSideEffectImports": true // Disallow imports with side effects that aren't used
+	},
+	"include": ["src"],
+	"exclude": ["node_modules", "dist"]
+}

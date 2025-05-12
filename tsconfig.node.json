@@ -1,0 +1,28 @@
+{
+	"compilerOptions": {
+		// === Build Info ===
+		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo", // Cache for incremental builds
+
+		// === Target & Environment ===
+		"target": "ES2022", // Node.js-compatible modern syntax
+		"lib": ["ES2023"], // Include only Node-compatible libs (no DOM)
+		"module": "ESNext", // Let bundler or runtime resolve module type
+		"noEmit": true, // Type-check only; don’t emit compiled files
+		"skipLibCheck": true, // Skip type checks on declaration files
+
+		// === Module Resolution for Bundlers ===
+		"moduleResolution": "bundler", // Match Vite's resolution style
+		"allowImportingTsExtensions": true, // Allow importing `.ts`/`.tsx` with extensions
+		"verbatimModuleSyntax": true, // Don’t modify import/export syntax
+		"moduleDetection": "force", // Force all files to be modules
+
+		// === Linting / Type Safety ===
+		"strict": true, // Enable strict type checking
+		"noUnusedLocals": true, // Warn on unused local variables
+		"noUnusedParameters": true, // Warn on unused function params
+		"erasableSyntaxOnly": true, // Report dead/erasable code
+		"noFallthroughCasesInSwitch": true, // Prevent accidental case fallthrough
+		"noUncheckedSideEffectImports": true // Flag side-effect imports that aren’t used
+	},
+	"include": ["vite.config.ts"]
+}
