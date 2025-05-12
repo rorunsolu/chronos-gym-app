@@ -1,5 +1,6 @@
 import "@/App.css";
 import { UserAuth } from "@/auth/AuthContext";
+import Protected from "@/auth/Protected";
 import ChronosLogoSmall from "@/components/Branding/ChronosLogoSmall";
 import Login from "@/pages/Login/Login";
 import Portal from "@/pages/Portal/Portal";
@@ -47,11 +48,15 @@ function App() {
 			>
 				<AppShell
 					header={{ height: 60 }}
-					navbar={{
-						width: 300,
-						breakpoint: "md",
-						collapsed: { mobile: !opened },
-					}}
+					navbar={
+						user
+							? {
+									width: 300,
+									breakpoint: "md",
+									collapsed: { mobile: !opened },
+								}
+							: undefined
+					}
 					padding="md"
 				>
 					<AppShell.Header>
@@ -68,43 +73,47 @@ function App() {
 							<ChronosLogoSmall />
 						</Group>
 					</AppShell.Header>
-					<AppShell.Navbar p="md">
-						<Stack
-							align="stretch"
-							justify="space-between"
-							h="100%"
-						>
-							<Stack>
-								{navbarLinks.map(({ name, icon }) => (
-									<Link
-										to={`/${name}`}
-										key={name}
-										style={{
-											textDecoration: "none",
-											color: "inherit",
-										}}
-									>
-										<Group gap={12}>
-											{icon}
-											{name}
-										</Group>
-									</Link>
-								))}
-							</Stack>
 
-							{user && (
+					{user && (
+						<AppShell.Navbar p="md">
+							<Stack
+								align="stretch"
+								justify="space-between"
+								h="100%"
+							>
 								<Stack>
-									<Button
-										variant="filled"
-										color="teal"
-										onClick={handleSignOut}
-									>
-										<LogOut size={18} /> Sign Out
-									</Button>
+									{navbarLinks.map(({ name, icon }) => (
+										<Link
+											to={`/${name}`}
+											key={name}
+											style={{
+												textDecoration: "none",
+												color: "inherit",
+											}}
+										>
+											<Group gap={12}>
+												{icon}
+												{name}
+											</Group>
+										</Link>
+									))}
 								</Stack>
-							)}
-						</Stack>
-					</AppShell.Navbar>
+
+								{user && (
+									<Stack>
+										<Button
+											variant="filled"
+											color="teal"
+											onClick={handleSignOut}
+										>
+											<LogOut size={18} /> Sign Out
+										</Button>
+									</Stack>
+								)}
+							</Stack>
+						</AppShell.Navbar>
+					)}
+
 					<AppShell.Main>
 						<Routes>
 							<Route
@@ -113,7 +122,11 @@ function App() {
 							/>
 							<Route
 								path="/login"
-								element={<Login />}
+								element={
+									<Protected allowGuest>
+										<Login />
+									</Protected>
+								}
 							/>
 							<Route
 								path="/register"
@@ -121,11 +134,19 @@ function App() {
 							/>
 							<Route
 								path="/register-form"
-								element={<RegisterForm />}
+								element={
+									<Protected allowGuest>
+										<RegisterForm />
+									</Protected>
+								}
 							/>
 							<Route
 								path="/workouts"
-								element={<Workouts />}
+								element={
+									<Protected>
+										<Workouts />
+									</Protected>
+								}
 							/>
 						</Routes>
 					</AppShell.Main>

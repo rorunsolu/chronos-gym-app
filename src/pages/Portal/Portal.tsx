@@ -21,9 +21,29 @@ const Portal = () => {
 		}
 	};
 
+	const handleGoogleSignIn = async () => {
+		try {
+			await googleSignIn();
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	useEffect(() => {
 		if (user != null) {
 			navigate("/register-form");
+		}
+	}, [user, navigate]);
+
+	useEffect(() => {
+		if (user != null && !user.isAnonymous) {
+			navigate("/workouts");
+		}
+	}, [user, navigate]);
+
+	useEffect(() => {
+		if (!user) {
+			navigate("/");
 		}
 	}, [user, navigate]);
 
@@ -58,10 +78,17 @@ const Portal = () => {
 						Already have an account?{" "}
 						<Anchor
 							component={Link}
+							to=""
+							onClick={handleGoogleSignIn}
+						>
+							Sign in with Google
+						</Anchor>
+						{/* <Anchor
+							component={Link}
 							to="/signin"
 						>
-							Sign in
-						</Anchor>
+							Sign in with Google
+						</Anchor> */}
 					</Text>
 				</Stack>
 
