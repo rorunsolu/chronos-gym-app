@@ -37,7 +37,7 @@ const Portal = () => {
 
 	useEffect(() => {
 		if (user != null && !user.isAnonymous) {
-			navigate("/workouts");
+			navigate("/workout");
 		}
 	}, [user, navigate]);
 
