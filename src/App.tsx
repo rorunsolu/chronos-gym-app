@@ -6,22 +6,22 @@ import Login from "@/pages/Login/Login";
 import Portal from "@/pages/Portal/Portal";
 import Register from "@/pages/Register/Register";
 import RegisterForm from "@/pages/Register/RegisterForm";
-import Workouts from "@/pages/Workouts/Workouts";
+import Workout from "@/pages/Workout/Workout";
 import "@mantine/core/styles.css";
 import "@mantine/core/styles.layer.css";
 import "@mantine/dropzone/styles.css";
 import { useDisclosure } from "@mantine/hooks";
-import { LogOut, Logs } from "lucide-react";
+import { Dumbbell, Home, LogOut, Settings, User } from "lucide-react";
 import { Link, Route, Routes } from "react-router-dom";
-
 import {
 	AppShell,
 	Burger,
+	Button,
 	createTheme,
 	Group,
 	MantineProvider,
+	NavLink,
 	Stack,
-	Button,
 } from "@mantine/core";
 
 const theme = createTheme({
@@ -83,19 +83,16 @@ function App() {
 							>
 								<Stack>
 									{navbarLinks.map(({ name, icon }) => (
-										<Link
-											to={`/${name}`}
+										<NavLink
+											label={name}
+											leftSection={icon}
+											variant="subtle"
 											key={name}
-											style={{
-												textDecoration: "none",
-												color: "inherit",
-											}}
-										>
-											<Group gap={12}>
-												{icon}
-												{name}
-											</Group>
-										</Link>
+											component={Link}
+											to={`/${name}`}
+											active
+											color="white"
+										/>
 									))}
 								</Stack>
 
@@ -141,10 +138,10 @@ function App() {
 								}
 							/>
 							<Route
-								path="/workouts"
+								path="/workout"
 								element={
 									<Protected>
-										<Workouts />
+										<Workout />
 									</Protected>
 								}
 							/>
@@ -159,8 +156,8 @@ function App() {
 export default App;
 
 const navbarLinks = [
-	{ name: "Workouts", icon: <Logs /> },
-	{ name: "Nutrition", icon: <Logs /> },
-	{ name: "Progress", icon: <Logs /> },
-	{ name: "Settings", icon: <Logs /> },
+	{ name: "Home", icon: <Home /> },
+	{ name: "Workout", icon: <Dumbbell /> },
+	{ name: "Profile", icon: <User /> },
+	{ name: "Settings", icon: <Settings /> },
 ];
