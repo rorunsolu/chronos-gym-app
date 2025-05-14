@@ -1,5 +1,6 @@
 import App from "@/App";
 import { AuthContextProvider } from "@/auth/AuthContext";
+import { AccountProvider } from "@/contexts/AccountContext";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
@@ -12,7 +13,9 @@ if (!rootElement.innerHTML) {
 		<StrictMode>
 			<BrowserRouter>
 				<AuthContextProvider>
-					<App />
+					<AccountProvider>
+						<App />
+					</AccountProvider>
 				</AuthContextProvider>
 			</BrowserRouter>
 		</StrictMode>
