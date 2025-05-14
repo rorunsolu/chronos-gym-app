@@ -1,36 +1,41 @@
 import { useForm } from "@mantine/form";
 import "@mantine/nprogress/styles.css";
-import { useRef, useState } from "react";
+import {
+	// useRef,
+	useState,
+} from "react";
 import {
 	Button,
-	FileButton,
+	// FileButton,
 	Group,
-	Image,
+	// Image,
 	NativeSelect,
 	NumberInput,
 	Stepper,
 	TextInput,
 } from "@mantine/core";
 
+// Just set the profile picture using their google accounts image
+
 const RegisterForm = () => {
 	const [active, setActive] = useState(0);
-	const [image, setImage] = useState<string | null>(null);
-	const [file, setFile] = useState<File | null>(null);
-	const resetRef = useRef<() => void>(null);
+	// const [image, setImage] = useState<string | null>(null);
+	// const [file, setFile] = useState<File | null>(null);
+	// const resetRef = useRef<() => void>(null);
 
-	const handleImageUpload = (file: File | null) => {
-		if (file) {
-			setFile(file);
-			setImage(URL.createObjectURL(file));
-		} else {
-			setImage(null); // Clear the image if no file is selected
-		}
-	};
+	// const handleImageUpload = (file: File | null) => {
+	// 	if (file) {
+	// 		setFile(file);
+	// 		setImage(URL.createObjectURL(file));
+	// 	} else {
+	// 		setImage(null); // Clear the image if no file is selected
+	// 	}
+	// };
 
-	const clearFile = () => {
-		setFile(null);
-		resetRef.current?.();
-	};
+	// const clearFile = () => {
+	// 	setFile(null);
+	// 	resetRef.current?.();
+	// };
 
 	const form = useForm({
 		mode: "uncontrolled",
@@ -40,7 +45,7 @@ const RegisterForm = () => {
 			email: "",
 			gender: "",
 			age: "",
-			profilePicture: null,
+			// profilePicture: null,
 		},
 
 		validate: (values) => {
@@ -155,7 +160,7 @@ const RegisterForm = () => {
 						onChange={handleImageUpload}
 					/> */}
 
-					<Group mt="md">
+					{/* <Group mt="md">
 						<FileButton
 							onChange={handleImageUpload}
 							accept="image/png,image/jpeg"
@@ -182,7 +187,7 @@ const RegisterForm = () => {
 							fit="contain"
 							fallbackSrc="https://placehold.co/600x400?text=Placeholder"
 						/>
-					)}
+					)} */}
 					{/* 
 					{image && (
 						<Image
@@ -242,7 +247,7 @@ const RegisterForm = () => {
 						disabled
 					/>
 
-					{file && (
+					{/* {file && (
 						<Image
 							mt="md"
 							src={image}
@@ -252,7 +257,7 @@ const RegisterForm = () => {
 							fit="contain"
 							fallbackSrc="https://placehold.co/600x400?text=Placeholder"
 						/>
-					)}
+					)} */}
 
 					{/* {image && (
 						<Image
