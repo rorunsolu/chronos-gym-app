@@ -2,8 +2,11 @@ import "@/App.css";
 import { UserAuth } from "@/auth/AuthContext";
 import Protected from "@/auth/Protected";
 import ChronosLogoSmall from "@/components/Branding/ChronosLogoSmall";
+import Explore from "@/pages/Explore/Explore";
+import Homepage from "@/pages/Homepage/Homepage";
 import Login from "@/pages/Login/Login";
 import Portal from "@/pages/Portal/Portal";
+import Profile from "@/pages/Profile/Profile";
 import Register from "@/pages/Register/Register";
 import RegisterForm from "@/pages/Register/RegisterForm";
 import Workout from "@/pages/Workout/Workout";
@@ -142,6 +145,30 @@ function App() {
 								element={
 									<Protected>
 										<Workout />
+									</Protected>
+								}
+							/>
+							<Route
+								path="/home"
+								element={
+									<Protected>
+										<Homepage />
+									</Protected>
+								}
+							/>
+							<Route
+								path="/profile"
+								element={
+									<Protected>
+										<Profile />
+									</Protected>
+								}
+							/>
+							<Route
+								path="/explore"
+								element={
+									<Protected>
+										<Explore />
 									</Protected>
 								}
 							/>

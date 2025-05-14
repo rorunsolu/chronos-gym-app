@@ -1,4 +1,5 @@
 import { Play, Plus, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
 	Box,
 	Button,
@@ -29,6 +30,8 @@ const routines = [
 ];
 
 const Workout = () => {
+	const navigate = useNavigate();
+
 	return (
 		<ScrollArea
 			style={{ height: "100vh" }}
@@ -67,6 +70,9 @@ const Workout = () => {
 							color="teal"
 							variant="light"
 							leftSection={<Search size={20} />}
+							onClick={() => {
+								navigate("/explore");
+							}}
 						>
 							Explore
 						</Button>
