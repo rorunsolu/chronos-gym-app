@@ -1,5 +1,4 @@
 import { useForm } from "@mantine/form";
-import "@mantine/nprogress/styles.css";
 import {
 	// useRef,
 	useState,

@@ -12,7 +12,6 @@ import RegisterForm from "@/pages/Register/RegisterForm";
 import Workout from "@/pages/Workout/Workout";
 import "@mantine/core/styles.css";
 import "@mantine/core/styles.layer.css";
-import "@mantine/dropzone/styles.css";
 import { useDisclosure } from "@mantine/hooks";
 import { Dumbbell, Home, LogOut, Settings, User } from "lucide-react";
 import { Link, Route, Routes } from "react-router-dom";
