@@ -1,3 +1,5 @@
+import { UserAuth } from "@/auth/AuthContext";
+import { useState } from "react";
 import {
 	Avatar,
 	Button,
@@ -10,14 +12,13 @@ import {
 	Text,
 	Title,
 } from "@mantine/core";
-import { useState } from "react";
-import { Dumbbell } from "lucide-react";
 import {
-	IconChevronDown,
-	IconChartLine,
-	IconCalendar,
-	IconRuler,
-} from "@tabler/icons-react";
+	Dumbbell,
+	TrendingUpDown,
+	ChevronDown,
+	Calendar,
+	Ruler,
+} from "lucide-react";
 import {
 	BarChart,
 	Bar,
@@ -47,6 +48,8 @@ const Profile = () => {
 		all: "All time",
 	};
 
+	const { user } = UserAuth();
+
 	return (
 		<Container
 			size="xs"
@@ -58,6 +61,8 @@ const Profile = () => {
 						<Avatar
 							size="lg"
 							radius="xl"
+							src={user?.photoURL}
+							alt="User Avatar"
 						/>
 						<div>
 							<Text
@@ -94,7 +99,7 @@ const Profile = () => {
 						<Menu.Target>
 							<Button
 								variant="subtle"
-								rightSection={<IconChevronDown size={14} />}
+								rightSection={<ChevronDown size={14} />}
 							>
 								{timeRangeLabel[timeRange as keyof typeof timeRangeLabel]}
 							</Button>
@@ -152,7 +157,7 @@ const Profile = () => {
 					spacing="sm"
 				>
 					<Button
-						leftSection={<IconChartLine size={18} />}
+						leftSection={<TrendingUpDown size={18} />}
 						variant="default"
 						fullWidth
 					>
@@ -166,14 +171,14 @@ const Profile = () => {
 						Exercises
 					</Button>
 					<Button
-						leftSection={<IconRuler size={18} />}
+						leftSection={<Ruler size={18} />}
 						variant="default"
 						fullWidth
 					>
 						Measures
 					</Button>
 					<Button
-						leftSection={<IconCalendar size={18} />}
+						leftSection={<Calendar size={18} />}
 						variant="default"
 						fullWidth
 					>
