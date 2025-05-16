@@ -1,6 +1,6 @@
 import { db } from "@/auth/Firebase";
 import { WorkoutContext } from "@/hooks/useWorkoutHook";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc } from "firebase/firestore";
 import { useState, type ReactNode } from "react";
 
 // data required to create a workout
@@ -16,6 +16,7 @@ import { useState, type ReactNode } from "react";
 // 6. Each row needs a set of inputs for ( set number, reps, weight, checkbox, delete btn)
 
 export type WorkoutData = {
+	id: string;
 	name: string;
 	exercises: {
 		name: string;
@@ -40,6 +41,7 @@ export type WorkoutContextType = {
 			notes: string;
 		}[]
 	) => Promise<string>;
+	deleteWorkout: (id: string) => Promise<void>;
 };
 
 export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
@@ -83,11 +85,25 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 		}
 	};
 
+	const deleteWorkout = async (id: string) => {
+		try {
+			// I wait for the workout to be deleted in firebase before then updating the state
+			// the workout to be deleted is determined by the id that is passed into the function at the start
+			await deleteDoc(doc(db, "workouts", id));
+			setWorkouts((prevWorkouts) =>
+				prevWorkouts.filter((workout) => workout.id !== id)
+			);
+		} catch (error) {
+			throw new Error("Error deleting workout");
+		}
+	};
+
 	return (
 		<WorkoutContext.Provider
 			value={{
 				workouts,
 				createWorkout,
+				deleteWorkout,
 			}}
 		>
 			{children}

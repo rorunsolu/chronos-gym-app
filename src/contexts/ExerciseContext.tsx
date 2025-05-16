@@ -8,7 +8,7 @@ import { addDoc, collection } from "firebase/firestore";
 
 // I will use this to create global default exercises that all users can use in their workouts but it will only be allowed to be edited by me. users cannot edit these exercises
 
-type MuscleGroupData =
+export type MuscleGroupData =
 	| "Chest"
 	| "Back"
 	| "Shoulders"
