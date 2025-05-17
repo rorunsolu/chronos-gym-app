@@ -1,6 +1,14 @@
 import { db } from "@/auth/Firebase";
 import { WorkoutContext } from "@/hooks/useWorkoutHook";
-import { addDoc, collection, deleteDoc, doc } from "firebase/firestore";
+import {
+	addDoc,
+	collection,
+	deleteDoc,
+	doc,
+	Timestamp,
+	query,
+	getDocs,
+} from "firebase/firestore";
 import { useState, type ReactNode } from "react";
 
 // data required to create a workout
@@ -18,6 +26,7 @@ import { useState, type ReactNode } from "react";
 export type WorkoutData = {
 	id: string;
 	name: string;
+	dateOfWorkout: Timestamp;
 	exercises: {
 		name: string;
 		setsDone: number;
@@ -30,6 +39,7 @@ export type WorkoutData = {
 
 export type WorkoutContextType = {
 	workouts: WorkoutData[];
+	fetchWorkouts: () => Promise<void>;
 	createWorkout: (
 		name: string,
 		exercises: {
@@ -49,6 +59,22 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 	// ([]) sets the state as empty be default initially
 	const [workouts, setWorkouts] = useState<WorkoutData[]>([]);
 
+	const fetchWorkouts = async () => {
+		const workoutsQuery = query(collection(db, "workouts"));
+		const snapshotOfWorkouts = await getDocs(workoutsQuery);
+		const workoutList = snapshotOfWorkouts.docs.map((doc) => ({
+			id: doc.id,
+			name: doc.data().name,
+			dateOfWorkout: doc.data().dateOfWorkout,
+			exercises: doc.data().exercises,
+		}));
+		setWorkouts(
+			workoutList.sort(
+				(a, b) => b.dateOfWorkout.toMillis() - a.dateOfWorkout.toMillis()
+			)
+		);
+	};
+
 	const createWorkout = async (
 		name: string,
 		exercises: {
@@ -60,6 +86,8 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 			notes: string;
 		}[]
 	) => {
+		const dateOfCreation = Timestamp.fromDate(new Date());
+
 		try {
 			// condense the data into an object (optional ofc)
 			const dataToBeUsed = {
@@ -76,6 +104,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 				{
 					...dataToBeUsed,
 					id: workoutRef.id,
+					dateOfWorkout: dateOfCreation,
 				},
 			]);
 			return workoutRef.id;
@@ -102,6 +131,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 		<WorkoutContext.Provider
 			value={{
 				workouts,
+				fetchWorkouts,
 				createWorkout,
 				deleteWorkout,
 			}}
