@@ -1,6 +1,6 @@
 import { db } from "@/auth/Firebase";
 import { ExerciseContext } from "@/hooks/useExercisesHook";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs, query } from "firebase/firestore";
 // Name
 // Muscle group
 // Secondary muscle group
@@ -38,6 +38,7 @@ export interface ExerciseData {
 
 export interface ExerciseContextType {
 	exercises: ExerciseData[];
+	fetchExercises: () => Promise<void>;
 	createExercise: (
 		name: string,
 		muscleGroup: MuscleGroupData,
@@ -49,6 +50,25 @@ export interface ExerciseContextType {
 
 export const ExerciseProvider = ({ children }: { children: ReactNode }) => {
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
+
+	const fetchExercises = async () => {
+		const exercisesQuery = query(collection(db, "excercises"));
+
+		const snapshotOfExercises = await getDocs(exercisesQuery);
+
+		// create the local list of exercises based on the data from Firebase
+		// each exercise has the mentioned properties in the exerciseList function
+
+		const exerciseList = snapshotOfExercises.docs.map((doc) => ({
+			id: doc.id,
+			name: doc.data().name,
+			muscleGroup: doc.data().muscleGroup,
+			secondaryMuscleGroup: doc.data().secondaryMuscleGroup,
+			howTo: doc.data().howTo,
+		}));
+
+		setExercises(exerciseList.sort((a, b) => b.name.localeCompare(a.name)));
+	};
 
 	const createExercise = async (
 		name: string,
@@ -88,6 +108,7 @@ export const ExerciseProvider = ({ children }: { children: ReactNode }) => {
 		<ExerciseContext.Provider
 			value={{
 				exercises,
+				fetchExercises,
 				createExercise,
 			}}
 		>
