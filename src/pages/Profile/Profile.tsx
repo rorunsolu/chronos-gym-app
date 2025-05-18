@@ -1,5 +1,6 @@
 import { UserAuth } from "@/auth/AuthContext";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
 	Avatar,
 	Button,
@@ -41,6 +42,7 @@ const data = [
 const Profile = () => {
 	const [timeRange, setTimeRange] = useState("3m");
 	const [metric, setMetric] = useState("duration");
+	const navigate = useNavigate();
 
 	const timeRangeLabel = {
 		"3m": "Last 3 months",
@@ -167,6 +169,7 @@ const Profile = () => {
 						leftSection={<Dumbbell size={18} />}
 						variant="default"
 						fullWidth
+						onClick={() => navigate("/exercise")}
 					>
 						Exercises
 					</Button>
