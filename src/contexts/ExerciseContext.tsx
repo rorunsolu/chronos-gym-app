@@ -1,6 +1,7 @@
 import { db } from "@/auth/Firebase";
 import { ExerciseContext } from "@/hooks/useExercisesHook";
 import { addDoc, collection, getDocs, query } from "firebase/firestore";
+import { useState, type ReactNode } from "react";
 // Name
 // Muscle group
 // Secondary muscle group
@@ -27,12 +28,36 @@ export type MuscleGroupData =
 	| "Adductors"
 	| "Lats";
 
-import { useState, type ReactNode } from "react";
+export type EquipmentType =
+	| "Barbell"
+	| "Dumbbell"
+	| "Kettlebell"
+	| "Machine"
+	| "Cable"
+	| "Resistance Band"
+	| "Bodyweight"
+	| "Smith Machine"
+	| "EZ Bar"
+	| "Trap Bar"
+	| "Bench"
+	| "Pull-up Bar"
+	| "Dip Bar"
+	| "Medicine Ball"
+	| "Stability Ball"
+	| "Foam Roller"
+	| "Bosu Ball"
+	| "Treadmill"
+	| "Elliptical"
+	| "Stationary Bike"
+	| "Rowing Machine"
+	| "Sled"
+	| "Battle Ropes";
 
 export interface ExerciseData {
 	name: string;
 	muscleGroup: MuscleGroupData;
 	secondaryMuscleGroup: MuscleGroupData;
+	equipment: EquipmentType;
 	howTo: string;
 }
 
@@ -43,6 +68,7 @@ export interface ExerciseContextType {
 		name: string,
 		muscleGroup: MuscleGroupData,
 		secondaryMuscleGroup: MuscleGroupData,
+		equipment: EquipmentType,
 		howTo: string
 	) => Promise<string>;
 	// The promise type can't be a void otherwise the function won't be able to access any of the needed data
@@ -64,6 +90,7 @@ export const ExerciseProvider = ({ children }: { children: ReactNode }) => {
 			name: doc.data().name,
 			muscleGroup: doc.data().muscleGroup,
 			secondaryMuscleGroup: doc.data().secondaryMuscleGroup,
+			equipment: doc.data().equipment,
 			howTo: doc.data().howTo,
 		}));
 
@@ -74,6 +101,7 @@ export const ExerciseProvider = ({ children }: { children: ReactNode }) => {
 		name: string,
 		muscleGroup: MuscleGroupData,
 		secondaryMuscleGroup: MuscleGroupData,
+		equipment: EquipmentType,
 		howTo: string
 	) => {
 		try {
@@ -81,6 +109,7 @@ export const ExerciseProvider = ({ children }: { children: ReactNode }) => {
 				name,
 				muscleGroup: muscleGroup as MuscleGroupData,
 				secondaryMuscleGroup: secondaryMuscleGroup as MuscleGroupData,
+				equipment: equipment as EquipmentType,
 				howTo,
 			};
 
