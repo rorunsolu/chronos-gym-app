@@ -1,50 +1,46 @@
+import { equipment, exercises, primaryMuscleGroups } from "@/assets/index";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import {
 	Container,
 	Input,
-	Button,
+	//Button,
 	Stack,
 	Card,
 	Group,
 	Text,
-	Image,
+	//Image,
+	Select,
 	Divider,
 } from "@mantine/core";
 
-const exercises = [
-	{ name: "21s Bicep Curl", muscle: "Biceps", image: "/images/21s.png" },
-	{
-		name: "Ab Scissors",
-		muscle: "Abdominals",
-		image: "/images/ab-scissors.png",
-	},
-	{ name: "Ab Wheel", muscle: "Abdominals", image: "/images/ab-wheel.png" },
-	{ name: "Aerobics", muscle: "Cardio", image: "/images/default.png" },
-	{ name: "Air Bike", muscle: "Cardio", image: "/images/air-bike.png" },
-	{
-		name: "Arnold Press (Dumbbell)",
-		muscle: "Shoulders",
-		image: "/images/arnold-press.png",
-	},
-	{
-		name: "Around The World",
-		muscle: "Chest",
-		image: "/images/around-world.png",
-	},
-	{
-		name: "Assisted Pistol Squats",
-		muscle: "Quadriceps",
-		image: "/images/pistol-squats.png",
-	},
-];
-
 const Exercise = () => {
 	const [search, setSearch] = useState("");
-
-	const filtered = exercises.filter((ex) =>
-		ex.name.toLowerCase().includes(search.toLowerCase())
+	const [selectedMuscle, setSelectedMuscle] = useState<string | null>(null);
+	const [selectedEquipment, setSelectedEquipment] = useState<string | null>(
+		null
 	);
+
+	const filtered = exercises.filter((exercise) => {
+		const matchesSearch = exercise.name
+			.toLowerCase()
+			.includes(search.toLowerCase());
+		const matchesMuscle = selectedMuscle
+			? exercise.muscleGroup === selectedMuscle
+			: true;
+		const matchesEquipment = selectedEquipment
+			? exercise.equipment === selectedEquipment
+			: true;
+
+		const showAllMuscles = selectedMuscle === "All Muscles";
+		const showAllEquipment = selectedEquipment === "All Equipment";
+
+		return (
+			(matchesSearch && matchesMuscle && matchesEquipment) ||
+			showAllMuscles ||
+			showAllEquipment
+		);
+	});
 
 	return (
 		<Container
@@ -60,8 +56,32 @@ const Exercise = () => {
 				/>
 
 				<Group grow>
-					<Button variant="default">All Equipment</Button>
-					<Button variant="default">All Muscles</Button>
+					<Select
+						//placeholder="Pick value"
+						defaultValue="All Equipment"
+						data={equipment}
+						clearable
+						searchable
+						nothingFoundMessage="Nothing found..."
+						checkIconPosition="right"
+						comboboxProps={{
+							transitionProps: { transition: "fade-down", duration: 200 },
+						}}
+						onChange={setSelectedEquipment}
+					/>
+					<Select
+						//placeholder="Pick value"
+						defaultValue="All Muscles"
+						data={primaryMuscleGroups}
+						clearable
+						searchable
+						nothingFoundMessage="Nothing found..."
+						checkIconPosition="right"
+						comboboxProps={{
+							transitionProps: { transition: "fade-down", duration: 200 },
+						}}
+						onChange={setSelectedMuscle}
+					/>
 				</Group>
 
 				<Divider />
@@ -77,22 +97,13 @@ const Exercise = () => {
 							onClick={() => console.log(`Clicked ${exercise.name}`)}
 						>
 							<Group>
-								<Image
-									src={exercise.image}
-									width={40}
-									height={40}
-									radius="xl"
-									alt={exercise.name}
-								/>
-								<div>
-									<Text fw={500}>{exercise.name}</Text>
-									<Text
-										size="xs"
-										c="dimmed"
-									>
-										{exercise.muscle}
-									</Text>
-								</div>
+								<Text fw={500}>{exercise.name}</Text>
+								<Text
+									size="xs"
+									c="dimmed"
+								>
+									{exercise.muscleGroup}
+								</Text>
 							</Group>
 						</Card>
 					))}

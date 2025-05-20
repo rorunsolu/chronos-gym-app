@@ -29,10 +29,10 @@ export type WorkoutData = {
 	dateOfWorkout: Timestamp;
 	exercises: {
 		name: string;
-		setsDone: number;
-		repsPerSet: number;
-		totalWeight: number;
-		weightPerSet: number;
+		sets: {
+			reps: number;
+			weight: number;
+		}[];
 		notes: string;
 	}[];
 };
@@ -44,10 +44,7 @@ export type WorkoutContextType = {
 		name: string,
 		exercises: {
 			name: string;
-			setsDone: number;
-			repsPerSet: number;
-			totalWeight: number;
-			weightPerSet: number;
+			sets: { reps: number; weight: number }[];
 			notes: string;
 		}[]
 	) => Promise<string>;
@@ -79,10 +76,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 		name: string,
 		exercises: {
 			name: string;
-			setsDone: number;
-			repsPerSet: number;
-			totalWeight: number;
-			weightPerSet: number;
+			sets: { reps: number; weight: number }[];
 			notes: string;
 		}[]
 	) => {
