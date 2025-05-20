@@ -1,4 +1,4 @@
-export const exercises = [
+export const exerciseData = [
     {
         "name": "Barbell Bench Press",
         "muscleGroup": "Obliques",

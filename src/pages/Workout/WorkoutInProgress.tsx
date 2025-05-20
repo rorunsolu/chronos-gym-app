@@ -1,4 +1,4 @@
-import { equipment, exercises, primaryMuscleGroups } from "@/assets/index";
+import { equipment, exerciseData, primaryMuscleGroups } from "@/assets/index";
 import { useDisclosure } from "@mantine/hooks";
 import { CheckCircle, Plus, Search } from "lucide-react";
 import { useState } from "react";
@@ -25,7 +25,7 @@ const WorkoutInProgress = () => {
 	const [selectedEquipment, setSelectedEquipment] = useState<string | null>(
 		null
 	);
-	const [instanceOfexercises, setInstanceOfexercises] = useState<
+	const [exercises, setExercises] = useState<
 		{
 			id: string;
 			name: string;
@@ -34,7 +34,7 @@ const WorkoutInProgress = () => {
 	>([]);
 
 	// Part of the logic for the add exercise modal
-	const filtered = exercises.filter((exercise) => {
+	const filtered = exerciseData.filter((exercise) => {
 		const matchesSearch = exercise.name
 			.toLowerCase()
 			.includes(search.toLowerCase());
@@ -60,7 +60,7 @@ const WorkoutInProgress = () => {
 
 	// Add a new exercise with an initial set that includes the required "id" property
 	const handleExerciseRender = (exercise: { name: string }) => {
-		setInstanceOfexercises((prev) => [
+		setExercises((prev) => [
 			...prev,
 			{
 				id: Date.now().toString(),
@@ -86,7 +86,7 @@ const WorkoutInProgress = () => {
 	// declare the properties of what each set should have to be used when a new row is rendered
 
 	const handleRowRender = (exerciseId: string) => {
-		setInstanceOfexercises((prev) =>
+		setExercises((prev) =>
 			prev.map((exercise) =>
 				exercise.id === exerciseId
 					? {
@@ -118,10 +118,19 @@ const WorkoutInProgress = () => {
 						</Text>
 					</Stack>
 
-					<Stack>
-						{instanceOfexercises.map((exercise) => {
+					<Stack gap="xl">
+						{exercises.map((exercise) => {
 							return (
 								<div key={exercise.id}>
+									<Group mb="xs">
+										<Text
+											fw={500}
+											size="lg"
+										>
+											{exercise.name}
+										</Text>
+									</Group>
+
 									<Table
 										striped
 										withRowBorders={false}
@@ -139,25 +148,20 @@ const WorkoutInProgress = () => {
 											{exercise.sets.map((set, index) => (
 												<Table.Tr key={index}>
 													<Table.Td>
-														<TextInput
-															variant="unstyled"
-															placeholder="1"
-															value={index + 1} // The + 1 so it starts from 1 and not 0
-															readOnly
-														/>
+														<Text size="xs">{index + 1}</Text>
 													</Table.Td>
 													<Table.Td>
 														<TextInput
 															variant="unstyled"
 															placeholder="0kg"
-															value={set.weight}
+															defaultValue={set.weight}
 														/>
 													</Table.Td>
 													<Table.Td>
 														<TextInput
 															variant="unstyled"
 															placeholder="0"
-															value={set.reps}
+															defaultValue={set.reps}
 														/>
 													</Table.Td>
 												</Table.Tr>
@@ -165,7 +169,7 @@ const WorkoutInProgress = () => {
 										</Table.Tbody>
 									</Table>
 
-									<Group>
+									<Group mt="md">
 										<Button
 											variant="light"
 											color="teal"

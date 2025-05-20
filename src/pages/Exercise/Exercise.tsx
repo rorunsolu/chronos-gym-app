@@ -1,4 +1,4 @@
-import { equipment, exercises, primaryMuscleGroups } from "@/assets/index";
+import { equipment, exerciseData, primaryMuscleGroups } from "@/assets/index";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import {
@@ -21,7 +21,7 @@ const Exercise = () => {
 		null
 	);
 
-	const filtered = exercises.filter((exercise) => {
+	const filtered = exerciseData.filter((exercise) => {
 		const matchesSearch = exercise.name
 			.toLowerCase()
 			.includes(search.toLowerCase());
