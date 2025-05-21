@@ -11,6 +11,7 @@ import Portal from "@/pages/Portal/Portal";
 import Profile from "@/pages/Profile/Profile";
 import Register from "@/pages/Register/Register";
 import RegisterForm from "@/pages/Register/RegisterForm";
+import Routine from "@/pages/Routine/Routine";
 import Workout from "@/pages/Workout/Workout";
 import WorkoutInProgress from "@/pages/Workout/WorkoutInProgress";
 import "@mantine/core/styles.css";
@@ -143,7 +144,7 @@ function App() {
 								}
 							/>
 							<Route
-								path="/workout"
+								path="/workouts"
 								element={
 									<Protected>
 										<Workout />
@@ -199,6 +200,14 @@ function App() {
 									</Protected>
 								}
 							/>
+							<Route
+								path="/routines"
+								element={
+									<Protected>
+										<Routine />
+									</Protected>
+								}
+							/>
 						</Routes>
 					</AppShell.Main>
 				</AppShell>
@@ -211,7 +220,9 @@ export default App;
 
 const navbarLinks = [
 	{ name: "Home", icon: <Home /> },
-	{ name: "Workout", icon: <Dumbbell /> },
+	{ name: "Workouts", icon: <Dumbbell /> },
+	{ name: "Routines", icon: <Dumbbell /> },
+	{ name: "Exercises", icon: <Dumbbell /> },
 	{ name: "Profile", icon: <User /> },
 	{ name: "Settings", icon: <Settings /> },
 ];

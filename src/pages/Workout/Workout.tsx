@@ -1,33 +1,37 @@
-import { Play, Plus, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import {
+	//Play,
+	Plus,
+	Search,
+} from "lucide-react";
 import {
 	Box,
 	Button,
 	Group,
-	Paper,
+	//Paper,
 	Stack,
-	Text,
+	//Text,
 	Title,
 	ScrollArea,
 } from "@mantine/core";
 
-const routines = [
-	{
-		name: "Full Body Beta",
-		description:
-			"Incline Bench Press (Smith Machine), Overhead Tricep Extension (Both Arms), Shoulder Press (Machine Plates)...",
-	},
-	{
-		name: "Pull Day + Mini Push",
-		description:
-			"Iso-Lateral Low Row, Lat Pulldown - Close Grip (Cable), Hammer Curl (Cable), Bicep Curl (Cable)...",
-	},
-	{
-		name: "Push Day + Mini Pull",
-		description:
-			"Incline Bench Press (Dumbbell), Chest Fly (Machine), Triceps Dip, Overhead Tricep Extension (Both Arms)...",
-	},
-];
+// const routines = [
+// 	{
+// 		name: "Full Body Beta",
+// 		description:
+// 			"Incline Bench Press (Smith Machine), Overhead Tricep Extension (Both Arms), Shoulder Press (Machine Plates)...",
+// 	},
+// 	{
+// 		name: "Pull Day + Mini Push",
+// 		description:
+// 			"Iso-Lateral Low Row, Lat Pulldown - Close Grip (Cable), Hammer Curl (Cable), Bicep Curl (Cable)...",
+// 	},
+// 	{
+// 		name: "Push Day + Mini Pull",
+// 		description:
+// 			"Incline Bench Press (Dumbbell), Chest Fly (Machine), Triceps Dip, Overhead Tricep Extension (Both Arms)...",
+// 	},
+// ];
 
 const Workout = () => {
 	const navigate = useNavigate();
@@ -47,6 +51,9 @@ const Workout = () => {
 						fullWidth
 						mt="xs"
 						leftSection={<Plus size={20} />}
+						onClick={() => {
+							navigate("/workout-in-progress");
+						}}
 					>
 						Start Empty Workout
 					</Button>
@@ -63,6 +70,9 @@ const Workout = () => {
 						<Button
 							color="teal"
 							leftSection={<Plus size={20} />}
+							onClick={() => {
+								navigate("/routines");
+							}}
 						>
 							New Routine
 						</Button>
@@ -79,7 +89,7 @@ const Workout = () => {
 					</Group>
 				</Box>
 
-				<Box>
+				{/* <Box>
 					<Title
 						order={4}
 						mb="xs"
@@ -116,7 +126,7 @@ const Workout = () => {
 							</Paper>
 						))}
 					</Stack>
-				</Box>
+				</Box> */}
 			</Stack>
 		</ScrollArea>
 	);

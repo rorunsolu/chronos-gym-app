@@ -10,19 +10,35 @@ import {
 	Timestamp,
 } from "firebase/firestore";
 import { useState, type ReactNode } from "react";
-import { type ExerciseData } from "@/contexts/ExerciseContext";
 
 export interface RoutineData {
 	id: string;
 	name: string;
 	createdAt: Timestamp;
-	exercises: ExerciseData[];
+	exercises: {
+		id: string;
+		name: string;
+		sets: {
+			id: string;
+			reps: string;
+			weight: string;
+		}[];
+		// notes: string;
+	}[];
 }
 
 export interface RoutinesContextType {
 	routines: RoutineData[];
 	fetchRoutines: () => Promise<void>;
-	createRoutine: (name: string, exercises: ExerciseData[]) => Promise<string>;
+	createRoutine: (
+		name: string,
+		exercises: {
+			id: string;
+			name: string;
+			sets: { id: string; reps: string; weight: string }[];
+			// notes: string;
+		}[]
+	) => Promise<string>;
 	deleteRoutine: (id: string) => Promise<void>;
 }
 
@@ -51,7 +67,15 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 		);
 	};
 
-	const createRoutine = async (name: string, exercises: ExerciseData[]) => {
+	const createRoutine = async (
+		name: string,
+		exercises: {
+			id: string;
+			name: string;
+			sets: { id: string; reps: string; weight: string }[];
+			// notes: string;
+		}[]
+	): Promise<string> => {
 		const dateOfCreation = Timestamp.fromDate(new Date());
 
 		try {
