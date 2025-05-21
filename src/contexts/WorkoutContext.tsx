@@ -28,12 +28,14 @@ export type WorkoutData = {
 	name: string;
 	dateOfWorkout: Timestamp;
 	exercises: {
+		id: string;
 		name: string;
 		sets: {
-			reps: number;
-			weight: number;
+			id: string;
+			reps: string;
+			weight: string;
 		}[];
-		notes: string;
+		// notes: string;
 	}[];
 };
 
@@ -43,9 +45,10 @@ export type WorkoutContextType = {
 	createWorkout: (
 		name: string,
 		exercises: {
+			id: string;
 			name: string;
-			sets: { reps: number; weight: number }[];
-			notes: string;
+			sets: { id: string; reps: string; weight: string }[];
+			// notes: string;
 		}[]
 	) => Promise<string>;
 	deleteWorkout: (id: string) => Promise<void>;
@@ -75,11 +78,12 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 	const createWorkout = async (
 		name: string,
 		exercises: {
+			id: string;
 			name: string;
-			sets: { reps: number; weight: number }[];
-			notes: string;
+			sets: { id: string; reps: string; weight: string }[];
+			// notes: string;
 		}[]
-	) => {
+	): Promise<string> => {
 		const dateOfCreation = Timestamp.fromDate(new Date());
 
 		try {
@@ -101,8 +105,8 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 					dateOfWorkout: dateOfCreation,
 				},
 			]);
-			return workoutRef.id;
 			console.log("Workout created: ", workoutRef.id);
+			return workoutRef.id;
 		} catch (error) {
 			throw new Error("Error creating workout");
 		}

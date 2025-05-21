@@ -2,7 +2,6 @@ import "@/App.css";
 import { UserAuth } from "@/auth/AuthContext";
 import Protected from "@/auth/Protected";
 import ChronosLogoSmall from "@/components/Branding/ChronosLogoSmall";
-import SessionTable from "@/components/Tables/SessionTable";
 import Exercise from "@/pages/Exercise/Exercise";
 import ExerciseCreate from "@/pages/Exercise/ExerciseCreate";
 import Explore from "@/pages/Explore/Explore";
@@ -13,7 +12,6 @@ import Profile from "@/pages/Profile/Profile";
 import Register from "@/pages/Register/Register";
 import RegisterForm from "@/pages/Register/RegisterForm";
 import Workout from "@/pages/Workout/Workout";
-import WorkoutDetail from "@/pages/Workout/WorkoutDetail";
 import WorkoutInProgress from "@/pages/Workout/WorkoutInProgress";
 import "@mantine/core/styles.css";
 import "@mantine/core/styles.layer.css";
@@ -176,22 +174,7 @@ function App() {
 									</Protected>
 								}
 							/>
-							<Route
-								path="/workout-detail"
-								element={
-									<Protected>
-										<WorkoutDetail />
-									</Protected>
-								}
-							/>
-							<Route
-								path="/session-table"
-								element={
-									<Protected>
-										<SessionTable />
-									</Protected>
-								}
-							/>
+
 							<Route
 								path="/workout-in-progress"
 								element={

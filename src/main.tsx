@@ -1,6 +1,9 @@
 import App from "@/App";
 import { AuthContextProvider } from "@/auth/AuthContext";
 import { AccountProvider } from "@/contexts/AccountContext";
+import { ExerciseProvider } from "@/contexts/ExerciseContext";
+import { RoutineProvider } from "@/contexts/RoutineContext";
+import { WorkoutProvider } from "@/contexts/WorkoutContext";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
@@ -14,7 +17,13 @@ if (!rootElement.innerHTML) {
 			<BrowserRouter>
 				<AuthContextProvider>
 					<AccountProvider>
-						<App />
+						<WorkoutProvider>
+							<ExerciseProvider>
+								<RoutineProvider>
+									<App />
+								</RoutineProvider>
+							</ExerciseProvider>
+						</WorkoutProvider>
 					</AccountProvider>
 				</AuthContextProvider>
 			</BrowserRouter>

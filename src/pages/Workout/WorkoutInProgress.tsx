@@ -1,12 +1,13 @@
 import { equipment, exerciseData, primaryMuscleGroups } from "@/assets/index";
+import { useExercisesHook } from "@/hooks/useExercisesHook";
+import { useWorkOutHook } from "@/hooks/useWorkoutHook";
 import { useDisclosure } from "@mantine/hooks";
 import { CheckCircle, Plus, Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	Container,
 	Group,
 	Stack,
-	Title,
 	Text,
 	Button,
 	Table,
@@ -25,6 +26,7 @@ const WorkoutInProgress = () => {
 	const [selectedEquipment, setSelectedEquipment] = useState<string | null>(
 		null
 	);
+	const [name, setName] = useState("");
 	const [exercises, setExercises] = useState<
 		{
 			id: string;
@@ -32,6 +34,9 @@ const WorkoutInProgress = () => {
 			sets: { id: string; reps: string; weight: string }[];
 		}[]
 	>([]);
+
+	const { fetchExercises } = useExercisesHook();
+	const { createWorkout } = useWorkOutHook();
 
 	// Part of the logic for the add exercise modal
 	const filtered = exerciseData.filter((exercise) => {
@@ -101,6 +106,36 @@ const WorkoutInProgress = () => {
 		);
 	};
 
+	const handleInputChange = (
+		exerciseId: string,
+		setId: string,
+		field: "reps" | "weight",
+		value: string
+	) => {
+		setExercises((prev) =>
+			prev.map((exercise) =>
+				exercise.id === exerciseId
+					? {
+							...exercise,
+							sets: exercise.sets.map((set) =>
+								set.id === setId ? { ...set, [field]: value } : set
+							),
+						}
+					: exercise
+			)
+		);
+	};
+
+	const handleSessionUpload = async () => {
+		createWorkout(name, exercises);
+		setExercises([]);
+		setName("");
+	};
+
+	useEffect(() => {
+		fetchExercises();
+	}, []);
+
 	return (
 		<>
 			<Container
@@ -109,13 +144,13 @@ const WorkoutInProgress = () => {
 			>
 				<Stack gap="md">
 					<Stack gap="xs">
-						<Title order={3}>Workout Session</Title>
-						<Text
-							size="sm"
-							c="dimmed"
-						>
-							Track your current workout progress.
-						</Text>
+						<TextInput
+							size="lg"
+							variant="unstyled"
+							value={name}
+							placeholder="Enter workout name"
+							onChange={(e) => setName(e.target.value)}
+						/>
 					</Stack>
 
 					<Stack gap="xl">
@@ -154,14 +189,30 @@ const WorkoutInProgress = () => {
 														<TextInput
 															variant="unstyled"
 															placeholder="0kg"
-															defaultValue={set.weight}
+															value={set.weight}
+															onChange={(event) =>
+																handleInputChange(
+																	exercise.id, // this is refered to as exerciseId and setId as parameters inside the function
+																	set.id,
+																	"weight",
+																	event.currentTarget.value
+																)
+															}
 														/>
 													</Table.Td>
 													<Table.Td>
 														<TextInput
 															variant="unstyled"
 															placeholder="0"
-															defaultValue={set.reps}
+															value={set.reps}
+															onChange={(event) => {
+																handleInputChange(
+																	exercise.id,
+																	set.id,
+																	"reps",
+																	event.currentTarget.value
+																);
+															}}
 														/>
 													</Table.Td>
 												</Table.Tr>
@@ -199,6 +250,9 @@ const WorkoutInProgress = () => {
 						<Button
 							leftSection={<CheckCircle size={20} />}
 							color="green"
+							onClick={() => {
+								handleSessionUpload();
+							}}
 						>
 							Finish
 						</Button>

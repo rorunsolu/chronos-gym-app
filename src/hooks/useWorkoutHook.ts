@@ -8,4 +8,5 @@ export const useWorkOutHook = () => {
     if (context === undefined) {
         throw new Error("useWorkOutHook must be used within a WorkoutProvider");
     }
+    return context;
 };
