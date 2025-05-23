@@ -11,34 +11,26 @@ import {
 } from "firebase/firestore";
 import { useState, type ReactNode } from "react";
 
+export interface ExerciseData {
+	id: string;
+	name: string;
+	sets: {
+		id: string;
+		weight: string;
+		reps: string;
+	}[];
+}
 export interface RoutineData {
 	id: string;
 	name: string;
 	createdAt: Timestamp;
-	exercises: {
-		id: string;
-		name: string;
-		sets: {
-			id: string;
-			reps: string;
-			weight: string;
-		}[];
-		// notes: string;
-	}[];
+	exercises: ExerciseData[];
 }
 
 export interface RoutinesContextType {
 	routines: RoutineData[];
 	fetchRoutines: () => Promise<void>;
-	createRoutine: (
-		name: string,
-		exercises: {
-			id: string;
-			name: string;
-			sets: { id: string; reps: string; weight: string }[];
-			// notes: string;
-		}[]
-	) => Promise<string>;
+	createRoutine: (name: string, exercises: ExerciseData[]) => Promise<string>;
 	deleteRoutine: (id: string) => Promise<void>;
 }
 
@@ -69,12 +61,7 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 
 	const createRoutine = async (
 		name: string,
-		exercises: {
-			id: string;
-			name: string;
-			sets: { id: string; reps: string; weight: string }[];
-			// notes: string;
-		}[]
+		exercises: ExerciseData[]
 	): Promise<string> => {
 		const dateOfCreation = Timestamp.fromDate(new Date());
 
@@ -82,6 +69,7 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 			const dataToBeAdded = {
 				name,
 				exercises,
+				createdAt: dateOfCreation,
 			};
 
 			const routineRef = await addDoc(
@@ -89,14 +77,15 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 				dataToBeAdded
 			);
 
-			setRoutines((prevRoutines) => [
-				...prevRoutines,
-				{
-					...dataToBeAdded,
-					id: routineRef.id,
-					createdAt: dateOfCreation,
-				},
-			]);
+			// setRoutines((prevRoutines) => [
+			// 	...prevRoutines,
+			// 	{
+			// 		...dataToBeAdded,
+			// 		id: routineRef.id,
+			// 		createdAt: dateOfCreation,
+			// 	},
+			// ]);
+			setRoutines([{ id: routineRef.id, ...dataToBeAdded }, ...routines]);
 			console.log("Routine created with ID: ", routineRef.id);
 			return routineRef.id;
 		} catch (error) {

@@ -91,6 +91,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 			const dataToBeUsed = {
 				name,
 				exercises,
+				dateOfWorkout: dateOfCreation,
 			};
 
 			// create a reference for the workout thats being created

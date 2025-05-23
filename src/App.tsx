@@ -12,13 +12,20 @@ import Profile from "@/pages/Profile/Profile";
 import Register from "@/pages/Register/Register";
 import RegisterForm from "@/pages/Register/RegisterForm";
 import Routine from "@/pages/Routine/Routine";
+import RoutineSession from "@/pages/Routine/RoutineSession";
 import Workout from "@/pages/Workout/Workout";
 import WorkoutInProgress from "@/pages/Workout/WorkoutInProgress";
 import "@mantine/core/styles.css";
 import "@mantine/core/styles.layer.css";
 import { useDisclosure } from "@mantine/hooks";
-import { Dumbbell, Home, LogOut, Settings, User } from "lucide-react";
 import { Link, Route, Routes } from "react-router-dom";
+import {
+	Dumbbell,
+	Home,
+	LogOut,
+	//Settings,
+	User,
+} from "lucide-react";
 import {
 	AppShell,
 	Burger,
@@ -108,8 +115,9 @@ function App() {
 											variant="filled"
 											color="teal"
 											onClick={handleSignOut}
+											leftSection={<LogOut size={18} />}
 										>
-											<LogOut size={18} /> Sign Out
+											Sign Out
 										</Button>
 									</Stack>
 								)}
@@ -208,6 +216,15 @@ function App() {
 									</Protected>
 								}
 							/>
+
+							<Route
+								path="/routines/:id"
+								element={
+									<Protected>
+										<RoutineSession />
+									</Protected>
+								}
+							/>
 						</Routes>
 					</AppShell.Main>
 				</AppShell>
@@ -221,8 +238,8 @@ export default App;
 const navbarLinks = [
 	{ name: "Home", icon: <Home /> },
 	{ name: "Workouts", icon: <Dumbbell /> },
-	{ name: "Routines", icon: <Dumbbell /> },
-	{ name: "Exercises", icon: <Dumbbell /> },
+	// { name: "Routines", icon: <Dumbbell /> },
+	// { name: "Exercises", icon: <Dumbbell /> },
 	{ name: "Profile", icon: <User /> },
-	{ name: "Settings", icon: <Settings /> },
+	// { name: "Settings", icon: <Settings /> },
 ];
