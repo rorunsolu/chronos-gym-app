@@ -4,6 +4,9 @@ import { useWorkOutHook } from "@/hooks/useWorkoutHook";
 import { useDisclosure } from "@mantine/hooks";
 import { CheckCircle, Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useStopwatch } from "react-timer-hook";
+import { type ExerciseData } from "@/contexts/RoutineContext";
 import {
 	Container,
 	Group,
@@ -27,14 +30,9 @@ const WorkoutInProgress = () => {
 		null
 	);
 	const [name, setName] = useState("");
-	const [exercises, setExercises] = useState<
-		{
-			id: string;
-			name: string;
-			sets: { id: string; reps: string; weight: string }[];
-		}[]
-	>([]);
+	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 
+	const navigate = useNavigate();
 	const { fetchExercises } = useExercisesHook();
 	const { createWorkout } = useWorkOutHook();
 
@@ -132,6 +130,13 @@ const WorkoutInProgress = () => {
 		setName("");
 	};
 
+	const {
+		//totalSeconds,
+		seconds,
+		minutes,
+		hours,
+	} = useStopwatch({ autoStart: true, interval: 20 });
+
 	useEffect(() => {
 		fetchExercises();
 	}, []);
@@ -142,102 +147,112 @@ const WorkoutInProgress = () => {
 				size="sm"
 				py="md"
 			>
-				<Stack gap="md">
-					<Stack gap="xs">
-						<TextInput
-							size="lg"
-							variant="unstyled"
-							value={name}
-							placeholder="Enter workout name"
-							onChange={(e) => setName(e.target.value)}
-						/>
-					</Stack>
+				<Stack justify="space-between">
+					<Stack>
+						<Group justify="space-between">
+							<TextInput
+								size="lg"
+								variant="unstyled"
+								value={name}
+								placeholder="Enter workout name"
+								onChange={(e) => setName(e.target.value)}
+							/>
 
-					<Stack gap="xl">
-						{exercises.map((exercise) => {
-							return (
-								<div key={exercise.id}>
-									<Group mb="xs">
-										<Text
-											fw={500}
-											size="lg"
+							<Text
+								c="teal.4"
+								fw={500}
+								size="lg"
+							>
+								Duration: {hours}:{minutes}:{seconds}
+							</Text>
+						</Group>
+
+						<Stack gap="xl">
+							{exercises.map((exercise) => {
+								return (
+									<div key={exercise.id}>
+										<Group mb="xs">
+											<Text
+												fw={500}
+												size="lg"
+											>
+												{exercise.name}
+											</Text>
+										</Group>
+
+										<Table
+											striped
+											withRowBorders={false}
 										>
-											{exercise.name}
-										</Text>
-									</Group>
-
-									<Table
-										striped
-										withRowBorders={false}
-									>
-										<Table.Thead>
-											<Table.Tr>
-												<Table.Th>Set</Table.Th>
-												<Table.Th>Weight</Table.Th>
-												<Table.Th>Reps</Table.Th>
-											</Table.Tr>
-										</Table.Thead>
-										<Table.Tbody>
-											{/* Accessing the exercises from the instanceOfexercises STATE and then rendering rows for each set */}
-											{/* The set in this case is coming from the array of sets INSIDE the instanceOfexercises STATE */}
-											{exercise.sets.map((set, index) => (
-												<Table.Tr key={index}>
-													<Table.Td>
-														<Text size="xs">{index + 1}</Text>
-													</Table.Td>
-													<Table.Td>
-														<TextInput
-															variant="unstyled"
-															placeholder="0kg"
-															value={set.weight}
-															onChange={(event) =>
-																handleInputChange(
-																	exercise.id, // this is refered to as exerciseId and setId as parameters inside the function
-																	set.id,
-																	"weight",
-																	event.currentTarget.value
-																)
-															}
-														/>
-													</Table.Td>
-													<Table.Td>
-														<TextInput
-															variant="unstyled"
-															placeholder="0"
-															value={set.reps}
-															onChange={(event) => {
-																handleInputChange(
-																	exercise.id,
-																	set.id,
-																	"reps",
-																	event.currentTarget.value
-																);
-															}}
-														/>
-													</Table.Td>
+											<Table.Thead>
+												<Table.Tr>
+													<Table.Th>Set</Table.Th>
+													<Table.Th>Weight</Table.Th>
+													<Table.Th>Reps</Table.Th>
 												</Table.Tr>
-											))}
-										</Table.Tbody>
-									</Table>
+											</Table.Thead>
+											<Table.Tbody>
+												{/* Accessing the exercises from the instanceOfexercises STATE and then rendering rows for each set */}
+												{/* The set in this case is coming from the array of sets INSIDE the instanceOfexercises STATE */}
+												{exercise.sets.map((set, index) => (
+													<Table.Tr key={index}>
+														<Table.Td>
+															<Text size="xs">{index + 1}</Text>
+														</Table.Td>
+														<Table.Td>
+															<TextInput
+																variant="unstyled"
+																placeholder="0kg"
+																value={set.weight}
+																onChange={(event) =>
+																	handleInputChange(
+																		exercise.id, // this is refered to as exerciseId and setId as parameters inside the function
+																		set.id,
+																		"weight",
+																		event.currentTarget.value
+																	)
+																}
+															/>
+														</Table.Td>
+														<Table.Td>
+															<TextInput
+																variant="unstyled"
+																placeholder="0"
+																value={set.reps}
+																onChange={(event) => {
+																	handleInputChange(
+																		exercise.id,
+																		set.id,
+																		"reps",
+																		event.currentTarget.value
+																	);
+																}}
+															/>
+														</Table.Td>
+													</Table.Tr>
+												))}
+											</Table.Tbody>
+										</Table>
 
-									<Group mt="md">
-										<Button
-											variant="light"
-											color="teal"
-											leftSection={<Plus size={20} />}
-											// pass the exercise.id taken from the id property of an exercise
-											onClick={() => handleRowRender(exercise.id)}
-										>
-											Add Set
-										</Button>
-									</Group>
-								</div>
-							);
-						})}
+										<Group mt="md">
+											<Button
+												variant="light"
+												color="teal"
+												leftSection={<Plus size={20} />}
+												// pass the exercise.id taken from the id property of an exercise
+												onClick={() => handleRowRender(exercise.id)}
+											>
+												Add Set
+											</Button>
+										</Group>
+									</div>
+								);
+							})}
+						</Stack>
 					</Stack>
 
 					<Group
-						justify="center"
+						justify="right"
 						mt="md"
 					>
 						<Button
@@ -252,6 +267,7 @@ const WorkoutInProgress = () => {
 							color="green"
 							onClick={() => {
 								handleSessionUpload();
+								navigate("/home");
 							}}
 						>
 							Finish

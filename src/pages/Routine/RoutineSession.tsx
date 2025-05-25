@@ -26,7 +26,7 @@ const RoutineSession = () => {
 	const { id } = useParams<{ id: string }>();
 	const [visible] = useDisclosure(false);
 	const [search, setSearch] = useState("");
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	const [rountineName, setRoutineName] = useState("");
 	const [opened, { open, close }] = useDisclosure(false);
 	const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -200,7 +200,8 @@ const RoutineSession = () => {
 						<TextInput
 							size="lg"
 							variant="unstyled"
-							defaultValue={rountineName}
+							value={rountineName}
+							onChange={(e) => setRoutineName(e.target.value)}
 						/>
 					</Stack>
 
