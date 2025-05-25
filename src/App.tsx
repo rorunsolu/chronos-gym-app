@@ -60,6 +60,7 @@ function App() {
 				defaultColorScheme="dark"
 			>
 				<AppShell
+					bg="dark.9"
 					header={{ height: 60 }}
 					navbar={
 						user
@@ -72,7 +73,7 @@ function App() {
 					}
 					padding="md"
 				>
-					<AppShell.Header>
+					<AppShell.Header bg="dark.9">
 						<Group
 							h="100%"
 							px="md"
@@ -88,7 +89,10 @@ function App() {
 					</AppShell.Header>
 
 					{user && (
-						<AppShell.Navbar p="md">
+						<AppShell.Navbar
+							p="xs"
+							bg="dark.9"
+						>
 							<Stack
 								align="stretch"
 								justify="space-between"

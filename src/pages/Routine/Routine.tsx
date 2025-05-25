@@ -4,6 +4,7 @@ import { useRoutinesHook } from "@/hooks/useRoutinesHook";
 import { useDisclosure } from "@mantine/hooks";
 import { CheckCircle, Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
 	Container,
 	Group,
@@ -26,6 +27,7 @@ const Routine = () => {
 		null
 	);
 
+	const navigate = useNavigate();
 	const [name, setName] = useState("");
 	const [exercises, setExercises] = useState<
 		{
@@ -240,6 +242,7 @@ const Routine = () => {
 							color="green"
 							onClick={() => {
 								handleRoutineUpload();
+								navigate("/home");
 							}}
 						>
 							Finish

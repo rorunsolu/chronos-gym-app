@@ -10,6 +10,7 @@ import {
 	getDocs,
 } from "firebase/firestore";
 import { useState, type ReactNode } from "react";
+import { type ExerciseData } from "@/contexts/RoutineContext";
 
 // data required to create a workout
 // Each exercise { name, sets done, reps per set, total weight, weight per set, notes }
@@ -27,30 +28,14 @@ export type WorkoutData = {
 	id: string;
 	name: string;
 	dateOfWorkout: Timestamp;
-	exercises: {
-		id: string;
-		name: string;
-		sets: {
-			id: string;
-			reps: string;
-			weight: string;
-		}[];
-		// notes: string;
-	}[];
+	exercises: ExerciseData[];
+	notes?: string;
 };
 
 export type WorkoutContextType = {
 	workouts: WorkoutData[];
 	fetchWorkouts: () => Promise<void>;
-	createWorkout: (
-		name: string,
-		exercises: {
-			id: string;
-			name: string;
-			sets: { id: string; reps: string; weight: string }[];
-			// notes: string;
-		}[]
-	) => Promise<string>;
+	createWorkout: (name: string, exercises: ExerciseData[]) => Promise<string>;
 	deleteWorkout: (id: string) => Promise<void>;
 };
 
@@ -77,12 +62,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 
 	const createWorkout = async (
 		name: string,
-		exercises: {
-			id: string;
-			name: string;
-			sets: { id: string; reps: string; weight: string }[];
-			// notes: string;
-		}[]
+		exercises: ExerciseData[]
 	): Promise<string> => {
 		const dateOfCreation = Timestamp.fromDate(new Date());
 

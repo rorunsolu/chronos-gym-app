@@ -61,7 +61,7 @@ const Explore = () => {
 					<Card
 						key={idx}
 						radius="md"
-						shadow="sm"
+						shadow="xs"
 						withBorder
 					>
 						<Group>
@@ -106,7 +106,7 @@ const Explore = () => {
 						<Card
 							key={index}
 							radius="md"
-							shadow="sm"
+							shadow="xs"
 							withBorder
 						>
 							<Stack

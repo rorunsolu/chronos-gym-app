@@ -75,6 +75,7 @@ const ExerciseCreate = () => {
 					data={muscleGroups}
 					required
 					clearable
+					searchable
 				/>
 
 				<Select
@@ -82,6 +83,7 @@ const ExerciseCreate = () => {
 					placeholder="Select a secondary muscle"
 					data={muscleGroups}
 					clearable
+					searchable
 				/>
 
 				<Select
@@ -90,6 +92,7 @@ const ExerciseCreate = () => {
 					data={equipmentTypes}
 					required
 					clearable
+					searchable
 				/>
 
 				<Textarea
@@ -98,8 +101,9 @@ const ExerciseCreate = () => {
 					autosize
 					minRows={4}
 				/>
-
-				<Button fullWidth>Create Exercise</Button>
+				<Stack mt={10}>
+					<Button fullWidth>Create Exercise</Button>
+				</Stack>
 			</Stack>
 		</Container>
 	);

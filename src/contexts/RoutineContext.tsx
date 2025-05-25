@@ -11,7 +11,7 @@ import {
 } from "firebase/firestore";
 import { useState, type ReactNode } from "react";
 
-export interface ExerciseData {
+export type ExerciseData = {
 	id: string;
 	name: string;
 	sets: {
@@ -19,12 +19,13 @@ export interface ExerciseData {
 		weight: string;
 		reps: string;
 	}[];
-}
+};
 export interface RoutineData {
 	id: string;
 	name: string;
 	createdAt: Timestamp;
 	exercises: ExerciseData[];
+	description?: string;
 }
 
 export interface RoutinesContextType {
