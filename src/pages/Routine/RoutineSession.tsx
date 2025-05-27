@@ -184,6 +184,7 @@ const RoutineSession = () => {
 		<>
 			<Container
 				size="sm"
+				p="xs"
 				py="md"
 				pos="relative"
 			>
@@ -196,7 +197,10 @@ const RoutineSession = () => {
 				)}
 
 				<Stack gap="md">
-					<Stack gap="xs">
+					<Stack
+						gap="xs"
+						py="md"
+					>
 						<TextInput
 							size="lg"
 							variant="unstyled"

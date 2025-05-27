@@ -78,14 +78,6 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 				dataToBeAdded
 			);
 
-			// setRoutines((prevRoutines) => [
-			// 	...prevRoutines,
-			// 	{
-			// 		...dataToBeAdded,
-			// 		id: routineRef.id,
-			// 		createdAt: dateOfCreation,
-			// 	},
-			// ]);
 			setRoutines([{ id: routineRef.id, ...dataToBeAdded }, ...routines]);
 			console.log("Routine created with ID: ", routineRef.id);
 			return routineRef.id;
@@ -100,6 +92,7 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 			setRoutines((prevRoutines) =>
 				prevRoutines.filter((routine) => routine.id !== id)
 			);
+			console.log("Routine deleted with ID: ", id);
 		} catch (error) {
 			throw new Error("Error deleting routine");
 		}

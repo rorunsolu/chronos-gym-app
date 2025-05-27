@@ -28,6 +28,7 @@ export type WorkoutData = {
 	id: string;
 	name: string;
 	dateOfWorkout: Timestamp;
+	totalElapsedTimeSec: number; // in seconds
 	exercises: ExerciseData[];
 	notes?: string;
 };
@@ -35,7 +36,11 @@ export type WorkoutData = {
 export type WorkoutContextType = {
 	workouts: WorkoutData[];
 	fetchWorkouts: () => Promise<void>;
-	createWorkout: (name: string, exercises: ExerciseData[]) => Promise<string>;
+	createWorkout: (
+		name: string,
+		exercises: ExerciseData[],
+		totalElapsedTimeSec: number
+	) => Promise<string>;
 	deleteWorkout: (id: string) => Promise<void>;
 };
 
@@ -52,6 +57,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 			name: doc.data().name,
 			dateOfWorkout: doc.data().dateOfWorkout,
 			exercises: doc.data().exercises,
+			totalElapsedTimeSec: doc.data().totalElapsedTimeSec,
 		}));
 		setWorkouts(
 			workoutList.sort(
@@ -62,7 +68,8 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 
 	const createWorkout = async (
 		name: string,
-		exercises: ExerciseData[]
+		exercises: ExerciseData[],
+		totalElapsedTimeSec: number
 	): Promise<string> => {
 		const dateOfCreation = Timestamp.fromDate(new Date());
 
@@ -72,6 +79,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 				name,
 				exercises,
 				dateOfWorkout: dateOfCreation,
+				totalElapsedTimeSec, // This can be calculated later based on the exercises
 			};
 
 			// create a reference for the workout thats being created
@@ -101,6 +109,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 			setWorkouts((prevWorkouts) =>
 				prevWorkouts.filter((workout) => workout.id !== id)
 			);
+			console.log("Workout deleted:", id);
 		} catch (error) {
 			throw new Error("Error deleting workout");
 		}

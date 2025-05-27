@@ -58,6 +58,7 @@ const ExerciseCreate = () => {
 	return (
 		<Container
 			size="sm"
+			p="xs"
 			py="md"
 		>
 			<Stack gap="md">

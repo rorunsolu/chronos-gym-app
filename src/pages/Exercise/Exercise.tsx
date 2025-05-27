@@ -45,6 +45,7 @@ const Exercise = () => {
 	return (
 		<Container
 			size="sm"
+			p="xs"
 			py="md"
 		>
 			<Stack gap="sm">
