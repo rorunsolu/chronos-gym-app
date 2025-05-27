@@ -15,9 +15,9 @@ import {
 } from "@mantine/core";
 import {
 	Dumbbell,
-	TrendingUpDown,
+	//TrendingUpDown,
 	ChevronDown,
-	Calendar,
+	//Calendar,
 	Ruler,
 } from "lucide-react";
 import {
@@ -55,7 +55,8 @@ const Profile = () => {
 	return (
 		<Container
 			size="xs"
-			py="xl"
+			p="xs"
+			py="md"
 		>
 			<Stack gap="lg">
 				<Group justify="apart">
@@ -155,16 +156,16 @@ const Profile = () => {
 					Dashboard
 				</Title>
 				<SimpleGrid
-					cols={2}
-					spacing="sm"
+					spacing="md"
+					cols={{ base: 1, sm: 2, lg: 2 }}
 				>
-					<Button
+					{/* <Button
 						leftSection={<TrendingUpDown size={18} />}
 						variant="default"
 						fullWidth
 					>
 						Statistics
-					</Button>
+					</Button> */}
 					<Button
 						leftSection={<Dumbbell size={18} />}
 						variant="default"
@@ -177,16 +178,17 @@ const Profile = () => {
 						leftSection={<Ruler size={18} />}
 						variant="default"
 						fullWidth
+						onClick={() => navigate("/measurements")}
 					>
-						Measures
+						Measurements
 					</Button>
-					<Button
+					{/* <Button
 						leftSection={<Calendar size={18} />}
 						variant="default"
 						fullWidth
 					>
 						Calendar
-					</Button>
+					</Button> */}
 				</SimpleGrid>
 			</Stack>
 		</Container>

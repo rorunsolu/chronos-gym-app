@@ -37,7 +37,8 @@ const Explore = () => {
 	return (
 		<Container
 			size="xs"
-			py="xs"
+			p="xs"
+			py="md"
 		>
 			<Stack gap="md">
 				<Title order={3}>Programs</Title>
@@ -61,7 +62,7 @@ const Explore = () => {
 					<Card
 						key={idx}
 						radius="md"
-						shadow="xs"
+						shadow="md"
 						withBorder
 					>
 						<Group>
@@ -99,14 +100,14 @@ const Explore = () => {
 					Routines
 				</Title>
 				<SimpleGrid
-					cols={2}
 					spacing="md"
+					cols={{ base: 1, sm: 2, lg: 2 }}
 				>
 					{routineCategories.map((item, index) => (
 						<Card
 							key={index}
 							radius="md"
-							shadow="xs"
+							shadow="md"
 							withBorder
 						>
 							<Stack

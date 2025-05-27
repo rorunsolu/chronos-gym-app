@@ -1,8 +1,8 @@
 import { UserAuth } from "@/auth/AuthContext";
 import GoogleLogo from "@/components/Branding/GoogleLogo";
+import { Anchor, Button, Container, Stack, Text, Title } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Anchor, Button, Container, Stack, Text, Title } from "@mantine/core";
 
 const Register = () => {
 	const navigate = useNavigate();
@@ -28,7 +28,8 @@ const Register = () => {
 	return (
 		<Container
 			size="xs"
-			py="xl"
+			p="xs"
+			py="md"
 		>
 			<Stack
 				gap="lg"

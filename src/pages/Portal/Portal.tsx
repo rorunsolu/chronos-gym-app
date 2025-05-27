@@ -37,7 +37,7 @@ const Portal = () => {
 
 	useEffect(() => {
 		if (user != null && !user.isAnonymous) {
-			navigate("/workout");
+			navigate("/home");
 		}
 	}, [user, navigate]);
 
@@ -50,7 +50,8 @@ const Portal = () => {
 	return (
 		<Container
 			size="xs"
-			py="xl"
+			p="xs"
+			py="md"
 		>
 			<Stack
 				gap="xl"
