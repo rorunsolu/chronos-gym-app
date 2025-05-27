@@ -7,34 +7,42 @@ import ExerciseCreate from "@/pages/Exercise/ExerciseCreate";
 import Explore from "@/pages/Explore/Explore";
 import Homepage from "@/pages/Homepage/Homepage";
 import Login from "@/pages/Login/Login";
+import MeasurementsPage from "@/pages/Measurements/MeasurementsPage";
 import Portal from "@/pages/Portal/Portal";
 import Profile from "@/pages/Profile/Profile";
 import Register from "@/pages/Register/Register";
 import RegisterForm from "@/pages/Register/RegisterForm";
-import Routine from "@/pages/Routine/Routine";
+import RoutineNew from "@/pages/Routine/RoutineNew";
+import RoutinePage from "@/pages/Routine/RoutinePage";
 import RoutineSession from "@/pages/Routine/RoutineSession";
-import Workout from "@/pages/Workout/Workout";
-import WorkoutInProgress from "@/pages/Workout/WorkoutInProgress";
+import WorkoutNew from "@/pages/Workout/WorkoutNew";
+import WorkoutPage from "@/pages/Workout/WorkoutPage";
 import "@mantine/core/styles.css";
 import "@mantine/core/styles.layer.css";
 import { useDisclosure } from "@mantine/hooks";
 import { Link, Route, Routes } from "react-router-dom";
 import {
+	ChevronsUpDown,
 	Dumbbell,
 	Home,
 	LogOut,
-	//Settings,
+	NotebookText,
+	Settings,
 	User,
 } from "lucide-react";
 import {
+	ActionIcon,
 	AppShell,
 	Burger,
-	Button,
 	createTheme,
 	Group,
 	MantineProvider,
 	NavLink,
 	Stack,
+	Menu,
+	Card,
+	Avatar,
+	Text,
 } from "@mantine/core";
 
 const theme = createTheme({
@@ -71,7 +79,7 @@ function App() {
 								}
 							: undefined
 					}
-					padding="md"
+					padding="0"
 				>
 					<AppShell.Header bg="dark.9">
 						<Group
@@ -91,6 +99,7 @@ function App() {
 					{user && (
 						<AppShell.Navbar
 							p="xs"
+							py="md"
 							bg="dark.9"
 						>
 							<Stack
@@ -112,20 +121,79 @@ function App() {
 										/>
 									))}
 								</Stack>
-
-								{user && (
-									<Stack>
-										<Button
-											variant="filled"
-											color="teal"
-											onClick={handleSignOut}
-											leftSection={<LogOut size={18} />}
-										>
-											Sign Out
-										</Button>
-									</Stack>
-								)}
 							</Stack>
+							<Menu
+								shadow="md"
+								width={200}
+							>
+								<Card
+									withBorder
+									bg="dark.9"
+									radius="md"
+									p="xs"
+									shadow="md"
+								>
+									<Group justify="space-between">
+										<Group>
+											<Avatar
+												size="md"
+												radius="xl"
+												src={user?.photoURL}
+												alt="User Avatar"
+											/>
+											<Stack gap="0">
+												{user?.displayName && (
+													<Text
+														size="xs"
+														fw={500}
+													>
+														{user.displayName}
+													</Text>
+												)}
+
+												{user.email && (
+													<Text
+														size="xs"
+														truncate="end"
+														className="max-w-32"
+														fw={500}
+													>
+														{user.email}
+													</Text>
+												)}
+											</Stack>
+										</Group>
+
+										<Menu.Target>
+											<ActionIcon
+												m="0"
+												color="white"
+												variant="outline"
+												aria-label="User Menu"
+												style={{
+													border:
+														"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color)",
+												}}
+											>
+												<ChevronsUpDown size={18} />
+											</ActionIcon>
+										</Menu.Target>
+									</Group>
+								</Card>
+
+								<Menu.Dropdown>
+									<Menu.Item leftSection={<Settings size={18} />}>
+										Settings
+									</Menu.Item>
+
+									<Menu.Item
+										leftSection={<LogOut size={18} />}
+										onClick={handleSignOut}
+									>
+										Log out
+									</Menu.Item>
+								</Menu.Dropdown>
+							</Menu>
 						</AppShell.Navbar>
 					)}
 
@@ -159,7 +227,7 @@ function App() {
 								path="/workouts"
 								element={
 									<Protected>
-										<Workout />
+										<WorkoutPage />
 									</Protected>
 								}
 							/>
@@ -189,15 +257,15 @@ function App() {
 							/>
 
 							<Route
-								path="/workout-in-progress"
+								path="/new-workout"
 								element={
 									<Protected>
-										<WorkoutInProgress />
+										<WorkoutNew />
 									</Protected>
 								}
 							/>
 							<Route
-								path="/exercise"
+								path="/exercises"
 								element={
 									<Protected>
 										<Exercise />
@@ -205,7 +273,7 @@ function App() {
 								}
 							/>
 							<Route
-								path="/exercise-create"
+								path="/new-exercise"
 								element={
 									<Protected>
 										<ExerciseCreate />
@@ -213,10 +281,10 @@ function App() {
 								}
 							/>
 							<Route
-								path="/routines"
+								path="/new-routine"
 								element={
 									<Protected>
-										<Routine />
+										<RoutineNew />
 									</Protected>
 								}
 							/>
@@ -226,6 +294,22 @@ function App() {
 								element={
 									<Protected>
 										<RoutineSession />
+									</Protected>
+								}
+							/>
+							<Route
+								path="/routines"
+								element={
+									<Protected>
+										<RoutinePage />
+									</Protected>
+								}
+							/>
+							<Route
+								path="/measurements"
+								element={
+									<Protected>
+										<MeasurementsPage />
 									</Protected>
 								}
 							/>
@@ -242,7 +326,7 @@ export default App;
 const navbarLinks = [
 	{ name: "Home", icon: <Home /> },
 	{ name: "Workouts", icon: <Dumbbell /> },
-	// { name: "Routines", icon: <Dumbbell /> },
+	{ name: "Routines", icon: <NotebookText /> },
 	// { name: "Exercises", icon: <Dumbbell /> },
 	{ name: "Profile", icon: <User /> },
 	// { name: "Settings", icon: <Settings /> },

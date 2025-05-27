@@ -1,3 +1,4 @@
+import { MeasurementProvider } from "./contexts/MeasurementContext";
 import App from "@/App";
 import { AuthContextProvider } from "@/auth/AuthContext";
 import { AccountProvider } from "@/contexts/AccountContext";
@@ -20,7 +21,9 @@ if (!rootElement.innerHTML) {
 						<WorkoutProvider>
 							<ExerciseProvider>
 								<RoutineProvider>
-									<App />
+									<MeasurementProvider>
+										<App />
+									</MeasurementProvider>
 								</RoutineProvider>
 							</ExerciseProvider>
 						</WorkoutProvider>
