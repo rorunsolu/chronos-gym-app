@@ -1,8 +1,4 @@
-import {
-	auth,
-	//db
-} from "@/auth/Firebase";
-// import { doc, getDoc } from "firebase/firestore";
+import { auth } from "@/auth/Firebase";
 import {
 	createContext,
 	useContext,
@@ -26,7 +22,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
 	children,
 }) => {
 	const [user, setUser] = useState<User | null>(null);
-	//const [isRegistered, setIsRegistered] = useState(false);
+
 	const [isGuest, setIsGuest] = useState(false);
 	const [loading, setLoading] = useState(true);
 
@@ -90,7 +86,6 @@ interface AuthContextType {
 	googleSignIn: () => Promise<UserCredential>;
 	signInAsGuest: () => Promise<UserCredential>;
 	logOut: () => void;
-	//isRegistered: boolean;
 	user: User | null;
 	isGuest: boolean;
 }
