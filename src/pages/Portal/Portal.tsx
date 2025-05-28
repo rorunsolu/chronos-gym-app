@@ -1,7 +1,7 @@
 import { UserAuth } from "@/auth/AuthContext";
 import ChronosLogo from "@/components/Branding/ChronosLogo";
 import GoogleLogo from "@/components/Branding/GoogleLogo";
-import "@/pages/Portal/Portal.scss";
+import { useAccountsHook } from "@/hooks/useAccountsHook";
 import { Anchor, Button, Container, Stack, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -11,13 +11,14 @@ const Portal = () => {
 	const [error, setError] = useState("");
 	const { googleSignIn, user } = UserAuth();
 	const icon = <GoogleLogo />;
+	const { isUserRegistered } = useAccountsHook();
 
 	const handleGoogleSignUp = async () => {
 		try {
 			await googleSignIn();
 		} catch (error) {
-			console.error(error);
 			setError("Failed to create an account");
+			throw new Error("Failed to create an account");
 		}
 	};
 
@@ -25,27 +26,22 @@ const Portal = () => {
 		try {
 			await googleSignIn();
 		} catch (error) {
-			console.log(error);
+			setError("Failed to sign in");
+			throw new Error("Failed to sign in");
 		}
 	};
 
 	useEffect(() => {
-		if (user != null) {
-			navigate("/register-form");
-		}
-	}, [user, navigate]);
-
-	useEffect(() => {
-		if (user != null && !user.isAnonymous) {
+		if (user != null && isUserRegistered(user.uid)) {
 			navigate("/home");
 		}
-	}, [user, navigate]);
+	}, [user, isUserRegistered, navigate]);
 
 	useEffect(() => {
-		if (!user) {
-			navigate("/");
+		if (user != null && !isUserRegistered(user.uid)) {
+			navigate("/register-form");
 		}
-	}, [user, navigate]);
+	}, [user, isUserRegistered, navigate]);
 
 	return (
 		<Container
@@ -84,12 +80,6 @@ const Portal = () => {
 						>
 							Sign in with Google
 						</Anchor>
-						{/* <Anchor
-							component={Link}
-							to="/signin"
-						>
-							Sign in with Google
-						</Anchor> */}
 					</Text>
 				</Stack>
 

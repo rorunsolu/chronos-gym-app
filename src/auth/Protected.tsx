@@ -1,4 +1,5 @@
 import { UserAuth } from "@/auth/AuthContext";
+import { useAccountsHook } from "@/hooks/useAccountsHook";
 import { Navigate } from "react-router-dom";
 import { type ReactNode } from "react";
 
@@ -7,11 +8,19 @@ const Protected: React.FC<ProtectedProps> = ({
 	allowGuest = false,
 }) => {
 	const { user } = UserAuth();
+	const { isUserRegistered } = useAccountsHook();
 
-	const hasAccess = user && (allowGuest || !user.isAnonymous);
+	if (!user) {
+		return allowGuest ? children : <Navigate to="/" />;
+	}
 
-	if (!hasAccess) {
-		return <Navigate to="/" />;
+	if (user.isAnonymous) {
+		return allowGuest ? children : <Navigate to="/" />;
+	}
+
+	// Only check registration for non-guest users
+	if (!allowGuest && !isUserRegistered(user.uid)) {
+		return <Navigate to="/register-form" />;
 	}
 
 	return children;

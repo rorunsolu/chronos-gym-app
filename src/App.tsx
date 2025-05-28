@@ -2,15 +2,14 @@ import "@/App.css";
 import { UserAuth } from "@/auth/AuthContext";
 import Protected from "@/auth/Protected";
 import ChronosLogoSmall from "@/components/Branding/ChronosLogoSmall";
+import { useAccountsHook } from "@/hooks/useAccountsHook";
 import Exercise from "@/pages/Exercise/Exercise";
 import ExerciseCreate from "@/pages/Exercise/ExerciseCreate";
 import Explore from "@/pages/Explore/Explore";
 import Homepage from "@/pages/Homepage/Homepage";
-import Login from "@/pages/Login/Login";
 import MeasurementsPage from "@/pages/Measurements/MeasurementsPage";
 import Portal from "@/pages/Portal/Portal";
 import Profile from "@/pages/Profile/Profile";
-import Register from "@/pages/Register/Register";
 import RegisterForm from "@/pages/Register/RegisterForm";
 import RoutineNew from "@/pages/Routine/RoutineNew";
 import RoutinePage from "@/pages/Routine/RoutinePage";
@@ -43,6 +42,7 @@ import {
 	Card,
 	Avatar,
 	Text,
+	// Button,
 } from "@mantine/core";
 
 const theme = createTheme({
@@ -50,8 +50,10 @@ const theme = createTheme({
 });
 
 function App() {
-	const [opened, { toggle }] = useDisclosure();
-	const { user, logOut } = UserAuth();
+	const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+	const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+	const { isUserRegistered } = useAccountsHook();
+	const { user, isGuest, logOut } = UserAuth();
 
 	const handleSignOut = async () => {
 		try {
@@ -60,6 +62,7 @@ function App() {
 			console.log(error);
 		}
 	};
+	// using the Mnatine "disabled" prop woyuld be easier? Perhaps?
 
 	return (
 		<>
@@ -70,33 +73,60 @@ function App() {
 				<AppShell
 					bg="dark.9"
 					header={{ height: 60 }}
+					padding="0"
 					navbar={
 						user
 							? {
 									width: 300,
-									breakpoint: "md",
-									collapsed: { mobile: !opened },
+									breakpoint: "sm",
+									collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
 								}
 							: undefined
 					}
-					padding="0"
 				>
 					<AppShell.Header bg="dark.9">
 						<Group
-							h="100%"
 							px="md"
+							justify="space-between"
+							align="center"
+							h="100%"
 						>
-							<Burger
-								opened={opened}
-								onClick={toggle}
-								hiddenFrom="md"
-								size="md"
-							/>
-							<ChronosLogoSmall />
+							<Group>
+								{user || isGuest ? (
+									<>
+										<Burger
+											opened={desktopOpened}
+											onClick={toggleDesktop}
+											visibleFrom="sm"
+											size="md"
+										/>
+
+										<Burger
+											opened={mobileOpened}
+											onClick={toggleMobile}
+											hiddenFrom="sm"
+											size="md"
+										/>
+									</>
+								) : null}
+								{desktopOpened && <ChronosLogoSmall />}
+							</Group>
+
+							{/* <Group>
+								<Button
+									variant="outline"
+									color="teal"
+									onClick={handleSignOut}
+									hidden={!user || isGuest}
+									leftSection={<LogOut size={18} />}
+								>
+									Log out
+								</Button>
+							</Group> */}
 						</Group>
 					</AppShell.Header>
 
-					{user && (
+					{user || isGuest ? (
 						<AppShell.Navbar
 							p="xs"
 							py="md"
@@ -107,20 +137,22 @@ function App() {
 								justify="space-between"
 								h="100%"
 							>
-								<Stack>
-									{navbarLinks.map(({ name, icon }) => (
-										<NavLink
-											label={name}
-											leftSection={icon}
-											variant="subtle"
-											key={name}
-											component={Link}
-											to={`/${name}`}
-											active
-											color="white"
-										/>
-									))}
-								</Stack>
+								{user && isUserRegistered(user.uid) && (
+									<Stack>
+										{navbarLinks.map(({ name, icon }) => (
+											<NavLink
+												label={name}
+												leftSection={icon}
+												variant="subtle"
+												key={name}
+												component={Link}
+												to={`/${name}`}
+												active
+												color="white"
+											/>
+										))}
+									</Stack>
+								)}
 							</Stack>
 							<Menu
 								shadow="md"
@@ -151,7 +183,7 @@ function App() {
 													</Text>
 												)}
 
-												{user.email && (
+												{user?.email && (
 													<Text
 														size="xs"
 														truncate="end"
@@ -195,7 +227,7 @@ function App() {
 								</Menu.Dropdown>
 							</Menu>
 						</AppShell.Navbar>
-					)}
+					) : null}
 
 					<AppShell.Main>
 						<Routes>
@@ -203,25 +235,10 @@ function App() {
 								path="/"
 								element={<Portal />}
 							/>
-							<Route
-								path="/login"
-								element={
-									<Protected allowGuest>
-										<Login />
-									</Protected>
-								}
-							/>
-							<Route
-								path="/register"
-								element={<Register />}
-							/>
+
 							<Route
 								path="/register-form"
-								element={
-									<Protected allowGuest>
-										<RegisterForm />
-									</Protected>
-								}
+								element={<RegisterForm />}
 							/>
 							<Route
 								path="/workouts"
@@ -288,7 +305,6 @@ function App() {
 									</Protected>
 								}
 							/>
-
 							<Route
 								path="/routines/:id"
 								element={
@@ -327,7 +343,5 @@ const navbarLinks = [
 	{ name: "Home", icon: <Home /> },
 	{ name: "Workouts", icon: <Dumbbell /> },
 	{ name: "Routines", icon: <NotebookText /> },
-	// { name: "Exercises", icon: <Dumbbell /> },
 	{ name: "Profile", icon: <User /> },
-	// { name: "Settings", icon: <Settings /> },
 ];

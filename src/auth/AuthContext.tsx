@@ -1,4 +1,8 @@
-import { auth } from "@/auth/Firebase";
+import {
+	auth,
+	//db
+} from "@/auth/Firebase";
+// import { doc, getDoc } from "firebase/firestore";
 import {
 	createContext,
 	useContext,
@@ -22,6 +26,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
 	children,
 }) => {
 	const [user, setUser] = useState<User | null>(null);
+	//const [isRegistered, setIsRegistered] = useState(false);
 	const [isGuest, setIsGuest] = useState(false);
 	const [loading, setLoading] = useState(true);
 
@@ -45,11 +50,11 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
 	};
 
 	useEffect(() => {
-		const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+		const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
 			setUser(currentUser);
 			setIsGuest(currentUser?.isAnonymous || false);
 			setLoading(false);
-			console.log("Current user?", currentUser);
+			console.log("The current user is:", currentUser);
 		});
 
 		return () => {
@@ -85,6 +90,7 @@ interface AuthContextType {
 	googleSignIn: () => Promise<UserCredential>;
 	signInAsGuest: () => Promise<UserCredential>;
 	logOut: () => void;
+	//isRegistered: boolean;
 	user: User | null;
 	isGuest: boolean;
 }

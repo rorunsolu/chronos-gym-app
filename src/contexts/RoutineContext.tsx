@@ -40,7 +40,6 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 
 	const fetchRoutines = async () => {
 		const routinesQuery = query(collection(db, "routines"));
-
 		const snapshotOfRoutines = await getDocs(routinesQuery);
 
 		// create the local list of routines based on the data from Firebase
