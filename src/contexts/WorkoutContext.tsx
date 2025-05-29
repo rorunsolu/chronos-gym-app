@@ -1,4 +1,4 @@
-import { db } from "@/auth/Firebase";
+import { auth, db } from "@/auth/Firebase";
 import { WorkoutContext } from "@/hooks/useWorkoutHook";
 import {
 	addDoc,
@@ -8,6 +8,7 @@ import {
 	Timestamp,
 	query,
 	getDocs,
+	where,
 } from "firebase/firestore";
 import { useState, type ReactNode } from "react";
 import { type ExerciseData } from "@/contexts/RoutineContext";
@@ -31,6 +32,7 @@ export type WorkoutData = {
 	totalElapsedTimeSec: number; // in seconds
 	exercises: ExerciseData[];
 	notes?: string;
+	userId: string;
 };
 
 export type WorkoutContextType = {
@@ -50,14 +52,22 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 	const [workouts, setWorkouts] = useState<WorkoutData[]>([]);
 
 	const fetchWorkouts = async () => {
-		const workoutsQuery = query(collection(db, "workouts"));
+		// const workoutsQuery = query(collection(db, "workouts"));
+		// const snapshotOfWorkouts = await getDocs(workoutsQuery);
+
+		const workoutsQuery = query(
+			collection(db, "workouts"),
+			where("userId", "==", auth.currentUser?.uid)
+		);
 		const snapshotOfWorkouts = await getDocs(workoutsQuery);
+
 		const workoutList = snapshotOfWorkouts.docs.map((doc) => ({
 			id: doc.id,
 			name: doc.data().name,
 			dateOfWorkout: doc.data().dateOfWorkout,
 			exercises: doc.data().exercises,
 			totalElapsedTimeSec: doc.data().totalElapsedTimeSec,
+			userId: doc.data().userId,
 		}));
 		setWorkouts(
 			workoutList.sort(
@@ -73,6 +83,12 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 	): Promise<string> => {
 		const dateOfCreation = Timestamp.fromDate(new Date());
 
+		const user = auth.currentUser;
+
+		if (!user) {
+			throw new Error("User is not authenticated");
+		}
+
 		try {
 			// condense the data into an object (optional ofc)
 			const dataToBeUsed = {
@@ -80,6 +96,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 				exercises,
 				dateOfWorkout: dateOfCreation,
 				totalElapsedTimeSec, // This can be calculated later based on the exercises
+				userId: user.uid,
 			};
 
 			// create a reference for the workout thats being created

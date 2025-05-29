@@ -1,4 +1,4 @@
-import { db } from "@/auth/Firebase";
+import { auth, db } from "@/auth/Firebase";
 import { RoutinesContext } from "@/hooks/useRoutinesHook";
 import {
 	addDoc,
@@ -8,6 +8,7 @@ import {
 	query,
 	getDocs,
 	Timestamp,
+	where,
 } from "firebase/firestore";
 import { useState, type ReactNode } from "react";
 
@@ -25,6 +26,7 @@ export interface RoutineData {
 	name: string;
 	createdAt: Timestamp;
 	exercises: ExerciseData[];
+	userId: string;
 	description?: string;
 }
 
@@ -39,7 +41,14 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 	const [routines, setRoutines] = useState<RoutineData[]>([]);
 
 	const fetchRoutines = async () => {
-		const routinesQuery = query(collection(db, "routines"));
+		// const routinesQuery = query(collection(db, "routines"));
+		// const snapshotOfRoutines = await getDocs(routinesQuery);
+
+		const routineCollection = collection(db, "routines");
+		const routinesQuery = query(
+			routineCollection,
+			where("userId", "==", auth.currentUser?.uid)
+		);
 		const snapshotOfRoutines = await getDocs(routinesQuery);
 
 		// create the local list of routines based on the data from Firebase
@@ -50,6 +59,7 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 			name: doc.data().name,
 			createdAt: doc.data().createdAt,
 			exercises: doc.data().exercises,
+			userId: doc.data().userId,
 		}));
 
 		setRoutines(
@@ -65,11 +75,18 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 	): Promise<string> => {
 		const dateOfCreation = Timestamp.fromDate(new Date());
 
+		const user = auth.currentUser;
+
+		if (!user) {
+			throw new Error("User is not authenticated");
+		}
+
 		try {
 			const dataToBeAdded = {
 				name,
 				exercises,
 				createdAt: dateOfCreation,
+				userId: user.uid,
 			};
 
 			const routineRef = await addDoc(

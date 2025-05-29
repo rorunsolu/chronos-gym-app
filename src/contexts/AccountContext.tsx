@@ -7,6 +7,7 @@ import {
 	getDocs,
 	query,
 	Timestamp,
+	where,
 	addDoc,
 } from "firebase/firestore";
 import { useState, type ReactNode, useEffect } from "react";
@@ -54,7 +55,13 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 	const fetchAccounts = async () => {
 		setLoading(true);
 		try {
-			const accountsQuery = query(collection(db, "accounts"));
+			// const accountsQuery = query(collection(db, "accounts"));
+			// const snapshotOfAccounts = await getDocs(accountsQuery);
+
+			const accountsQuery = query(
+				collection(db, "accounts"),
+				where("userId", "==", auth.currentUser?.uid)
+			);
 			const snapshotOfAccounts = await getDocs(accountsQuery);
 
 			const accountList = snapshotOfAccounts.docs.map((doc) => ({

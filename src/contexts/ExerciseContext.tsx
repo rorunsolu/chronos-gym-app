@@ -2,12 +2,6 @@ import { db } from "@/auth/Firebase";
 import { ExerciseContext } from "@/hooks/useExercisesHook";
 import { addDoc, collection, getDocs, query } from "firebase/firestore";
 import { useState, type ReactNode } from "react";
-// Name
-// Muscle group
-// Secondary muscle group
-// How to do it
-
-// I will use this to create global default exercises that all users can use in their workouts but it will only be allowed to be edited by me. users cannot edit these exercises
 
 export type MuscleGroupData =
 	| "Chest"
