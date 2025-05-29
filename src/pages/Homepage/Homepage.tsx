@@ -56,7 +56,7 @@ const Home = () => {
 								withBorder
 								radius="md"
 								shadow="md"
-								bg="dark.9"
+								bg="dark.8"
 								onClick={() => {
 									navigate(`/workout/${workout.id}`, {
 										state: { workout },

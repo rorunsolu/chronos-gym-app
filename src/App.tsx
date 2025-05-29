@@ -11,6 +11,7 @@ import MeasurementsPage from "@/pages/Measurements/MeasurementsPage";
 import Portal from "@/pages/Portal/Portal";
 import Profile from "@/pages/Profile/Profile";
 import RegisterForm from "@/pages/Register/RegisterForm";
+import RoutineAbout from "@/pages/Routine/RoutineAbout";
 import RoutineNew from "@/pages/Routine/RoutineNew";
 import RoutinePage from "@/pages/Routine/RoutinePage";
 import RoutineSession from "@/pages/Routine/RoutineSession";
@@ -39,7 +40,7 @@ import {
 	NavLink,
 	Stack,
 	Menu,
-	Card,
+	Paper,
 	Avatar,
 	Text,
 	// Button,
@@ -71,7 +72,7 @@ function App() {
 				defaultColorScheme="dark"
 			>
 				<AppShell
-					bg="dark.9"
+					bg="dark.8"
 					header={{ height: 60 }}
 					padding="0"
 					navbar={
@@ -84,7 +85,7 @@ function App() {
 							: undefined
 					}
 				>
-					<AppShell.Header bg="dark.9">
+					<AppShell.Header bg="dark.8">
 						<Group
 							px="md"
 							justify="space-between"
@@ -111,34 +112,21 @@ function App() {
 								) : null}
 								{desktopOpened && <ChronosLogoSmall />}
 							</Group>
-
-							{/* <Group>
-								<Button
-									variant="outline"
-									color="teal"
-									onClick={handleSignOut}
-									hidden={!user || isGuest}
-									leftSection={<LogOut size={18} />}
-								>
-									Log out
-								</Button>
-							</Group> */}
 						</Group>
 					</AppShell.Header>
 
 					{user || isGuest ? (
 						<AppShell.Navbar
-							p="xs"
-							py="md"
-							bg="dark.9"
+							//pt="lg"
+							bg="dark.8"
 						>
 							<Stack
 								align="stretch"
-								justify="space-between"
+								gap={0}
 								h="100%"
 							>
 								{user && isUserRegistered(user.uid) && (
-									<Stack>
+									<>
 										{navbarLinks.map(({ name, icon }) => (
 											<NavLink
 												label={name}
@@ -149,21 +137,26 @@ function App() {
 												to={`/${name}`}
 												active
 												color="white"
+												p="md"
+												className=""
 											/>
 										))}
-									</Stack>
+									</>
 								)}
 							</Stack>
 							<Menu
 								shadow="md"
 								width={200}
 							>
-								<Card
-									withBorder
-									bg="dark.9"
-									radius="md"
-									p="xs"
-									shadow="md"
+								<Paper
+									bg="dark.8"
+									radius={0}
+									p="md"
+									style={{
+										width: "100%",
+										borderTop:
+											"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color)",
+									}}
 								>
 									<Group justify="space-between">
 										<Group>
@@ -211,7 +204,7 @@ function App() {
 											</ActionIcon>
 										</Menu.Target>
 									</Group>
-								</Card>
+								</Paper>
 
 								<Menu.Dropdown>
 									<Menu.Item leftSection={<Settings size={18} />}>
@@ -318,6 +311,14 @@ function App() {
 								element={
 									<Protected>
 										<RoutinePage />
+									</Protected>
+								}
+							/>
+							<Route
+								path="/routine-about/:id"
+								element={
+									<Protected>
+										<RoutineAbout />
 									</Protected>
 								}
 							/>

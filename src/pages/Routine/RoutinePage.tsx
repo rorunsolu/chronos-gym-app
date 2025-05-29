@@ -49,7 +49,7 @@ const RoutinePage = () => {
 							variant="filled"
 							leftSection={<Plus size={20} />}
 							onClick={() => {
-								navigate("/routines");
+								navigate("/new-routine");
 							}}
 							style={{ boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
 						>
@@ -78,7 +78,7 @@ const RoutinePage = () => {
 						<Card
 							radius="md"
 							shadow="md"
-							bg="dark.9"
+							bg="dark.8"
 							withBorder
 							style={{
 								display: "flex",
@@ -102,8 +102,11 @@ const RoutinePage = () => {
 								shadow="md"
 								padding="sm"
 								radius="md"
-								bg="dark.9"
+								bg="dark.8"
 								withBorder
+								onClick={() => {
+									navigate(`/routine-about/${routine.id}`);
+								}}
 							>
 								<Stack
 									justify="space-between"

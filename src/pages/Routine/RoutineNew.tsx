@@ -1,10 +1,13 @@
 import { equipment, exerciseData, primaryMuscleGroups } from "@/assets/index";
-import { useExercisesHook } from "@/hooks/useExercisesHook";
 import { useRoutinesHook } from "@/hooks/useRoutinesHook";
 import { useDisclosure } from "@mantine/hooks";
 import { CheckCircle, Plus, Search } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+//import { useExercisesHook } from "@/hooks/useExercisesHook";
+import {
+	//useEffect,
+	useState,
+} from "react";
 import {
 	Container,
 	Group,
@@ -37,7 +40,7 @@ const Routine = () => {
 		}[]
 	>([]);
 
-	const { fetchExercises } = useExercisesHook();
+	//const { fetchExercises } = useExercisesHook();
 	const { createRoutine } = useRoutinesHook();
 
 	// Part of the logic for the add exercise modal
@@ -122,9 +125,9 @@ const Routine = () => {
 		setName("");
 	};
 
-	useEffect(() => {
-		fetchExercises();
-	}, []);
+	// useEffect(() => {
+	// 	fetchExercises();
+	// }, []);
 
 	return (
 		<>
