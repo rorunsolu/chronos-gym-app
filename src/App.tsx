@@ -29,6 +29,8 @@ import {
 	NotebookText,
 	Settings,
 	User,
+	BicepsFlexed,
+	Ruler,
 } from "lucide-react";
 import {
 	ActionIcon,
@@ -345,4 +347,6 @@ const navbarLinks = [
 	{ name: "Workouts", icon: <Dumbbell /> },
 	{ name: "Routines", icon: <NotebookText /> },
 	{ name: "Profile", icon: <User /> },
+	{ name: "Measurements", icon: <Ruler /> }, // Add Measurements link
+	{ name: "Exercises", icon: <BicepsFlexed /> }, // Add Exercises link
 ];
