@@ -8,57 +8,17 @@ import {
 	Button,
 } from "@mantine/core";
 
-const muscleGroups = [
-	"Chest",
-	"Back",
-	"Shoulders",
-	"Biceps",
-	"Triceps",
-	"Forearms",
-	"Neck",
-	"Abdominals",
-	"Obliques",
-	"Lower Back",
-	"Glutes",
-	"Quadriceps",
-	"Hamstrings",
-	"Calves",
-	"Hip Flexors",
-	"Adductors",
-	"Lats",
-];
-
-const equipmentTypes = [
-	"Barbell",
-	"Dumbbell",
-	"Kettlebell",
-	"Machine",
-	"Cable",
-	"Resistance Band",
-	"Bodyweight",
-	"Smith Machine",
-	"EZ Bar",
-	"Trap Bar",
-	"Bench",
-	"Pull-up Bar",
-	"Dip Bar",
-	"Medicine Ball",
-	"Stability Ball",
-	"Foam Roller",
-	"Bosu Ball",
-	"Treadmill",
-	"Elliptical",
-	"Stationary Bike",
-	"Rowing Machine",
-	"Sled",
-	"Battle Ropes",
-];
+import {
+	primaryMuscleGroups,
+	secondaryMuscleGroups,
+	equipment,
+} from "@/assets/index";
 
 const ExerciseCreate = () => {
 	return (
 		<Container
 			size="sm"
-			p="xs"
+			p="md"
 			py="md"
 		>
 			<Stack gap="md">
@@ -71,9 +31,9 @@ const ExerciseCreate = () => {
 				/>
 
 				<Select
-					label="Primary Muscle Group"
+					label="Muscle Group"
 					placeholder="Select a primary muscle"
-					data={muscleGroups}
+					data={primaryMuscleGroups}
 					required
 					clearable
 					searchable
@@ -82,22 +42,22 @@ const ExerciseCreate = () => {
 				<Select
 					label="Secondary Muscle Group"
 					placeholder="Select a secondary muscle"
-					data={muscleGroups}
+					data={secondaryMuscleGroups}
 					clearable
 					searchable
 				/>
 
 				<Select
 					label="Equipment Type"
-					placeholder="Select equipment used"
-					data={equipmentTypes}
+					placeholder="Select equipment"
+					data={equipment}
 					required
 					clearable
 					searchable
 				/>
 
 				<Textarea
-					label="How To"
+					label="Instructions"
 					placeholder="Describe how to perform the exercise..."
 					autosize
 					minRows={4}

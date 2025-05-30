@@ -1,4 +1,8 @@
-import { equipment, exerciseData, primaryMuscleGroups } from "@/assets/index";
+import {
+	equipment,
+	localExerciseInfo,
+	primaryMuscleGroups,
+} from "@/assets/index";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import {
@@ -21,7 +25,7 @@ const Exercise = () => {
 		null
 	);
 
-	const filtered = exerciseData.filter((exercise) => {
+	const filtered = localExerciseInfo.filter((exercise) => {
 		const matchesSearch = exercise.name
 			.toLowerCase()
 			.includes(search.toLowerCase());
@@ -45,7 +49,7 @@ const Exercise = () => {
 	return (
 		<Container
 			size="sm"
-			p="xs"
+			p="sm"
 			py="md"
 		>
 			<Stack gap="sm">

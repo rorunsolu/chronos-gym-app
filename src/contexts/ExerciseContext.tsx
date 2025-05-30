@@ -3,56 +3,12 @@ import { ExerciseContext } from "@/hooks/useExercisesHook";
 import { addDoc, collection, getDocs, query } from "firebase/firestore";
 import { useState, type ReactNode } from "react";
 
-export type MuscleGroupData =
-	| "Chest"
-	| "Back"
-	| "Shoulders"
-	| "Biceps"
-	| "Triceps"
-	| "Forearms"
-	| "Neck"
-	| "Abdominals"
-	| "Obliques"
-	| "Lower Back"
-	| "Glutes"
-	| "Quadriceps"
-	| "Hamstrings"
-	| "Calves"
-	| "Hip Flexors"
-	| "Adductors"
-	| "Lats";
-
-export type EquipmentType =
-	| "Barbell"
-	| "Dumbbell"
-	| "Kettlebell"
-	| "Machine"
-	| "Cable"
-	| "Resistance Band"
-	| "Bodyweight"
-	| "Smith Machine"
-	| "EZ Bar"
-	| "Trap Bar"
-	| "Bench"
-	| "Pull-up Bar"
-	| "Dip Bar"
-	| "Medicine Ball"
-	| "Stability Ball"
-	| "Foam Roller"
-	| "Bosu Ball"
-	| "Treadmill"
-	| "Elliptical"
-	| "Stationary Bike"
-	| "Rowing Machine"
-	| "Sled"
-	| "Battle Ropes";
-
 export interface ExerciseData {
 	name: string;
-	muscleGroup: MuscleGroupData;
-	secondaryMuscleGroup: MuscleGroupData;
-	equipment: EquipmentType;
-	howTo: string;
+	muscleGroup: string;
+	secondaryMuscleGroup: string;
+	equipment: string;
+	instructions: string[];
 }
 
 export interface ExerciseContextType {
@@ -60,10 +16,10 @@ export interface ExerciseContextType {
 	fetchExercises: () => Promise<void>;
 	createExercise: (
 		name: string,
-		muscleGroup: MuscleGroupData,
-		secondaryMuscleGroup: MuscleGroupData,
-		equipment: EquipmentType,
-		howTo: string
+		muscleGroup: string,
+		secondaryMuscleGroup: string,
+		equipment: string,
+		instructions: string[]
 	) => Promise<string>;
 	// The promise type can't be a void otherwise the function won't be able to access any of the needed data
 }
@@ -85,7 +41,7 @@ export const ExerciseProvider = ({ children }: { children: ReactNode }) => {
 			muscleGroup: doc.data().muscleGroup,
 			secondaryMuscleGroup: doc.data().secondaryMuscleGroup,
 			equipment: doc.data().equipment,
-			howTo: doc.data().howTo,
+			instructions: doc.data().instructions,
 		}));
 
 		setExercises(exerciseList.sort((a, b) => b.name.localeCompare(a.name)));
@@ -93,18 +49,18 @@ export const ExerciseProvider = ({ children }: { children: ReactNode }) => {
 
 	const createExercise = async (
 		name: string,
-		muscleGroup: MuscleGroupData,
-		secondaryMuscleGroup: MuscleGroupData,
-		equipment: EquipmentType,
-		howTo: string
+		muscleGroup: string,
+		secondaryMuscleGroup: string,
+		equipment: string,
+		instructions: string[]
 	) => {
 		try {
 			const data = {
 				name,
-				muscleGroup: muscleGroup as MuscleGroupData,
-				secondaryMuscleGroup: secondaryMuscleGroup as MuscleGroupData,
-				equipment: equipment as EquipmentType,
-				howTo,
+				muscleGroup,
+				secondaryMuscleGroup,
+				equipment,
+				instructions,
 			};
 
 			// refers to the new exercise that is being created
