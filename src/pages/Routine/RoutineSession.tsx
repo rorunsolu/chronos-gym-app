@@ -1,4 +1,8 @@
-import { equipment, exerciseData, primaryMuscleGroups } from "@/assets/index";
+import {
+	equipment,
+	localExerciseInfo,
+	primaryMuscleGroups,
+} from "@/assets/index";
 import { db } from "@/auth/Firebase";
 import { useDisclosure } from "@mantine/hooks";
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -36,7 +40,7 @@ const RoutineSession = () => {
 
 	const navigate = useNavigate();
 
-	const modalExercises = exerciseData.filter((modalExercise) => {
+	const modalExercises = localExerciseInfo.filter((modalExercise) => {
 		const matchesSearch = modalExercise.name
 			.toLowerCase()
 			.includes(search.toLowerCase());
@@ -184,7 +188,7 @@ const RoutineSession = () => {
 		<>
 			<Container
 				size="sm"
-				p="xs"
+				p="md"
 				py="md"
 				pos="relative"
 			>

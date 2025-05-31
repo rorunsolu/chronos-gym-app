@@ -55,7 +55,7 @@ const Profile = () => {
 	return (
 		<Container
 			size="xs"
-			p="xs"
+			p="md"
 			py="md"
 		>
 			<Stack gap="lg">

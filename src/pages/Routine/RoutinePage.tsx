@@ -30,7 +30,7 @@ const RoutinePage = () => {
 	return (
 		<Container
 			size="md"
-			p="xs"
+			p="md"
 			py="md"
 		>
 			<Stack gap="xl">

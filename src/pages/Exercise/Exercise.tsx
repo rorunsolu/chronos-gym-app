@@ -1,21 +1,20 @@
+import { Search } from "lucide-react";
+import { useState } from "react";
 import {
 	equipment,
 	localExerciseInfo,
 	primaryMuscleGroups,
 } from "@/assets/index";
-import { Search } from "lucide-react";
-import { useState } from "react";
 import {
 	Container,
 	Input,
-	//Button,
 	Stack,
-	Card,
 	Group,
-	Text,
-	//Image,
 	Select,
-	Divider,
+	Paper,
+	List,
+	Pill,
+	Title,
 } from "@mantine/core";
 
 const Exercise = () => {
@@ -53,20 +52,21 @@ const Exercise = () => {
 			py="md"
 		>
 			<Stack gap="sm">
-				<Input
-					leftSection={<Search size={16} />}
-					placeholder="Search exercise"
-					value={search}
-					onChange={(e) => setSearch(e.target.value)}
-				/>
+				<Group>
+					<Input
+						w="100%"
+						leftSection={<Search size={16} />}
+						placeholder="Search exercise"
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+					/>
+				</Group>
 
 				<Group grow>
 					<Select
-						//placeholder="Pick value"
-						defaultValue="All Equipment"
+						placeholder="All Equipment"
 						data={equipment}
 						clearable
-						searchable
 						nothingFoundMessage="Nothing found..."
 						checkIconPosition="right"
 						comboboxProps={{
@@ -75,11 +75,9 @@ const Exercise = () => {
 						onChange={setSelectedEquipment}
 					/>
 					<Select
-						//placeholder="Pick value"
-						defaultValue="All Muscles"
+						placeholder="All Muscles"
 						data={primaryMuscleGroups}
 						clearable
-						searchable
 						nothingFoundMessage="Nothing found..."
 						checkIconPosition="right"
 						comboboxProps={{
@@ -89,28 +87,52 @@ const Exercise = () => {
 					/>
 				</Group>
 
-				<Divider />
-
 				<Stack>
 					{filtered.map((exercise, index) => (
-						<Card
+						<Paper
 							key={index}
+							p="md"
 							withBorder
-							radius="md"
-							p="sm"
-							style={{ cursor: "pointer" }}
-							onClick={() => console.log(`Clicked ${exercise.name}`)}
+							shadow="md"
 						>
-							<Group>
-								<Text fw={500}>{exercise.name}</Text>
-								<Text
-									size="xs"
-									c="dimmed"
+							<Stack
+								gap="xs"
+								mb="md"
+							>
+								<Title order={3}>{exercise.name}</Title>
+								<Group gap={5}>
+									<Pill
+										bg="teal"
+										c="white"
+									>
+										{exercise.muscleGroup}
+									</Pill>
+									<Pill
+										bg="dark.9"
+										c="white"
+									>
+										{exercise.secondaryMuscleGroup}
+									</Pill>
+									<Pill
+										bg="blue.9"
+										c="white"
+									>
+										{exercise.equipment}
+									</Pill>
+								</Group>
+							</Stack>
+							<Stack>
+								<List
+									className="list-decimal list-inside"
+									spacing={7}
+									size="sm"
 								>
-									{exercise.muscleGroup}
-								</Text>
-							</Group>
-						</Card>
+									{exercise.instructions.map((instruction, index) => (
+										<List.Item key={index}>{instruction}</List.Item>
+									))}
+								</List>
+							</Stack>
+						</Paper>
 					))}
 				</Stack>
 			</Stack>

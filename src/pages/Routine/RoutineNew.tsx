@@ -1,4 +1,8 @@
-import { equipment, exerciseData, primaryMuscleGroups } from "@/assets/index";
+import {
+	equipment,
+	localExerciseInfo,
+	primaryMuscleGroups,
+} from "@/assets/index";
 import { useRoutinesHook } from "@/hooks/useRoutinesHook";
 import { useDisclosure } from "@mantine/hooks";
 import { CheckCircle, Plus, Search } from "lucide-react";
@@ -44,7 +48,7 @@ const Routine = () => {
 	const { createRoutine } = useRoutinesHook();
 
 	// Part of the logic for the add exercise modal
-	const filtered = exerciseData.filter((exercise) => {
+	const filtered = localExerciseInfo.filter((exercise) => {
 		const matchesSearch = exercise.name
 			.toLowerCase()
 			.includes(search.toLowerCase());
@@ -133,7 +137,7 @@ const Routine = () => {
 		<>
 			<Container
 				size="sm"
-				p="xs"
+				p="md"
 				py="md"
 			>
 				<Stack gap="md">

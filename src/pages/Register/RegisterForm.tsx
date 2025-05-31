@@ -105,7 +105,7 @@ const RegisterForm = () => {
 		<>
 			<Container
 				size="md"
-				p="xs"
+				p="md"
 				py="md"
 			>
 				<Stepper active={active}>

@@ -1,11 +1,14 @@
-import { equipment, exerciseData, primaryMuscleGroups } from "@/assets/index";
+import {
+	equipment,
+	localExerciseInfo,
+	primaryMuscleGroups,
+} from "@/assets/index";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
 import { useDisclosure } from "@mantine/hooks";
 import { CheckCircle, Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStopwatch } from "react-timer-hook";
-//import { useExercisesHook } from "@/hooks/useExercisesHook";
 import { type ExerciseData } from "@/contexts/RoutineContext";
 import {
 	Container,
@@ -37,11 +40,10 @@ const WorkoutNew = () => {
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 
 	const navigate = useNavigate();
-	//const { fetchExercises } = useExercisesHook();
 	const { createWorkout } = useWorkOutHook();
 
 	// Part of the logic for the add exercise modal
-	const filtered = exerciseData.filter((exercise) => {
+	const filtered = localExerciseInfo.filter((exercise) => {
 		const matchesSearch = exercise.name
 			.toLowerCase()
 			.includes(search.toLowerCase());
@@ -152,15 +154,11 @@ const WorkoutNew = () => {
 		console.log(`Total elapsed time in seconds: ${totalSeconds}`);
 	}, [totalSeconds]);
 
-	// useEffect(() => {
-	// 	fetchExercises();
-	// }, []);
-
 	return (
 		<>
 			<Container
 				size="sm"
-				p="xs"
+				p="md"
 				py="md"
 			>
 				<Stack justify="space-between">

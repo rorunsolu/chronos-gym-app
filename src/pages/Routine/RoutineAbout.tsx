@@ -1,7 +1,7 @@
 import { UserAuth } from "@/auth/AuthContext";
 import { db } from "@/auth/Firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { Play } from "lucide-react";
+import { Play, Timer } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -78,7 +78,7 @@ const RoutineAbout = () => {
 
 	return (
 		<Container
-			size="sm"
+			size="md"
 			py="lg"
 		>
 			<Stack gap="md">
@@ -138,47 +138,57 @@ const RoutineAbout = () => {
 
 				<Stack gap="lg">
 					{exercises.map((exercise) => (
-						<Paper
-							key={exercise.id}
-							withBorder
-							radius="md"
-							p="md"
-						>
-							<Stack gap="xs">
-								<Group justify="space-between">
-									<Text fw={500}>{exercise.name}</Text>
-								</Group>
-								<Text
-									size="sm"
-									c="dimmed"
-								>
-									Rest Timer:
-									{/* {exercise.rest} */}
-								</Text>
+						<>
+							{" "}
+							<Paper
+								key={exercise.id}
+								bg="transparent"
+								// my="xs"
+							>
+								<Stack gap="xs">
+									<Group justify="space-between">
+										<Text fw={500}>{exercise.name}</Text>
+									</Group>
+									<Group
+										gap={0}
+										align="center"
+									>
+										<Timer size={16} />
+										<Text
+											size="sm"
+											c="dimmed"
+											ml={6}
+										>
+											Rest Timer:
+											{/* {exercise.rest} */}
+										</Text>
+									</Group>
 
-								<Table
-									striped
-									withRowBorders={false}
-								>
-									<Table.Thead>
-										<Table.Tr>
-											<Table.Th>Set</Table.Th>
-											<Table.Th>Weight</Table.Th>
-											<Table.Th>Reps</Table.Th>
-										</Table.Tr>
-									</Table.Thead>
-									<Table.Tbody>
-										{exercise.sets.map((set, index) => (
-											<Table.Tr key={set.id}>
-												<Table.Td>{index + 1}</Table.Td>
-												<Table.Td>{set.weight}</Table.Td>
-												<Table.Td>{set.reps}</Table.Td>
+									<Table
+										striped
+										withRowBorders={false}
+									>
+										<Table.Thead>
+											<Table.Tr>
+												<Table.Th>Set</Table.Th>
+												<Table.Th>Weight</Table.Th>
+												<Table.Th>Reps</Table.Th>
 											</Table.Tr>
-										))}
-									</Table.Tbody>
-								</Table>
-							</Stack>
-						</Paper>
+										</Table.Thead>
+										<Table.Tbody>
+											{exercise.sets.map((set, index) => (
+												<Table.Tr key={set.id}>
+													<Table.Td>{index + 1}</Table.Td>
+													<Table.Td>{set.weight}</Table.Td>
+													<Table.Td>{set.reps}</Table.Td>
+												</Table.Tr>
+											))}
+										</Table.Tbody>
+									</Table>
+								</Stack>
+							</Paper>
+							<Divider />
+						</>
 					))}
 				</Stack>
 			</Stack>

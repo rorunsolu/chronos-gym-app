@@ -33,7 +33,7 @@ const WorkoutPage = () => {
 	return (
 		<Container
 			size="md"
-			p="xs"
+			p="md"
 			py="md"
 		>
 			<Stack gap="xl">

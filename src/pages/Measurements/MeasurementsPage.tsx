@@ -54,7 +54,7 @@ const MeasurementsPage = () => {
 	return (
 		<Container
 			size="md"
-			p="xs"
+			p="md"
 			py="md"
 		>
 			<Modal
