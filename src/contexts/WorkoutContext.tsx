@@ -111,6 +111,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 					dateOfWorkout: dateOfCreation,
 				},
 			]);
+			// eslint-disable-next-line
 			console.log("Workout created: ", workoutRef.id);
 			return workoutRef.id;
 		} catch (error) {
@@ -126,6 +127,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 			setWorkouts((prevWorkouts) =>
 				prevWorkouts.filter((workout) => workout.id !== id)
 			);
+			// eslint-disable-next-line
 			console.log("Workout deleted:", id);
 		} catch (error) {
 			throw new Error("Error deleting workout");

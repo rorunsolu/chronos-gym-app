@@ -1,14 +1,14 @@
-import {
-	equipment,
-	localExerciseInfo,
-	primaryMuscleGroups,
-} from "@/assets/index";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
 import { useDisclosure } from "@mantine/hooks";
 import { CheckCircle, Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStopwatch } from "react-timer-hook";
+import {
+	equipment,
+	localExerciseInfo,
+	primaryMuscleGroups,
+} from "@/assets/index";
 import { type ExerciseData } from "@/contexts/RoutineContext";
 import {
 	Container,
@@ -42,7 +42,6 @@ const WorkoutNew = () => {
 	const navigate = useNavigate();
 	const { createWorkout } = useWorkOutHook();
 
-	// Part of the logic for the add exercise modal
 	const filtered = localExerciseInfo.filter((exercise) => {
 		const matchesSearch = exercise.name
 			.toLowerCase()
@@ -80,6 +79,7 @@ const WorkoutNew = () => {
 						id: Date.now().toString(), // the prev error was becasue i forgot to add the id property here
 						reps: "",
 						weight: "",
+						isCompleted: false,
 					},
 				],
 			},
@@ -102,7 +102,12 @@ const WorkoutNew = () => {
 							...exercise,
 							sets: [
 								...exercise.sets,
-								{ id: Date.now().toString(), reps: "", weight: "" },
+								{
+									id: Date.now().toString(),
+									reps: "",
+									weight: "",
+									isCompleted: false,
+								},
 							],
 						}
 					: exercise
@@ -141,7 +146,7 @@ const WorkoutNew = () => {
 		setExercises([]);
 		setName("");
 		setDuration(0);
-		navigate("/home");
+		navigate("/home-page");
 	};
 
 	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({
@@ -151,6 +156,7 @@ const WorkoutNew = () => {
 
 	useEffect(() => {
 		setDuration(totalSeconds);
+		// eslint-disable-next-line
 		console.log(`Total elapsed time in seconds: ${totalSeconds}`);
 	}, [totalSeconds]);
 

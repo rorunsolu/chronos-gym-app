@@ -28,6 +28,7 @@ const WorkoutPage = () => {
 		};
 
 		fetchData();
+		// eslint-disable-next-line
 	}, []);
 
 	return (
@@ -54,7 +55,7 @@ const WorkoutPage = () => {
 							variant="filled"
 							leftSection={<Plus size={20} />}
 							onClick={() => {
-								navigate("/new-routine");
+								navigate("/new-workout");
 							}}
 							style={{ boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
 						>
@@ -109,12 +110,6 @@ const WorkoutPage = () => {
 									radius="md"
 									shadow="md"
 									bg="dark.8"
-									onClick={() => {
-										navigate(`/workout/${workout.id}`, {
-											state: { workout },
-										});
-									}}
-									className="cursor-pointer"
 								>
 									<Group justify="space-between">
 										<Group>
@@ -222,8 +217,9 @@ const WorkoutPage = () => {
 											color="teal"
 											leftSection={<Eye size={20} />}
 											aria-label="Start Workout"
-											onClick={() => {
-												navigate(`/workouts/${workout.id}`);
+											onClick={(e) => {
+												navigate(`/workout-about/${workout.id}`);
+												e.stopPropagation();
 											}}
 										>
 											View Workout

@@ -1,14 +1,25 @@
+import { db } from "@/auth/Firebase";
+import { useWorkOutHook } from "@/hooks/useWorkoutHook";
+import { useDisclosure } from "@mantine/hooks";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useStopwatch } from "react-timer-hook";
+import {
+	Check,
+	CheckCircle,
+	Hash,
+	Plus,
+	Search,
+	Trash,
+	Weight,
+	X,
+} from "lucide-react";
 import {
 	equipment,
 	localExerciseInfo,
 	primaryMuscleGroups,
 } from "@/assets/index";
-import { db } from "@/auth/Firebase";
-import { useDisclosure } from "@mantine/hooks";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { CheckCircle, Plus, Search } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import {
 	Container,
 	Group,
@@ -23,6 +34,9 @@ import {
 	Divider,
 	Select,
 	Input,
+	Switch,
+	Checkbox,
+	Menu,
 } from "@mantine/core";
 import type { ExerciseData } from "@/contexts/RoutineContext";
 
@@ -39,6 +53,7 @@ const RoutineSession = () => {
 	const [modalEquipment, setModalEquipment] = useState<string | null>(null);
 
 	const navigate = useNavigate();
+	const { createWorkout } = useWorkOutHook();
 
 	const modalExercises = localExerciseInfo.filter((modalExercise) => {
 		const matchesSearch = modalExercise.name
@@ -70,6 +85,7 @@ const RoutineSession = () => {
 						id: Date.now().toString(),
 						weight: "",
 						reps: "",
+						isCompleted: false,
 					},
 				],
 			},
@@ -84,7 +100,12 @@ const RoutineSession = () => {
 							...exercise,
 							sets: [
 								...exercise.sets,
-								{ id: Date.now().toString(), reps: "", weight: "" },
+								{
+									id: Date.now().toString(),
+									reps: "",
+									weight: "",
+									isCompleted: false,
+								},
 							],
 						}
 					: exercise
@@ -134,6 +155,81 @@ const RoutineSession = () => {
 		);
 	};
 
+	const [, setExerciseSetCompleted] = useState(false);
+
+	const [finishOpen, finishHandler] = useDisclosure(false);
+	const [checked, setChecked] = useState(false);
+	const [duration, setDuration] = useState(0);
+
+	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({
+		autoStart: true,
+		interval: 20,
+	});
+
+	const handleUpdatePreConfirmation = async () => {
+		try {
+			if (!rountineName || rountineName.trim() === "") {
+				new Error("Session name cannot be empty");
+				return;
+			}
+
+			if (checked) {
+				await handleRoutineUpdate(rountineName, exercises);
+			}
+		} catch (error) {
+			new Error("Error updating routine");
+		} finally {
+			navigate("/routine-page");
+		}
+	};
+
+	const handlePreConfirmation = () => {
+		pause();
+		setDuration(totalSeconds);
+		finishHandler.open();
+	};
+
+	const handleCreateWorkoutFromRoutine = async () => {
+		createWorkout(rountineName, exercises, duration);
+		handleUpdatePreConfirmation();
+	};
+
+	const handleDeleteSet = (exerciseId: string, setId: string) => {
+		setExercises((prevExercises) =>
+			prevExercises.map((exercise) =>
+				exercise.id === exerciseId
+					? {
+							...exercise,
+							sets: exercise.sets.filter((set) => set.id !== setId),
+						}
+					: exercise
+			)
+		);
+	};
+
+	const handleSetCompletion = (
+		exerciseId: string,
+		setId: string,
+		isCompleted: boolean
+	) => {
+		setExercises((prevExercises) =>
+			prevExercises.map((exercise) =>
+				exercise.id === exerciseId
+					? {
+							...exercise,
+							sets: exercise.sets.map((set) =>
+								set.id === setId ? { ...set, isCompleted } : set
+							),
+						}
+					: exercise
+			)
+		);
+		// eslint-disable-next-line
+		console.log(
+			`Set ${setId} for exercise ${exerciseId} marked as ${isCompleted ? "completed" : "not completed"}`
+		);
+	};
+
 	useEffect(() => {
 		if (isInitialLoad) {
 			setIsInitialLoad(false);
@@ -163,16 +259,18 @@ const RoutineSession = () => {
 					throw new Error("Routine data not found");
 				}
 
-				// Validate exercises and sets
 				const validatedExercises = (objectData.exercises || []).map(
 					(exercise: ExerciseData) => ({
 						...exercise,
-						sets: Array.isArray(exercise.sets) ? exercise.sets : [],
+						sets: Array.isArray(exercise.sets)
+							? exercise.sets.map((set) => ({ ...set, isCompleted: false }))
+							: [],
 					})
 				);
 
 				setRoutineName(objectData.name || "");
 				setExercises(validatedExercises);
+				setExerciseSetCompleted(false);
 			} catch (error) {
 				new Error("Error fetching routine data");
 				setIsLoading(false);
@@ -187,7 +285,7 @@ const RoutineSession = () => {
 	return (
 		<>
 			<Container
-				size="sm"
+				size="xs"
 				p="md"
 				py="md"
 				pos="relative"
@@ -232,19 +330,69 @@ const RoutineSession = () => {
 									<Table.Thead>
 										<Table.Tr>
 											<Table.Th>Set</Table.Th>
-											<Table.Th>Weight</Table.Th>
-											<Table.Th>Reps</Table.Th>
+											<Table.Th>
+												<Group gap="5">
+													<Weight size={16} />
+													Weight
+												</Group>
+											</Table.Th>
+											<Table.Th>
+												<Group gap="5">
+													<Hash size={16} />
+													Reps
+												</Group>
+											</Table.Th>
+											<Table.Th>
+												<Group justify="center">
+													<Check size={16} />
+												</Group>
+											</Table.Th>
 										</Table.Tr>
 									</Table.Thead>
 									<Table.Tbody>
 										{/* Never map over the same array (in this case it's exercises) twice in the same component or file? It will throw a error like "exercise2.sets is undefined"*/}
 										{exercise.sets.map((set, index) => (
-											<Table.Tr key={set.id}>
+											<Table.Tr
+												key={set.id}
+												bg={
+													set.isCompleted
+														? "var(--mantine-color-teal-light)"
+														: undefined
+												}
+											>
 												<Table.Td>
-													<Text size="xs">{index + 1}</Text>
+													<Menu
+														shadow="md"
+														width={200}
+													>
+														<Menu.Target>
+															<Text
+																size="sm"
+																className="flex items-center justify-center cursor-pointer"
+															>
+																{index + 1}
+															</Text>
+														</Menu.Target>
+														<Menu.Dropdown>
+															<Menu.Item
+																leftSection={
+																	<Trash
+																		size={14}
+																		color="red"
+																	/>
+																}
+																onClick={() =>
+																	handleDeleteSet(exercise.id, set.id)
+																}
+															>
+																<Text size="xs">Delete set</Text>
+															</Menu.Item>
+														</Menu.Dropdown>
+													</Menu>
 												</Table.Td>
 												<Table.Td>
 													<TextInput
+														size="sm"
 														variant="unstyled"
 														placeholder="0kg"
 														value={set.weight}
@@ -271,6 +419,21 @@ const RoutineSession = () => {
 																e.currentTarget.value
 															)
 														}
+													/>
+												</Table.Td>
+												<Table.Td>
+													<Checkbox
+														color="teal.6"
+														size="md"
+														checked={set.isCompleted || false}
+														onChange={(e) => {
+															handleSetCompletion(
+																exercise.id,
+																set.id,
+																e.currentTarget.checked
+															);
+															setExerciseSetCompleted(e.currentTarget.checked);
+														}}
 													/>
 												</Table.Td>
 											</Table.Tr>
@@ -304,10 +467,9 @@ const RoutineSession = () => {
 						</Button>
 						<Button
 							leftSection={<CheckCircle size={20} />}
-							color="green"
+							color="teal"
 							onClick={() => {
-								handleRoutineUpdate(rountineName, exercises);
-								navigate("/home");
+								handlePreConfirmation();
 							}}
 						>
 							Finish
@@ -315,6 +477,68 @@ const RoutineSession = () => {
 					</Group>
 				</Stack>
 			</Container>
+
+			<Modal
+				opened={finishOpen}
+				onClose={finishHandler.close}
+				title="Are you sure?"
+				centered
+			>
+				<Text
+					size="sm"
+					c="dimmed"
+					mb="md"
+				>
+					Elapsed Time: {hours >= 0.1 && <>{hours} hours</>}{" "}
+					{minutes >= 0.1 && <>{minutes} minutes,</>} {seconds} seconds
+				</Text>
+
+				<Stack>
+					<Switch
+						size="md"
+						color="teal"
+						label="Update routine with current session?"
+						checked={checked}
+						onChange={(event) => setChecked(event.currentTarget.checked)}
+						thumbIcon={
+							checked ? (
+								<Check
+									size={12}
+									color="var(--mantine-color-teal-6)"
+								/>
+							) : (
+								<X
+									size={12}
+									color="var(--mantine-color-red-6)"
+								/>
+							)
+						}
+					/>
+
+					<Group justify="flex-end">
+						<Button
+							variant="light"
+							color="red"
+							onClick={() => {
+								finishHandler.close();
+								start();
+							}}
+						>
+							Cancel
+						</Button>
+
+						<Button
+							bg="teal"
+							variant="default"
+							onClick={() => {
+								handleCreateWorkoutFromRoutine();
+							}}
+						>
+							Confirm
+						</Button>
+					</Group>
+				</Stack>
+			</Modal>
 
 			<Modal
 				opened={opened}

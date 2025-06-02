@@ -33,7 +33,7 @@ const Portal = () => {
 
 	useEffect(() => {
 		if (user != null && isUserRegistered(user.uid)) {
-			navigate("/home");
+			navigate("/home-page");
 		}
 	}, [user, isUserRegistered, navigate]);
 

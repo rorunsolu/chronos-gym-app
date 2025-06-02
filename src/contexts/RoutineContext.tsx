@@ -19,6 +19,8 @@ export type ExerciseData = {
 		id: string;
 		weight: string;
 		reps: string;
+		isCompleted: boolean;
+		// I do not need the completion (I think?) of the set to be stored in FB, it is just a UI requirement for the user to see and and as a conditiontion for the creation/update of routines/workouts
 	}[];
 };
 export interface RoutineData {
@@ -95,6 +97,7 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 			);
 
 			setRoutines([{ id: routineRef.id, ...dataToBeAdded }, ...routines]);
+			// eslint-disable-next-line
 			console.log("Routine created with ID: ", routineRef.id);
 			return routineRef.id;
 		} catch (error) {
@@ -108,6 +111,7 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 			setRoutines((prevRoutines) =>
 				prevRoutines.filter((routine) => routine.id !== id)
 			);
+			// eslint-disable-next-line
 			console.log("Routine deleted with ID: ", id);
 		} catch (error) {
 			throw new Error("Error deleting routine");

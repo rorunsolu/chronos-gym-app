@@ -15,6 +15,7 @@ import RoutineAbout from "@/pages/Routine/RoutineAbout";
 import RoutineNew from "@/pages/Routine/RoutineNew";
 import RoutinePage from "@/pages/Routine/RoutinePage";
 import RoutineSession from "@/pages/Routine/RoutineSession";
+import WorkoutAbout from "@/pages/Workout/WorkoutAbout";
 import WorkoutNew from "@/pages/Workout/WorkoutNew";
 import WorkoutPage from "@/pages/Workout/WorkoutPage";
 import "@mantine/core/styles.css";
@@ -45,11 +46,11 @@ import {
 	Paper,
 	Avatar,
 	Text,
-	// Button,
 } from "@mantine/core";
 
 const theme = createTheme({
 	fontFamily: "Inter, sans-serif",
+	cursorType: "pointer",
 });
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
 		try {
 			await logOut();
 		} catch (error) {
+			// eslint-disable-next-line no-console
 			console.log(error);
 		}
 	};
@@ -129,20 +131,61 @@ function App() {
 							>
 								{user && isUserRegistered(user.uid) && (
 									<>
-										{navbarLinks.map(({ name, icon }) => (
-											<NavLink
-												label={name}
-												leftSection={icon}
-												variant="subtle"
-												key={name}
-												component={Link}
-												to={`/${name}`}
-												active
-												color="white"
-												p="md"
-												className=""
-											/>
-										))}
+										{/* Add variant, color, and padding to each NavLink */}
+										<NavLink
+											label="Home"
+											leftSection={<Home />}
+											component={Link}
+											to="/home-page"
+											variant="subtle"
+											color="white"
+											p="md"
+										/>
+										<NavLink
+											label="Workouts"
+											leftSection={<Dumbbell />}
+											component={Link}
+											to="/workout-page"
+											variant="subtle"
+											color="white"
+											p="md"
+										/>
+										<NavLink
+											label="Routines"
+											leftSection={<NotebookText />}
+											component={Link}
+											to="/routine-page"
+											variant="subtle"
+											color="white"
+											p="md"
+										/>
+										<NavLink
+											label="Profile"
+											leftSection={<User />}
+											component={Link}
+											to="/profile-page"
+											variant="subtle"
+											color="white"
+											p="md"
+										/>
+										<NavLink
+											label="Measurements"
+											leftSection={<Ruler />}
+											component={Link}
+											to="/measurement-page"
+											variant="subtle"
+											color="white"
+											p="md"
+										/>
+										<NavLink
+											label="Exercises"
+											leftSection={<BicepsFlexed />}
+											component={Link}
+											to="/exercise-page"
+											variant="subtle"
+											color="white"
+											p="md"
+										/>
 									</>
 								)}
 							</Stack>
@@ -226,41 +269,39 @@ function App() {
 
 					<AppShell.Main>
 						<Routes>
+							{/* General/Portal */}
 							<Route
 								path="/"
 								element={<Portal />}
 							/>
-
 							<Route
 								path="/register-form"
 								element={<RegisterForm />}
 							/>
+
+							{/* Home */}
 							<Route
-								path="/workouts"
-								element={
-									<Protected>
-										<WorkoutPage />
-									</Protected>
-								}
-							/>
-							<Route
-								path="/home"
+								path="/home-page"
 								element={
 									<Protected>
 										<Homepage />
 									</Protected>
 								}
 							/>
+
+							{/* Profile */}
 							<Route
-								path="/profile"
+								path="/profile-page"
 								element={
 									<Protected>
 										<Profile />
 									</Protected>
 								}
 							/>
+
+							{/* Explore */}
 							<Route
-								path="/explore"
+								path="/explore-page"
 								element={
 									<Protected>
 										<Explore />
@@ -268,6 +309,15 @@ function App() {
 								}
 							/>
 
+							{/* Workouts */}
+							<Route
+								path="/workout-page"
+								element={
+									<Protected>
+										<WorkoutPage />
+									</Protected>
+								}
+							/>
 							<Route
 								path="/new-workout"
 								element={
@@ -277,7 +327,51 @@ function App() {
 								}
 							/>
 							<Route
-								path="/exercises"
+								path="/workout-about/:id"
+								element={
+									<Protected>
+										<WorkoutAbout />
+									</Protected>
+								}
+							/>
+
+							{/* Routines */}
+							<Route
+								path="/routine-page"
+								element={
+									<Protected>
+										<RoutinePage />
+									</Protected>
+								}
+							/>
+							<Route
+								path="/new-routine"
+								element={
+									<Protected>
+										<RoutineNew />
+									</Protected>
+								}
+							/>
+							<Route
+								path="/routine-about/:id"
+								element={
+									<Protected>
+										<RoutineAbout />
+									</Protected>
+								}
+							/>
+							<Route
+								path="/routines/:id"
+								element={
+									<Protected>
+										<RoutineSession />
+									</Protected>
+								}
+							/>
+
+							{/* Exercises */}
+							<Route
+								path="/exercise-page"
 								element={
 									<Protected>
 										<Exercise />
@@ -292,40 +386,10 @@ function App() {
 									</Protected>
 								}
 							/>
+
+							{/* Measurements */}
 							<Route
-								path="/new-routine"
-								element={
-									<Protected>
-										<RoutineNew />
-									</Protected>
-								}
-							/>
-							<Route
-								path="/routines/:id"
-								element={
-									<Protected>
-										<RoutineSession />
-									</Protected>
-								}
-							/>
-							<Route
-								path="/routines"
-								element={
-									<Protected>
-										<RoutinePage />
-									</Protected>
-								}
-							/>
-							<Route
-								path="/routine-about/:id"
-								element={
-									<Protected>
-										<RoutineAbout />
-									</Protected>
-								}
-							/>
-							<Route
-								path="/measurements"
+								path="/measurement-page"
 								element={
 									<Protected>
 										<MeasurementsPage />
@@ -341,12 +405,3 @@ function App() {
 }
 
 export default App;
-
-const navbarLinks = [
-	{ name: "Home", icon: <Home /> },
-	{ name: "Workouts", icon: <Dumbbell /> },
-	{ name: "Routines", icon: <NotebookText /> },
-	{ name: "Profile", icon: <User /> },
-	{ name: "Measurements", icon: <Ruler /> }, // Add Measurements link
-	{ name: "Exercises", icon: <BicepsFlexed /> }, // Add Exercises link
-];

@@ -25,6 +25,7 @@ const RoutinePage = () => {
 		};
 
 		fetchData();
+		// eslint-disable-next-line
 	}, []);
 
 	return (
@@ -104,9 +105,6 @@ const RoutinePage = () => {
 								radius="md"
 								bg="dark.8"
 								withBorder
-								onClick={() => {
-									navigate(`/routine-about/${routine.id}`);
-								}}
 							>
 								<Stack
 									justify="space-between"
@@ -184,18 +182,32 @@ const RoutinePage = () => {
 											</Menu.Dropdown>
 										</Menu>
 									</Group>
-									<Button
-										fullWidth
-										variant="filled"
-										color="teal"
-										leftSection={<Play size={20} />}
-										aria-label="Start routine"
-										onClick={() => {
-											navigate(`/routines/${routine.id}`);
-										}}
-									>
-										Start Routine
-									</Button>
+									<Stack>
+										<Button
+											fullWidth
+											variant="filled"
+											color="teal"
+											leftSection={<Play size={20} />}
+											aria-label="Start routine"
+											onClick={() => {
+												navigate(`/routine-about/${routine.id}`);
+											}}
+										>
+											View Routine
+										</Button>
+										<Button
+											fullWidth
+											variant="filled"
+											color="teal"
+											leftSection={<Play size={20} />}
+											aria-label="Start routine"
+											onClick={() => {
+												navigate(`/routines/${routine.id}`);
+											}}
+										>
+											Start Routine
+										</Button>
+									</Stack>
 								</Stack>
 							</Card>
 						))}
