@@ -15,12 +15,12 @@ import { useState, type ReactNode } from "react";
 export type ExerciseData = {
 	id: string;
 	name: string;
+	notes?: string;
 	sets: {
 		id: string;
 		weight: string;
 		reps: string;
 		isCompleted: boolean;
-		// I do not need the completion (I think?) of the set to be stored in FB, it is just a UI requirement for the user to see and and as a conditiontion for the creation/update of routines/workouts
 	}[];
 };
 export interface RoutineData {
@@ -29,7 +29,7 @@ export interface RoutineData {
 	createdAt: Timestamp;
 	exercises: ExerciseData[];
 	userId: string;
-	description?: string;
+	notes?: string;
 }
 
 export interface RoutinesContextType {

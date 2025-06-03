@@ -25,6 +25,7 @@ import {
 	Input,
 	Checkbox,
 	Menu,
+	Textarea,
 } from "@mantine/core";
 
 const WorkoutNew = () => {
@@ -195,6 +196,19 @@ const WorkoutNew = () => {
 		console.log(`Total elapsed time in seconds: ${totalSeconds}`);
 	}, [totalSeconds]);
 
+	const handleExerciseNotesChange = (exerciseId: string, notes: string) => {
+		setExercises((prev) =>
+			prev.map((exercise) =>
+				exercise.id === exerciseId
+					? {
+							...exercise,
+							notes,
+						}
+					: exercise
+			)
+		);
+	};
+
 	return (
 		<>
 			<Container
@@ -233,6 +247,23 @@ const WorkoutNew = () => {
 											>
 												{exercise.name}
 											</Text>
+											{exercises.map((exercise, index) => (
+												<Textarea
+													key={index}
+													autosize
+													minRows={1}
+													maxRows={4}
+													variant="unstyled"
+													placeholder="Add notes here..."
+													value={exercise.notes}
+													onChange={(e) =>
+														handleExerciseNotesChange(
+															exercise.id,
+															e.target.value
+														)
+													}
+												/>
+											))}
 										</Group>
 
 										<Table

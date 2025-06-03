@@ -12,69 +12,58 @@ import {
 	Paper,
 	Group,
 	Table,
-	//SegmentedControl,
 	Divider,
 	Title,
 	Textarea,
 } from "@mantine/core";
 import type { ExerciseData } from "@/contexts/RoutineContext";
+import type { WorkoutData } from "@/contexts/WorkoutContext";
 
-const RoutineAbout = () => {
+const WorkoutAbout = () => {
 	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
-	const [routineName, setRoutineName] = useState<string>("");
+	const [workoutName, setWorkoutName] = useState<string>("");
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
+	const [notes, setNotes] = useState<string>("");
+	const [totalElapsedTime, setTotalElapsedTime] = useState<number>(0);
+	const [errorMessage, setErrorMessage] = useState<string>("");
 	const [, setIsLoading] = useState(true);
 	const { user } = UserAuth();
 
 	useEffect(() => {
-		const fetchData = async () => {
+		const fetchWorkoutData = async () => {
 			try {
 				if (!id) {
-					new Error("Could not find routine ID");
-					setIsLoading(false);
-					navigate("/");
-					return;
+					throw new Error("Could not find workout ID");
 				}
 
 				if (!user) {
-					new Error("User not authenticated");
-					setIsLoading(false);
-					navigate("/");
-					return;
+					throw new Error("User not authenticated");
 				}
 
-				const objectRef = doc(db, "routines", id);
-				const objectSnapshot = await getDoc(objectRef);
+				const workoutRef = doc(db, "workouts", id);
+				const workoutSnapshot = await getDoc(workoutRef);
 
-				if (!objectSnapshot.exists()) {
-					throw new Error("Routine snapshot not found");
+				if (!workoutSnapshot.exists()) {
+					throw new Error("Workout snapshot not found");
 				}
 
-				const objectData = objectSnapshot.data();
+				const workoutData = workoutSnapshot.data() as WorkoutData;
 
-				if (!objectData) {
-					throw new Error("Routine data not found");
-				}
-
-				const validatedExercises = (objectData.exercises || []).map(
-					(exercise: ExerciseData) => ({
-						...exercise,
-						sets: Array.isArray(exercise.sets) ? exercise.sets : [],
-					})
-				);
-
-				setRoutineName(objectData.name || "");
-				setExercises(validatedExercises);
+				setWorkoutName(workoutData.name || "");
+				setExercises(workoutData.exercises || []);
+				setNotes(workoutData.notes || "");
+				setTotalElapsedTime(workoutData.totalElapsedTimeSec || 0);
 			} catch (error) {
-				new Error("Error fetching routine data");
+				setErrorMessage("Error fetching workout data. Please try again later.");
 				setIsLoading(false);
+				navigate("/");
 			} finally {
 				setIsLoading(false);
 			}
 		};
 
-		fetchData();
+		fetchWorkoutData();
 	}, [id, user, navigate]);
 
 	return (
@@ -83,8 +72,17 @@ const RoutineAbout = () => {
 			py="lg"
 		>
 			<Stack gap="md">
+				{errorMessage && (
+					<Text
+						size="sm"
+						c="red"
+					>
+						{errorMessage}
+					</Text>
+				)}
+
 				<Stack gap={0}>
-					<Title order={2}>{routineName}</Title>
+					<Title order={2}>{workoutName}</Title>
 					<Text
 						size="sm"
 						c="dimmed"
@@ -98,39 +96,14 @@ const RoutineAbout = () => {
 					size="md"
 					variant="filled"
 					color="teal"
-					aria-label="Start routine"
+					aria-label="Start workout"
 					leftSection={<Play size={20} />}
 					onClick={() => {
-						navigate(`/routines/${id}`);
+						navigate(`/workouts/${id}`);
 					}}
 				>
-					Start Routine
+					Start Workout
 				</Button>
-
-				{/* <Card
-					withBorder
-					padding="xl"
-					radius="md"
-					mt="md"
-				>
-					<Stack
-						gap="xs"
-						align="center"
-					>
-						<Text
-							size="sm"
-							c="dimmed"
-						>
-							No data yet
-						</Text>
-						<SegmentedControl
-							fullWidth
-							data={["Volume", "Reps", "Duration"]}
-							defaultValue="Volume"
-							color="blue"
-						/>
-					</Stack>
-				</Card> */}
 
 				<Divider
 					label="Exercises"
@@ -140,11 +113,9 @@ const RoutineAbout = () => {
 				<Stack gap="lg">
 					{exercises.map((exercise) => (
 						<>
-							{" "}
 							<Paper
 								key={exercise.id}
 								bg="transparent"
-								// my="xs"
 							>
 								<Stack gap="xs">
 									<Stack gap="xs">
@@ -203,9 +174,32 @@ const RoutineAbout = () => {
 						</>
 					))}
 				</Stack>
+
+				{notes && (
+					<Paper
+						mt="lg"
+						p="md"
+					>
+						<Text
+							size="sm"
+							c="dimmed"
+						>
+							Notes: {notes}
+						</Text>
+					</Paper>
+				)}
+
+				<Text
+					size="sm"
+					c="dimmed"
+				>
+					{totalElapsedTime > 60
+						? `Total Time: ${Math.floor(totalElapsedTime / 60)} minutes`
+						: `Total Time: ${totalElapsedTime} seconds`}
+				</Text>
 			</Stack>
 		</Container>
 	);
 };
 
-export default RoutineAbout;
+export default WorkoutAbout;

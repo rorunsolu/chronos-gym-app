@@ -1,4 +1,8 @@
 import { useRoutinesHook } from "@/hooks/useRoutinesHook";
+import { useDisclosure } from "@mantine/hooks";
+import { CheckCircle, Plus, Search, Trash } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
 	Button,
 	Card,
@@ -14,11 +18,8 @@ import {
 	Table,
 	Text,
 	TextInput,
+	Textarea,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { CheckCircle, Plus, Search, Trash } from "lucide-react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
 	equipment,
 	localExerciseInfo,
@@ -153,6 +154,14 @@ const Routine = () => {
 		);
 	};
 
+	const handleExerciseNotesChange = (exerciseId: string, notes: string) => {
+		setExercises((prev) =>
+			prev.map((exercise) =>
+				exercise.id === exerciseId ? { ...exercise, notes } : exercise
+			)
+		);
+	};
+
 	const handleRoutineUpload = async () => {
 		createRoutine(name, exercises);
 		setExercises([]);
@@ -177,18 +186,37 @@ const Routine = () => {
 						/>
 					</Stack>
 
+					<Divider mb="sm" />
+
 					<Stack gap="xl">
 						{exercises.map((exercise) => {
 							return (
 								<div key={exercise.id}>
-									<Group mb="xs">
+									<Stack
+										mb="xs"
+										gap="3"
+									>
 										<Text
 											fw={500}
 											size="lg"
 										>
 											{exercise.name}
 										</Text>
-									</Group>
+										{exercises.map((exercise, index) => (
+											<Textarea
+												key={index}
+												autosize
+												minRows={1}
+												maxRows={4}
+												variant="unstyled"
+												placeholder="Add notes here..."
+												value={exercise.notes}
+												onChange={(e) =>
+													handleExerciseNotesChange(exercise.id, e.target.value)
+												}
+											/>
+										))}
+									</Stack>
 
 									<Table
 										striped
