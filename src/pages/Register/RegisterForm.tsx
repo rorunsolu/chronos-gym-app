@@ -81,9 +81,11 @@ const RegisterForm = () => {
 				true
 			);
 			// Navigate to home AFTER account creation completes
-			navigate("/home");
+			navigate("/home-page");
+			// eslint-disable-next-line
 			console.log("Form submitted with values:", values);
 		} catch (error) {
+			// eslint-disable-next-line
 			console.error("Failed to create account:", error);
 		}
 	};
@@ -97,7 +99,7 @@ const RegisterForm = () => {
 
 	useEffect(() => {
 		if (isUserRegistered(user?.uid) && user != null) {
-			navigate("/home");
+			navigate("/home-page");
 		}
 	}, [user, isUserRegistered, navigate]);
 

@@ -224,10 +224,6 @@ const RoutineSession = () => {
 					: exercise
 			)
 		);
-		// eslint-disable-next-line
-		console.log(
-			`Set ${setId} for exercise ${exerciseId} marked as ${isCompleted ? "completed" : "not completed"}`
-		);
 	};
 
 	useEffect(() => {

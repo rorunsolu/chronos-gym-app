@@ -1,31 +1,31 @@
+import { useRoutinesHook } from "@/hooks/useRoutinesHook";
+import {
+	Button,
+	Card,
+	Checkbox,
+	Container,
+	Divider,
+	Group,
+	Input,
+	Menu,
+	Modal,
+	Select,
+	Stack,
+	Table,
+	Text,
+	TextInput,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { CheckCircle, Plus, Search, Trash } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
 	equipment,
 	localExerciseInfo,
 	primaryMuscleGroups,
 } from "@/assets/index";
-import { useRoutinesHook } from "@/hooks/useRoutinesHook";
-import { useDisclosure } from "@mantine/hooks";
-import { CheckCircle, Plus, Search } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-//import { useExercisesHook } from "@/hooks/useExercisesHook";
-import {
-	//useEffect,
-	useState,
-} from "react";
-import {
-	Container,
-	Group,
-	Stack,
-	Text,
-	Button,
-	Table,
-	Modal,
-	TextInput,
-	Card,
-	Divider,
-	Select,
-	Input,
-} from "@mantine/core";
+import type { ExerciseData } from "@/contexts/RoutineContext";
+
 const Routine = () => {
 	const [opened, { open, close }] = useDisclosure(false);
 	const [search, setSearch] = useState("");
@@ -33,21 +33,13 @@ const Routine = () => {
 	const [selectedEquipment, setSelectedEquipment] = useState<string | null>(
 		null
 	);
-
+	const [, setExerciseSetCompleted] = useState(false);
 	const navigate = useNavigate();
 	const [name, setName] = useState("");
-	const [exercises, setExercises] = useState<
-		{
-			id: string;
-			name: string;
-			sets: { id: string; reps: string; weight: string }[];
-		}[]
-	>([]);
+	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 
-	//const { fetchExercises } = useExercisesHook();
 	const { createRoutine } = useRoutinesHook();
 
-	// Part of the logic for the add exercise modal
 	const filtered = localExerciseInfo.filter((exercise) => {
 		const matchesSearch = exercise.name
 			.toLowerCase()
@@ -69,6 +61,19 @@ const Routine = () => {
 		);
 	});
 
+	const handleDeleteSet = (exerciseId: string, setId: string) => {
+		setExercises((prevExercises) =>
+			prevExercises.map((exercise) =>
+				exercise.id === exerciseId
+					? {
+							...exercise,
+							sets: exercise.sets.filter((set) => set.id !== setId),
+						}
+					: exercise
+			)
+		);
+	};
+
 	const handleExerciseRender = (exercise: { name: string }) => {
 		setExercises((prev) => [
 			...prev,
@@ -81,6 +86,7 @@ const Routine = () => {
 						id: Date.now().toString(), // the prev error was becasue i forgot to add the id property here
 						reps: "",
 						weight: "",
+						isCompleted: false,
 					},
 				],
 			},
@@ -95,7 +101,12 @@ const Routine = () => {
 							...exercise,
 							sets: [
 								...exercise.sets,
-								{ id: Date.now().toString(), reps: "", weight: "" },
+								{
+									id: Date.now().toString(),
+									reps: "",
+									weight: "",
+									isCompleted: false,
+								},
 							],
 						}
 					: exercise
@@ -123,20 +134,35 @@ const Routine = () => {
 		);
 	};
 
+	const handleSetCompletion = (
+		exerciseId: string,
+		setId: string,
+		isCompleted: boolean
+	) => {
+		setExercises((prevExercises) =>
+			prevExercises.map((exercise) =>
+				exercise.id === exerciseId
+					? {
+							...exercise,
+							sets: exercise.sets.map((set) =>
+								set.id === setId ? { ...set, isCompleted } : set
+							),
+						}
+					: exercise
+			)
+		);
+	};
+
 	const handleRoutineUpload = async () => {
 		createRoutine(name, exercises);
 		setExercises([]);
 		setName("");
 	};
 
-	// useEffect(() => {
-	// 	fetchExercises();
-	// }, []);
-
 	return (
 		<>
 			<Container
-				size="sm"
+				size="xs"
 				p="md"
 				py="md"
 			>
@@ -181,7 +207,34 @@ const Routine = () => {
 											{exercise.sets.map((set, index) => (
 												<Table.Tr key={index}>
 													<Table.Td>
-														<Text size="xs">{index + 1}</Text>
+														<Menu
+															shadow="md"
+															width={200}
+														>
+															<Menu.Target>
+																<Text
+																	size="sm"
+																	className="flex items-center justify-center cursor-pointer"
+																>
+																	{index + 1}
+																</Text>
+															</Menu.Target>
+															<Menu.Dropdown>
+																<Menu.Item
+																	leftSection={
+																		<Trash
+																			size={14}
+																			color="red"
+																		/>
+																	}
+																	onClick={() =>
+																		handleDeleteSet(exercise.id, set.id)
+																	}
+																>
+																	<Text size="xs">Delete set</Text>
+																</Menu.Item>
+															</Menu.Dropdown>
+														</Menu>
 													</Table.Td>
 													<Table.Td>
 														<TextInput
@@ -209,6 +262,23 @@ const Routine = () => {
 																	set.id,
 																	"reps",
 																	event.currentTarget.value
+																);
+															}}
+														/>
+													</Table.Td>
+													<Table.Td>
+														<Checkbox
+															color="teal.6"
+															size="md"
+															checked={set.isCompleted || false}
+															onChange={(e) => {
+																handleSetCompletion(
+																	exercise.id,
+																	set.id,
+																	e.currentTarget.checked
+																);
+																setExerciseSetCompleted(
+																	e.currentTarget.checked
 																);
 															}}
 														/>
@@ -250,7 +320,7 @@ const Routine = () => {
 							color="green"
 							onClick={() => {
 								handleRoutineUpload();
-								navigate("/home");
+								navigate("/home-page");
 							}}
 						>
 							Finish
