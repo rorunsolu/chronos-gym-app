@@ -58,7 +58,7 @@ const Home = () => {
 								shadow="md"
 								bg="dark.8"
 								onClick={() => {
-									navigate(`/workout/${workout.id}`, {
+									navigate(`/workout-about/${workout.id}`, {
 										state: { workout },
 									});
 								}}
