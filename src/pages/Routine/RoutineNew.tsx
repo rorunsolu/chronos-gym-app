@@ -1,8 +1,14 @@
 import { useRoutinesHook } from "@/hooks/useRoutinesHook";
 import { useDisclosure } from "@mantine/hooks";
-import { CheckCircle, Plus, Search, Trash } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+	CheckCircle,
+	Plus,
+	Search,
+	Trash,
+	EllipsisVertical,
+} from "lucide-react";
 import {
 	Button,
 	Card,
@@ -19,6 +25,7 @@ import {
 	Text,
 	TextInput,
 	Textarea,
+	NumberInput,
 } from "@mantine/core";
 import {
 	equipment,
@@ -75,6 +82,12 @@ const Routine = () => {
 		);
 	};
 
+	const handeleDeleteExercise = (exerciseid: string) => {
+		setExercises((prevExercises) =>
+			prevExercises.filter((exercise) => exercise.id !== exerciseid)
+		);
+	};
+
 	const handleExerciseRender = (exercise: { name: string }) => {
 		setExercises((prev) => [
 			...prev,
@@ -84,7 +97,7 @@ const Routine = () => {
 				sets: [
 					// This is an ARRAY not just an object
 					{
-						id: Date.now().toString(), // the prev error was becasue i forgot to add the id property here
+						id: Date.now().toString(),
 						reps: "",
 						weight: "",
 						isCompleted: false,
@@ -119,7 +132,7 @@ const Routine = () => {
 		exerciseId: string,
 		setId: string,
 		field: "reps" | "weight",
-		value: string
+		value: string | number
 	) => {
 		setExercises((prev) =>
 			prev.map((exercise) =>
@@ -162,10 +175,25 @@ const Routine = () => {
 		);
 	};
 
+	const [error, setError] = useState("");
+
 	const handleRoutineUpload = async () => {
+		const hasEmptySets = exercises.some((exercise) =>
+			exercise.sets.some((set) => !set.weight || !set.reps || !set.isCompleted)
+		);
+
+		if (hasEmptySets) {
+			setError(
+				"Some sets are empty. Please complete them before saving the routine."
+			);
+			return;
+		}
+
+		setError("");
 		createRoutine(name, exercises);
 		setExercises([]);
 		setName("");
+		navigate("/home-page");
 	};
 
 	return (
@@ -176,145 +204,189 @@ const Routine = () => {
 				py="md"
 			>
 				<Stack gap="md">
-					<Stack gap="xs">
-						<TextInput
-							size="lg"
-							variant="unstyled"
-							value={name}
-							placeholder="Enter routine name"
-							onChange={(e) => setName(e.target.value)}
-						/>
-					</Stack>
-
-					<Divider mb="sm" />
+					<TextInput
+						size="lg"
+						variant="unstyled"
+						value={name}
+						placeholder="Enter routine name"
+						onChange={(e) => setName(e.target.value)}
+					/>
 
 					<Stack gap="xl">
-						{exercises.map((exercise) => {
+						{exercises.map((exercise, index) => {
 							return (
 								<div key={exercise.id}>
-									<Stack
-										mb="xs"
-										gap="3"
-									>
-										<Text
-											fw={500}
-											size="lg"
+									<Stack gap="0">
+										<Group
+											justify="space-between"
+											align="center"
 										>
-											{exercise.name}
-										</Text>
-										{exercises.map((exercise, index) => (
-											<Textarea
-												key={index}
-												autosize
-												minRows={1}
-												maxRows={4}
-												variant="unstyled"
-												placeholder="Add notes here..."
-												value={exercise.notes}
-												onChange={(e) =>
-													handleExerciseNotesChange(exercise.id, e.target.value)
-												}
-											/>
-										))}
+											<Text
+												fw={500}
+												size="lg"
+											>
+												{exercise.name}
+											</Text>
+											<Menu
+												shadow="md"
+												width={200}
+											>
+												<Menu.Target>
+													<Button
+														variant="subtle"
+														color="gray"
+													>
+														<EllipsisVertical size={16} />
+													</Button>
+												</Menu.Target>
+												<Menu.Dropdown>
+													<Menu.Item
+														leftSection={
+															<Trash
+																size={14}
+																color="red"
+															/>
+														}
+														onClick={() => handeleDeleteExercise(exercise.id)}
+													>
+														<Text size="sm">Delete Exercise</Text>
+													</Menu.Item>
+												</Menu.Dropdown>
+											</Menu>
+										</Group>
+
+										<Textarea
+											key={index}
+											autosize
+											minRows={1}
+											maxRows={4}
+											variant="unstyled"
+											placeholder="Add notes here..."
+											value={exercise.notes}
+											onChange={(e) =>
+												handleExerciseNotesChange(exercise.id, e.target.value)
+											}
+										/>
+
+										{/* <Menu
+											shadow="md"
+											width={200}
+										>
+											<Menu.Target>
+												<Button
+													variant="subtle"
+													color="gray"
+												>
+													<EllipsisVertical size={16} />
+												</Button>
+											</Menu.Target>
+											<Menu.Dropdown>
+												<Menu.Item>
+													<Text size="sm">Rest Timer</Text>
+												</Menu.Item>
+											</Menu.Dropdown>
+										</Menu> */}
 									</Stack>
 
-									<Table
-										striped
-										withRowBorders={false}
-									>
-										<Table.Thead>
-											<Table.Tr>
-												<Table.Th>Set</Table.Th>
-												<Table.Th>Weight</Table.Th>
-												<Table.Th>Reps</Table.Th>
-											</Table.Tr>
-										</Table.Thead>
-										<Table.Tbody>
-											{/* Accessing the exercises from the instanceOfexercises STATE and then rendering rows for each set */}
-											{/* The set in this case is coming from the array of sets INSIDE the instanceOfexercises STATE */}
-											{exercise.sets.map((set, index) => (
-												<Table.Tr key={index}>
-													<Table.Td>
-														<Menu
-															shadow="md"
-															width={200}
-														>
-															<Menu.Target>
-																<Text
-																	size="sm"
-																	className="flex items-center justify-center cursor-pointer"
-																>
-																	{index + 1}
-																</Text>
-															</Menu.Target>
-															<Menu.Dropdown>
-																<Menu.Item
-																	leftSection={
-																		<Trash
-																			size={14}
-																			color="red"
-																		/>
-																	}
-																	onClick={() =>
-																		handleDeleteSet(exercise.id, set.id)
-																	}
-																>
-																	<Text size="xs">Delete set</Text>
-																</Menu.Item>
-															</Menu.Dropdown>
-														</Menu>
-													</Table.Td>
-													<Table.Td>
-														<TextInput
-															variant="unstyled"
-															placeholder="0kg"
-															value={set.weight}
-															onChange={(event) =>
-																handleInputChange(
-																	exercise.id, // this is refered to as exerciseId and setId as parameters inside the function
-																	set.id,
-																	"weight",
-																	event.currentTarget.value
-																)
-															}
-														/>
-													</Table.Td>
-													<Table.Td>
-														<TextInput
-															variant="unstyled"
-															placeholder="0"
-															value={set.reps}
-															onChange={(event) => {
-																handleInputChange(
-																	exercise.id,
-																	set.id,
-																	"reps",
-																	event.currentTarget.value
-																);
-															}}
-														/>
-													</Table.Td>
-													<Table.Td>
-														<Checkbox
-															color="teal.6"
-															size="md"
-															checked={set.isCompleted || false}
-															onChange={(e) => {
-																handleSetCompletion(
-																	exercise.id,
-																	set.id,
-																	e.currentTarget.checked
-																);
-																setExerciseSetCompleted(
-																	e.currentTarget.checked
-																);
-															}}
-														/>
-													</Table.Td>
+									<Stack>
+										<Table
+											striped
+											withRowBorders={false}
+										>
+											<Table.Thead>
+												<Table.Tr>
+													<Table.Th>Set</Table.Th>
+													<Table.Th>Weight</Table.Th>
+													<Table.Th>Reps</Table.Th>
 												</Table.Tr>
-											))}
-										</Table.Tbody>
-									</Table>
+											</Table.Thead>
+											<Table.Tbody>
+												{/* Accessing the exercises from the instanceOfexercises STATE and then rendering rows for each set */}
+												{/* The set in this case is coming from the array of sets INSIDE the instanceOfexercises STATE */}
+												{exercise.sets.map((set, index) => (
+													<Table.Tr key={index}>
+														<Table.Td>
+															<Menu
+																shadow="md"
+																width={200}
+															>
+																<Menu.Target>
+																	<Text
+																		size="sm"
+																		className="flex items-center justify-center cursor-pointer"
+																	>
+																		{index + 1}
+																	</Text>
+																</Menu.Target>
+																<Menu.Dropdown>
+																	<Menu.Item
+																		leftSection={
+																			<Trash
+																				size={14}
+																				color="red"
+																			/>
+																		}
+																		onClick={() =>
+																			handleDeleteSet(exercise.id, set.id)
+																		}
+																	>
+																		<Text size="xs">Delete set</Text>
+																	</Menu.Item>
+																</Menu.Dropdown>
+															</Menu>
+														</Table.Td>
+														<Table.Td>
+															<NumberInput
+																value={set.weight}
+																onChange={(value) =>
+																	handleInputChange(
+																		exercise.id,
+																		set.id,
+																		"weight",
+																		value || 0
+																	)
+																}
+																variant="unstyled"
+																placeholder="0kg"
+															/>
+														</Table.Td>
+														<Table.Td>
+															<NumberInput
+																variant="unstyled"
+																placeholder="0"
+																value={set.reps}
+																onChange={(value) => {
+																	handleInputChange(
+																		exercise.id,
+																		set.id,
+																		"reps",
+																		value || 0
+																	);
+																}}
+															/>
+														</Table.Td>
+														<Table.Td>
+															<Checkbox
+																color="teal.6"
+																size="md"
+																checked={set.isCompleted || false}
+																onChange={(e) => {
+																	handleSetCompletion(
+																		exercise.id,
+																		set.id,
+																		e.currentTarget.checked
+																	);
+																	setExerciseSetCompleted(
+																		e.currentTarget.checked
+																	);
+																}}
+															/>
+														</Table.Td>
+													</Table.Tr>
+												))}
+											</Table.Tbody>
+										</Table>
+									</Stack>
 
 									<Group mt="md">
 										<Button
@@ -332,28 +404,31 @@ const Routine = () => {
 						})}
 					</Stack>
 
-					<Group
-						justify="center"
-						mt="md"
-					>
-						<Button
-							leftSection={<Plus size={20} />}
-							variant="default"
-							onClick={open}
+					<Stack>
+						<Group
+							justify="center"
+							mt="md"
 						>
-							Add Exercise
-						</Button>
-						<Button
-							leftSection={<CheckCircle size={20} />}
-							color="green"
-							onClick={() => {
-								handleRoutineUpload();
-								navigate("/home-page");
-							}}
-						>
-							Finish
-						</Button>
-					</Group>
+							<Button
+								leftSection={<Plus size={20} />}
+								variant="default"
+								onClick={open}
+							>
+								Add Exercise
+							</Button>
+							<Button
+								leftSection={<CheckCircle size={20} />}
+								color="green"
+								onClick={() => {
+									handleRoutineUpload();
+								}}
+								disabled={!name || exercises.length === 0}
+							>
+								Finish
+							</Button>
+							{error && <Text c="red">{error}</Text>}
+						</Group>
+					</Stack>
 				</Stack>
 			</Container>
 

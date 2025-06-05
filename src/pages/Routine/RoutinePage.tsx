@@ -95,7 +95,7 @@ const RoutinePage = () => {
 
 					<SimpleGrid
 						spacing="md"
-						cols={{ base: 1, xs: 2, sm: 2, lg: 3 }}
+						cols={{ base: 1, xs: 2, sm: 2, lg: 2 }}
 					>
 						{routines.map((routine, index) => (
 							<Card
@@ -105,6 +105,9 @@ const RoutinePage = () => {
 								radius="md"
 								bg="dark.8"
 								withBorder
+								onClick={() => {
+									navigate(`/routine-about/${routine.id}`);
+								}}
 							>
 								<Stack
 									justify="space-between"
@@ -182,19 +185,20 @@ const RoutinePage = () => {
 											</Menu.Dropdown>
 										</Menu>
 									</Group>
-									<Stack>
-										<Button
+
+									<div className="flex flex-col lg:flex-row gap-4 w-full">
+										{/* <Button
 											fullWidth
 											variant="filled"
 											color="teal"
 											leftSection={<Play size={20} />}
-											aria-label="Start routine"
+											aria-label="View routine"
 											onClick={() => {
 												navigate(`/routine-about/${routine.id}`);
 											}}
 										>
 											View Routine
-										</Button>
+										</Button> */}
 										<Button
 											fullWidth
 											variant="filled"
@@ -205,9 +209,9 @@ const RoutinePage = () => {
 												navigate(`/routines/${routine.id}`);
 											}}
 										>
-											Start Routine
+											Start
 										</Button>
-									</Stack>
+									</div>
 								</Stack>
 							</Card>
 						))}

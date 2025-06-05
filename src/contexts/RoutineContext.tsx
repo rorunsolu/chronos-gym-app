@@ -18,8 +18,8 @@ export type ExerciseData = {
 	notes?: string;
 	sets: {
 		id: string;
-		weight: string;
-		reps: string;
+		weight: string | number;
+		reps: string | number;
 		isCompleted: boolean;
 	}[];
 };
