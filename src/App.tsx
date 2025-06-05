@@ -131,7 +131,6 @@ function App() {
 							>
 								{user && isUserRegistered(user.uid) && (
 									<>
-										{/* Add variant, color, and padding to each NavLink */}
 										<NavLink
 											label="Home"
 											leftSection={<Home />}

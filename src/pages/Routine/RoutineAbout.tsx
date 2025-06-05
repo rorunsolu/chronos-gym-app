@@ -20,7 +20,7 @@ import {
 	Title,
 	Textarea,
 } from "@mantine/core";
-import type { ExerciseData } from "@/contexts/RoutineContext";
+import { type ExerciseData } from "@/common/types";
 
 const RoutineAbout = () => {
 	const navigate = useNavigate();

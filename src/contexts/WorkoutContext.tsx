@@ -1,4 +1,5 @@
 import { auth, db } from "@/auth/Firebase";
+import { getAuthenticatedUser } from "@/common/helper";
 import { WorkoutContext } from "@/hooks/useWorkoutHook";
 import {
 	addDoc,
@@ -11,32 +12,10 @@ import {
 	where,
 } from "firebase/firestore";
 import { useState, type ReactNode } from "react";
-import { type ExerciseData } from "@/contexts/RoutineContext";
-
-// data required to create a workout
-// Each exercise { name, sets done, reps per set, total weight, weight per set, notes }
-// Compiled data to be turned into a workout which gets taken from each individual exercise logged in this workout
-
-// Required UI
-// 1. Add set btn
-// 2. Add exercise btn
-// 3. Discard workout btn
-// 4. Finish workout btn
-// 5. Individual tables for each excerise
-// 6. Each row needs a set of inputs for ( set number, reps, weight, checkbox, delete btn)
-
-export type WorkoutData = {
-	id: string;
-	name: string;
-	dateOfWorkout: Timestamp;
-	totalElapsedTimeSec: number; // in seconds
-	exercises: ExerciseData[];
-	notes?: string;
-	userId: string;
-};
+import type { SessionData, ExerciseData } from "@/common/types";
 
 export type WorkoutContextType = {
-	workouts: WorkoutData[];
+	workouts: SessionData[];
 	fetchWorkouts: () => Promise<void>;
 	createWorkout: (
 		name: string,
@@ -47,14 +26,9 @@ export type WorkoutContextType = {
 };
 
 export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
-	// the state will hold an array of data with the type of WorkoutData
-	// ([]) sets the state as empty be default initially
-	const [workouts, setWorkouts] = useState<WorkoutData[]>([]);
+	const [workouts, setWorkouts] = useState<SessionData[]>([]);
 
 	const fetchWorkouts = async () => {
-		// const workoutsQuery = query(collection(db, "workouts"));
-		// const snapshotOfWorkouts = await getDocs(workoutsQuery);
-
 		const workoutsQuery = query(
 			collection(db, "workouts"),
 			where("userId", "==", auth.currentUser?.uid)
@@ -64,14 +38,15 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 		const workoutList = snapshotOfWorkouts.docs.map((doc) => ({
 			id: doc.id,
 			name: doc.data().name,
-			dateOfWorkout: doc.data().dateOfWorkout,
+			createdAt: doc.data().createdAt,
 			exercises: doc.data().exercises,
 			totalElapsedTimeSec: doc.data().totalElapsedTimeSec,
 			userId: doc.data().userId,
+			notes: doc.data().notes,
 		}));
 		setWorkouts(
 			workoutList.sort(
-				(a, b) => b.dateOfWorkout.toMillis() - a.dateOfWorkout.toMillis()
+				(a, b) => b.createdAt.toMillis() - a.createdAt.toMillis()
 			)
 		);
 	};
@@ -81,36 +56,24 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 		exercises: ExerciseData[],
 		totalElapsedTimeSec: number
 	): Promise<string> => {
-		const dateOfCreation = Timestamp.fromDate(new Date());
+		const user = getAuthenticatedUser();
 
-		const user = auth.currentUser;
-
-		if (!user) {
-			throw new Error("User is not authenticated");
-		}
+		const dataToAdd = {
+			name,
+			exercises,
+			userId: user.uid,
+			createdAt: Timestamp.now(),
+			totalElapsedTimeSec,
+		};
 
 		try {
-			// condense the data into an object (optional ofc)
-			const dataToBeUsed = {
-				name,
-				exercises,
-				dateOfWorkout: dateOfCreation,
-				totalElapsedTimeSec, // This can be calculated later based on the exercises
-				userId: user.uid,
-			};
+			const workoutRef = await addDoc(collection(db, "workouts"), dataToAdd);
 
-			// create a reference for the workout thats being created
-			const workoutRef = await addDoc(collection(db, "workouts"), dataToBeUsed);
-
-			// here i change the state of the workouts by passing the previuos value of the state (workout list) and then spread it apart to insert the new workouts and its data
-			setWorkouts((prevWorkouts) => [
-				...prevWorkouts,
-				{
-					...dataToBeUsed,
-					id: workoutRef.id,
-					dateOfWorkout: dateOfCreation,
-				},
+			setWorkouts((prevHistory) => [
+				...prevHistory,
+				{ ...dataToAdd, id: workoutRef.id, createdAt: dataToAdd.createdAt },
 			]);
+
 			// eslint-disable-next-line
 			console.log("Workout created: ", workoutRef.id);
 			return workoutRef.id;
@@ -130,6 +93,8 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 			// eslint-disable-next-line
 			console.log("Workout deleted:", id);
 		} catch (error) {
+			// eslint-disable-next-line
+			console.error("Error creating workout:", error);
 			throw new Error("Error deleting workout");
 		}
 	};

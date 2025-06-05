@@ -28,6 +28,7 @@ const Home = () => {
 		};
 
 		fetchData();
+		// eslint-disable-next-line
 	}, []);
 
 	return (
@@ -84,13 +85,10 @@ const Home = () => {
 												size="xs"
 												c="dimmed"
 											>
-												{workout.dateOfWorkout
-													? formatDistanceToNow(
-															workout.dateOfWorkout.toDate(),
-															{
-																addSuffix: true,
-															}
-														)
+												{workout.createdAt
+													? formatDistanceToNow(workout.createdAt.toDate(), {
+															addSuffix: true,
+														})
 													: "Unknown Date"}
 											</Text>
 										</div>

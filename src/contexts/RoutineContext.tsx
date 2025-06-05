@@ -1,4 +1,5 @@
 import { auth, db } from "@/auth/Firebase";
+import { getAuthenticatedUser } from "@/common/helper";
 import { RoutinesContext } from "@/hooks/useRoutinesHook";
 import {
 	addDoc,
@@ -11,41 +12,23 @@ import {
 	where,
 } from "firebase/firestore";
 import { useState, type ReactNode } from "react";
-
-export type ExerciseData = {
-	id: string;
-	name: string;
-	notes?: string;
-	sets: {
-		id: string;
-		weight: string | number;
-		reps: string | number;
-		isCompleted: boolean;
-	}[];
-};
-export interface RoutineData {
-	id: string;
-	name: string;
-	createdAt: Timestamp;
-	exercises: ExerciseData[];
-	userId: string;
-	notes?: string;
-}
+import type { SessionData, ExerciseData } from "@/common/types";
 
 export interface RoutinesContextType {
-	routines: RoutineData[];
+	routines: SessionData[];
 	fetchRoutines: () => Promise<void>;
-	createRoutine: (name: string, exercises: ExerciseData[]) => Promise<string>;
+	createRoutine: (
+		name: string,
+		exercises: ExerciseData[],
+		totalElapsedTimeSec: number
+	) => Promise<string>;
 	deleteRoutine: (id: string) => Promise<void>;
 }
 
 export const RoutineProvider = ({ children }: { children: ReactNode }) => {
-	const [routines, setRoutines] = useState<RoutineData[]>([]);
+	const [routines, setRoutines] = useState<SessionData[]>([]);
 
 	const fetchRoutines = async () => {
-		// const routinesQuery = query(collection(db, "routines"));
-		// const snapshotOfRoutines = await getDocs(routinesQuery);
-
 		const routineCollection = collection(db, "routines");
 		const routinesQuery = query(
 			routineCollection,
@@ -53,15 +36,14 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 		);
 		const snapshotOfRoutines = await getDocs(routinesQuery);
 
-		// create the local list of routines based on the data from Firebase
-		// each routine has the mentioned properties in the routineList function
-
 		const routineList = snapshotOfRoutines.docs.map((doc) => ({
 			id: doc.id,
 			name: doc.data().name,
 			createdAt: doc.data().createdAt,
 			exercises: doc.data().exercises,
+			totalElapsedTimeSec: doc.data().totalElapsedTimeSec,
 			userId: doc.data().userId,
+			notes: doc.data().notes,
 		}));
 
 		setRoutines(
@@ -73,30 +55,27 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 
 	const createRoutine = async (
 		name: string,
-		exercises: ExerciseData[]
+		exercises: ExerciseData[],
+		totalElapsedTimeSec: number
 	): Promise<string> => {
-		const dateOfCreation = Timestamp.fromDate(new Date());
+		const user = getAuthenticatedUser();
 
-		const user = auth.currentUser;
-
-		if (!user) {
-			throw new Error("User is not authenticated");
-		}
+		const dataToAdd = {
+			name,
+			exercises,
+			userId: user.uid,
+			createdAt: Timestamp.now(),
+			totalElapsedTimeSec,
+		};
 
 		try {
-			const dataToBeAdded = {
-				name,
-				exercises,
-				createdAt: dateOfCreation,
-				userId: user.uid,
-			};
+			const routineRef = await addDoc(collection(db, "routines"), dataToAdd);
 
-			const routineRef = await addDoc(
-				collection(db, "routines"),
-				dataToBeAdded
-			);
+			setRoutines((prev) => [
+				...prev,
+				{ ...dataToAdd, id: routineRef.id, createdAt: dataToAdd.createdAt },
+			]);
 
-			setRoutines([{ id: routineRef.id, ...dataToBeAdded }, ...routines]);
 			// eslint-disable-next-line
 			console.log("Routine created with ID: ", routineRef.id);
 			return routineRef.id;

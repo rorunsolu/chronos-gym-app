@@ -1,51 +1,62 @@
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
 import { useDisclosure } from "@mantine/hooks";
-import { CheckCircle, Plus, Search, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStopwatch } from "react-timer-hook";
 import {
+	CheckCircle,
+	EllipsisVertical,
+	Plus,
+	Search,
+	Trash,
+} from "lucide-react";
+import {
+	Button,
+	Card,
+	Checkbox,
+	Container,
+	Divider,
+	Group,
+	Input,
+	Menu,
+	Modal,
+	Select,
+	Stack,
+	Table,
+	Text,
+	Textarea,
+	TextInput,
+} from "@mantine/core";
+import {
 	equipment,
 	localExerciseInfo,
 	primaryMuscleGroups,
-} from "@/assets/index";
-import { type ExerciseData } from "@/contexts/RoutineContext";
-import {
-	Container,
-	Group,
-	Stack,
-	Text,
-	Button,
-	Table,
-	Modal,
-	TextInput,
-	Card,
-	Divider,
-	Select,
-	Input,
-	Checkbox,
-	Menu,
-	Textarea,
-} from "@mantine/core";
+} from "@/common/index";
+import type { ExerciseData } from "@/common/types";
 
 const WorkoutNew = () => {
+	// Hooks
+	const navigate = useNavigate();
+	const { createWorkout } = useWorkOutHook();
+
+	// For Mantine modal
 	const [opened, { open, close }] = useDisclosure(false);
 	const [finishOpen, finishHandler] = useDisclosure(false);
 
-	const [duration, setDuration] = useState(0);
-	const [, setExerciseSetCompleted] = useState(false);
-
+	// For the search functionality
 	const [search, setSearch] = useState("");
 	const [selectedMuscle, setSelectedMuscle] = useState<string | null>(null);
 	const [selectedEquipment, setSelectedEquipment] = useState<string | null>(
 		null
 	);
+
+	// For createWorkout functionality
 	const [name, setName] = useState("");
+	const [duration, setDuration] = useState(0);
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
+	const [, setExerciseSetCompleted] = useState(false);
 
-	const navigate = useNavigate();
-	const { createWorkout } = useWorkOutHook();
-
+	// Filter exercises based on search, muscle group, and equipment
 	const filtered = localExerciseInfo.filter((exercise) => {
 		const matchesSearch = exercise.name
 			.toLowerCase()
@@ -66,38 +77,6 @@ const WorkoutNew = () => {
 			showAllEquipment
 		);
 	});
-
-	const handleDeleteSet = (exerciseId: string, setId: string) => {
-		setExercises((prevExercises) =>
-			prevExercises.map((exercise) =>
-				exercise.id === exerciseId
-					? {
-							...exercise,
-							sets: exercise.sets.filter((set) => set.id !== setId),
-						}
-					: exercise
-			)
-		);
-	};
-
-	const handleSetCompletion = (
-		exerciseId: string,
-		setId: string,
-		isCompleted: boolean
-	) => {
-		setExercises((prevExercises) =>
-			prevExercises.map((exercise) =>
-				exercise.id === exerciseId
-					? {
-							...exercise,
-							sets: exercise.sets.map((set) =>
-								set.id === setId ? { ...set, isCompleted } : set
-							),
-						}
-					: exercise
-			)
-		);
-	};
 
 	// Docs referenced
 	// Dealing with the exercise & row rendering - https://react.dev/learn/rendering-lists
@@ -122,14 +101,6 @@ const WorkoutNew = () => {
 		]);
 	};
 
-	// when the function is called
-	// pass the exerciseId as a parameter to the function
-	// make use of the instancesOfexercises state and map through it
-	// for ech exercise check if the exerciseId paramater matches the exercise.id field of the exercise (thats from the state)
-	// if it is true then spread open that same exercise
-	// the sprewad open the array of sets inside of the exercise
-	// declare the properties of what each set should have to be used when a new row is rendered
-
 	const handleRowRender = (exerciseId: string) => {
 		setExercises((prev) =>
 			prev.map((exercise) =>
@@ -145,6 +116,44 @@ const WorkoutNew = () => {
 									isCompleted: false,
 								},
 							],
+						}
+					: exercise
+			)
+		);
+	};
+
+	const handleDeleteSet = (exerciseId: string, setId: string) => {
+		setExercises((prevExercises) =>
+			prevExercises.map((exercise) =>
+				exercise.id === exerciseId
+					? {
+							...exercise,
+							sets: exercise.sets.filter((set) => set.id !== setId),
+						}
+					: exercise
+			)
+		);
+	};
+
+	const handleDeleteExercise = (exerciseId: string) => {
+		setExercises((prevExercises) =>
+			prevExercises.filter((exercise) => exercise.id !== exerciseId)
+		);
+	};
+
+	const handleSetCompletion = (
+		exerciseId: string,
+		setId: string,
+		isCompleted: boolean
+	) => {
+		setExercises((prevExercises) =>
+			prevExercises.map((exercise) =>
+				exercise.id === exerciseId
+					? {
+							...exercise,
+							sets: exercise.sets.map((set) =>
+								set.id === setId ? { ...set, isCompleted } : set
+							),
 						}
 					: exercise
 			)
@@ -177,7 +186,21 @@ const WorkoutNew = () => {
 		finishHandler.open();
 	};
 
+	const [error, setError] = useState("");
+
 	const handleSessionUpload = async () => {
+		const hasEmptySets = exercises.some((exercise) =>
+			exercise.sets.some((set) => !set.weight || !set.reps || !set.isCompleted)
+		);
+
+		if (hasEmptySets) {
+			setError(
+				"Some sets are empty. Please complete them before saving the routine."
+			);
+			return;
+		}
+
+		setError("");
 		createWorkout(name, exercises, duration);
 		setExercises([]);
 		setName("");
@@ -192,8 +215,6 @@ const WorkoutNew = () => {
 
 	useEffect(() => {
 		setDuration(totalSeconds);
-		// eslint-disable-next-line
-		console.log(`Total elapsed time in seconds: ${totalSeconds}`);
 	}, [totalSeconds]);
 
 	const handleExerciseNotesChange = (exerciseId: string, notes: string) => {
@@ -240,31 +261,57 @@ const WorkoutNew = () => {
 							{exercises.map((exercise) => {
 								return (
 									<div key={exercise.id}>
-										<Group mb="xs">
+										<Group
+											mb="xs"
+											justify="space-between"
+											align="center"
+										>
 											<Text
 												fw={500}
 												size="lg"
 											>
 												{exercise.name}
 											</Text>
-											{exercises.map((exercise, index) => (
-												<Textarea
-													key={index}
-													autosize
-													minRows={1}
-													maxRows={4}
-													variant="unstyled"
-													placeholder="Add notes here..."
-													value={exercise.notes}
-													onChange={(e) =>
-														handleExerciseNotesChange(
-															exercise.id,
-															e.target.value
-														)
-													}
-												/>
-											))}
+
+											<Menu
+												shadow="md"
+												width={200}
+											>
+												<Menu.Target>
+													<Button
+														variant="subtle"
+														color="gray"
+													>
+														<EllipsisVertical size={16} />
+													</Button>
+												</Menu.Target>
+												<Menu.Dropdown>
+													<Menu.Item
+														leftSection={
+															<Trash
+																size={14}
+																color="red"
+															/>
+														}
+														onClick={() => handleDeleteExercise(exercise.id)}
+													>
+														<Text size="sm">Delete Exercise</Text>
+													</Menu.Item>
+												</Menu.Dropdown>
+											</Menu>
 										</Group>
+
+										<Textarea
+											autosize
+											minRows={1}
+											maxRows={4}
+											variant="unstyled"
+											placeholder="Add notes here..."
+											value={exercise.notes}
+											onChange={(e) =>
+												handleExerciseNotesChange(exercise.id, e.target.value)
+											}
+										/>
 
 										<Table
 											striped
@@ -381,67 +428,90 @@ const WorkoutNew = () => {
 						</Stack>
 					</Stack>
 
-					<Group
-						justify="right"
-						mt="md"
-					>
-						<Button
-							leftSection={<Plus size={20} />}
-							variant="default"
-							onClick={open}
+					<Stack>
+						<Group
+							justify="right"
+							mt="md"
 						>
-							Add Exercise
-						</Button>
-						<Button
-							leftSection={<CheckCircle size={20} />}
-							color="green"
-							onClick={() => {
-								handlePreConfirmation();
-							}}
-						>
-							Finish
-						</Button>
-					</Group>
+							<Button
+								leftSection={<Plus size={20} />}
+								variant="default"
+								onClick={open}
+							>
+								Add Exercise
+							</Button>
+							<Button
+								leftSection={<CheckCircle size={20} />}
+								color="green"
+								onClick={() => {
+									handlePreConfirmation();
+								}}
+								disabled={!name || exercises.length === 0}
+							>
+								Finish
+							</Button>
+						</Group>
+					</Stack>
 				</Stack>
 			</Container>
 
 			<Modal
 				opened={finishOpen}
-				onClose={finishHandler.close}
+				onClose={() => {
+					finishHandler.close();
+					start();
+					setError("");
+				}}
 				title="Are you sure?"
 				centered
 			>
-				<Text
-					size="sm"
-					c="dimmed"
-					mb="md"
+				<Stack
+					gap="xs"
+					mb="lg"
 				>
-					Elapsed Time: {hours >= 0.1 && <>{hours} hours</>}{" "}
-					{minutes >= 0.1 && <>{minutes} minutes,</>} {seconds} seconds
-				</Text>
-
-				<Group justify="flex-end">
-					<Button
-						variant="light"
-						color="red"
-						onClick={() => {
-							finishHandler.close();
-							start();
-						}}
+					<Text
+						size="sm"
+						c="dimmed"
 					>
-						Cancel
-					</Button>
+						Elapsed Time: {hours >= 0.1 && <>{hours} hours</>}{" "}
+						{minutes >= 0.1 && <>{minutes} minutes,</>} {seconds} seconds
+					</Text>
 
-					<Button
-						bg="teal"
-						variant="default"
-						onClick={() => {
-							handleSessionUpload();
-						}}
-					>
-						Confirm
-					</Button>
-				</Group>
+					{error && (
+						<Text
+							size="sm"
+							c="red.7"
+						>
+							{error}
+						</Text>
+					)}
+				</Stack>
+
+				<Stack>
+					<Group justify="flex-end">
+						<Button
+							variant="light"
+							color="red"
+							onClick={() => {
+								finishHandler.close();
+								start();
+								setError("");
+							}}
+						>
+							Cancel
+						</Button>
+
+						<Button
+							bg="teal"
+							variant="default"
+							onClick={() => {
+								handleSessionUpload();
+							}}
+						>
+							Confirm
+						</Button>
+					</Group>
+				</Stack>
 			</Modal>
 
 			<Modal

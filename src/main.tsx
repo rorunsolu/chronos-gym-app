@@ -4,6 +4,7 @@ import { AuthContextProvider } from "@/auth/AuthContext";
 import { AccountProvider } from "@/contexts/AccountContext";
 import { ExerciseProvider } from "@/contexts/ExerciseContext";
 import { RoutineProvider } from "@/contexts/RoutineContext";
+import { SessionHistoryProvider } from "@/contexts/SessionHistoryContext";
 import { WorkoutProvider } from "@/contexts/WorkoutContext";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
@@ -22,7 +23,9 @@ if (!rootElement.innerHTML) {
 							<ExerciseProvider>
 								<RoutineProvider>
 									<MeasurementProvider>
-										<App />
+										<SessionHistoryProvider>
+											<App />
+										</SessionHistoryProvider>
 									</MeasurementProvider>
 								</RoutineProvider>
 							</ExerciseProvider>

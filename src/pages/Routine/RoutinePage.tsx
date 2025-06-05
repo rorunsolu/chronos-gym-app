@@ -105,7 +105,8 @@ const RoutinePage = () => {
 								radius="md"
 								bg="dark.8"
 								withBorder
-								onClick={() => {
+								onClick={(e) => {
+									e.stopPropagation();
 									navigate(`/routine-about/${routine.id}`);
 								}}
 							>
@@ -205,7 +206,8 @@ const RoutinePage = () => {
 											color="teal"
 											leftSection={<Play size={20} />}
 											aria-label="Start routine"
-											onClick={() => {
+											onClick={(e) => {
+												e.stopPropagation();
 												navigate(`/routines/${routine.id}`);
 											}}
 										>

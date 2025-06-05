@@ -19,8 +19,8 @@ import {
 	Title,
 	Textarea,
 } from "@mantine/core";
-import type { ExerciseData } from "@/contexts/RoutineContext";
-import type { WorkoutData } from "@/contexts/WorkoutContext";
+
+import type { SessionData, ExerciseData } from "@/common/types";
 
 const WorkoutAbout = () => {
 	const navigate = useNavigate();
@@ -51,7 +51,7 @@ const WorkoutAbout = () => {
 					throw new Error("Workout snapshot not found");
 				}
 
-				const workoutData = workoutSnapshot.data() as WorkoutData;
+				const workoutData = workoutSnapshot.data() as SessionData;
 
 				setWorkoutName(workoutData.name || "");
 				setExercises(workoutData.exercises || []);

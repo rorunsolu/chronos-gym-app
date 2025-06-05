@@ -1,7 +1,8 @@
 import { useRoutinesHook } from "@/hooks/useRoutinesHook";
 import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useStopwatch } from "react-timer-hook";
 import {
 	CheckCircle,
 	Plus,
@@ -31,8 +32,8 @@ import {
 	equipment,
 	localExerciseInfo,
 	primaryMuscleGroups,
-} from "@/assets/index";
-import type { ExerciseData } from "@/contexts/RoutineContext";
+} from "@/common/index";
+import { type ExerciseData } from "@/common/types";
 
 const Routine = () => {
 	const [opened, { open, close }] = useDisclosure(false);
@@ -41,12 +42,17 @@ const Routine = () => {
 	const [selectedEquipment, setSelectedEquipment] = useState<string | null>(
 		null
 	);
-	const [, setExerciseSetCompleted] = useState(false);
+	//const [, setExerciseSetCompleted] = useState(false);
 	const navigate = useNavigate();
 	const [name, setName] = useState("");
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
+	const [finishOpen, finishHandler] = useDisclosure(false);
 
 	const { createRoutine } = useRoutinesHook();
+	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({
+		autoStart: true,
+		interval: 20,
+	});
 
 	const filtered = localExerciseInfo.filter((exercise) => {
 		const matchesSearch = exercise.name
@@ -190,11 +196,22 @@ const Routine = () => {
 		}
 
 		setError("");
-		createRoutine(name, exercises);
+		createRoutine(name, exercises, duration);
 		setExercises([]);
 		setName("");
 		navigate("/home-page");
 	};
+
+	const handlePreConfirmation = () => {
+		pause();
+		finishHandler.open();
+	};
+
+	const [duration, setDuration] = useState(0);
+
+	useEffect(() => {
+		setDuration(totalSeconds);
+	}, [totalSeconds]);
 
 	return (
 		<>
@@ -204,13 +221,22 @@ const Routine = () => {
 				py="md"
 			>
 				<Stack gap="md">
-					<TextInput
-						size="lg"
-						variant="unstyled"
-						value={name}
-						placeholder="Enter routine name"
-						onChange={(e) => setName(e.target.value)}
-					/>
+					<Group justify="space-between">
+						<TextInput
+							size="lg"
+							variant="unstyled"
+							value={name}
+							placeholder="Enter routine name"
+							onChange={(e) => setName(e.target.value)}
+						/>
+						<Text
+							c="teal.4"
+							fw={500}
+							size="lg"
+						>
+							Duration: {hours}:{minutes}:{seconds}
+						</Text>
+					</Group>
 
 					<Stack gap="xl">
 						{exercises.map((exercise, index) => {
@@ -267,25 +293,6 @@ const Routine = () => {
 												handleExerciseNotesChange(exercise.id, e.target.value)
 											}
 										/>
-
-										{/* <Menu
-											shadow="md"
-											width={200}
-										>
-											<Menu.Target>
-												<Button
-													variant="subtle"
-													color="gray"
-												>
-													<EllipsisVertical size={16} />
-												</Button>
-											</Menu.Target>
-											<Menu.Dropdown>
-												<Menu.Item>
-													<Text size="sm">Rest Timer</Text>
-												</Menu.Item>
-											</Menu.Dropdown>
-										</Menu> */}
 									</Stack>
 
 									<Stack>
@@ -376,9 +383,9 @@ const Routine = () => {
 																		set.id,
 																		e.currentTarget.checked
 																	);
-																	setExerciseSetCompleted(
-																		e.currentTarget.checked
-																	);
+																	// setExerciseSetCompleted(
+																	// 	e.currentTarget.checked
+																	// );
 																}}
 															/>
 														</Table.Td>
@@ -420,13 +427,12 @@ const Routine = () => {
 								leftSection={<CheckCircle size={20} />}
 								color="green"
 								onClick={() => {
-									handleRoutineUpload();
+									handlePreConfirmation();
 								}}
 								disabled={!name || exercises.length === 0}
 							>
 								Finish
 							</Button>
-							{error && <Text c="red">{error}</Text>}
 						</Group>
 					</Stack>
 				</Stack>
@@ -502,6 +508,65 @@ const Routine = () => {
 							</Card>
 						))}
 					</Stack>
+				</Stack>
+			</Modal>
+
+			<Modal
+				opened={finishOpen}
+				onClose={() => {
+					finishHandler.close();
+					start();
+					setError("");
+				}}
+				title="Are you sure?"
+				centered
+			>
+				<Stack
+					gap="xs"
+					mb="lg"
+				>
+					<Text
+						size="sm"
+						c="dimmed"
+					>
+						Elapsed Time: {hours >= 0.1 && <>{hours} hours</>}{" "}
+						{minutes >= 0.1 && <>{minutes} minutes,</>} {seconds} seconds
+					</Text>
+
+					{error && (
+						<Text
+							size="sm"
+							c="red.7"
+						>
+							{error}
+						</Text>
+					)}
+				</Stack>
+
+				<Stack>
+					<Group justify="flex-end">
+						<Button
+							variant="light"
+							color="red"
+							onClick={() => {
+								finishHandler.close();
+								start();
+								setError("");
+							}}
+						>
+							Cancel
+						</Button>
+
+						<Button
+							bg="teal"
+							variant="default"
+							onClick={() => {
+								handleRoutineUpload();
+							}}
+						>
+							Confirm
+						</Button>
+					</Group>
 				</Stack>
 			</Modal>
 		</>

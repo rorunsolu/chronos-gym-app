@@ -168,6 +168,8 @@ export const localExerciseInfo = [
             "Keep shoulders packed down"
         ]
     },
+
+
     {
         "name": "Dips",
         "muscleGroup": "Triceps",
@@ -182,6 +184,8 @@ export const localExerciseInfo = [
             "Control movement throughout"
         ]
     },
+
+    // next one to do is SLED PUSH
     {
         "name": "Sled Push",
         "muscleGroup": "Quadriceps",
@@ -532,8 +536,6 @@ export const localExerciseInfo = [
             "Keep movement controlled throughout"
         ]
     }
-
-
 ];
 
 const equipmentValues = localExerciseInfo.flat().map(exercise => exercise.equipment);

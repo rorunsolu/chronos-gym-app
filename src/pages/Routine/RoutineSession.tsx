@@ -8,6 +8,7 @@ import { useStopwatch } from "react-timer-hook";
 import {
 	Check,
 	CheckCircle,
+	EllipsisVertical,
 	Hash,
 	Plus,
 	Search,
@@ -19,7 +20,7 @@ import {
 	equipment,
 	localExerciseInfo,
 	primaryMuscleGroups,
-} from "@/assets/index";
+} from "@/common/index";
 import {
 	Container,
 	Group,
@@ -37,8 +38,10 @@ import {
 	Switch,
 	Checkbox,
 	Menu,
+	Textarea,
+	NumberInput,
 } from "@mantine/core";
-import type { ExerciseData } from "@/contexts/RoutineContext";
+import { type ExerciseData } from "@/common/types";
 
 const RoutineSession = () => {
 	const { id } = useParams<{ id: string }>();
@@ -51,6 +54,7 @@ const RoutineSession = () => {
 	const [muscle, setMuscle] = useState<string | null>(null);
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 	const [modalEquipment, setModalEquipment] = useState<string | null>(null);
+	const [error, setError] = useState("");
 
 	const navigate = useNavigate();
 	const { createWorkout } = useWorkOutHook();
@@ -139,7 +143,7 @@ const RoutineSession = () => {
 		exerciseId: string,
 		setId: string,
 		field: "reps" | "weight",
-		value: string
+		value: string | number
 	) => {
 		setExercises((prev) =>
 			prev.map((exercise) =>
@@ -155,7 +159,7 @@ const RoutineSession = () => {
 		);
 	};
 
-	const [, setExerciseSetCompleted] = useState(false);
+	//const [, setExerciseSetCompleted] = useState(false);
 
 	const [finishOpen, finishHandler] = useDisclosure(false);
 	const [checked, setChecked] = useState(false);
@@ -167,29 +171,55 @@ const RoutineSession = () => {
 	});
 
 	const handleUpdatePreConfirmation = async () => {
-		try {
-			if (!rountineName || rountineName.trim() === "") {
-				new Error("Session name cannot be empty");
-				return;
-			}
+		const hasEmptySets = exercises.some((exercise) =>
+			exercise.sets.some((set) => !set.weight || !set.reps || !set.isCompleted)
+		);
 
-			if (checked) {
-				await handleRoutineUpdate(rountineName, exercises);
-			}
-		} catch (error) {
-			new Error("Error updating routine");
-		} finally {
-			navigate("/routine-page");
+		if (hasEmptySets) {
+			setError(
+				"Some sets are incomplete. Please complete them before saving the routine."
+			);
+			return;
 		}
+
+		if (checked) {
+			await handleRoutineUpdate(rountineName, exercises);
+		}
+
+		setError("");
+		navigate("/routine-page");
+		// Since routines don't have to have thir changes saved/updated , if the user opts to not update the routine, we can just navigate back to the routine page.
 	};
 
 	const handlePreConfirmation = () => {
+		const hasEmptySets = exercises.some((exercise) =>
+			exercise.sets.some((set) => !set.weight || !set.reps || !set.isCompleted)
+		);
+
+		if (hasEmptySets) {
+			setError(
+				"Some sets are empty. Please complete them before saving the routine."
+			);
+			return;
+		}
+
 		pause();
 		setDuration(totalSeconds);
 		finishHandler.open();
 	};
 
 	const handleCreateWorkoutFromRoutine = async () => {
+		const hasEmptySets = exercises.some((exercise) =>
+			exercise.sets.some((set) => !set.weight || !set.reps || !set.isCompleted)
+		);
+
+		if (hasEmptySets) {
+			setError(
+				"Some sets are empty. Please complete them before saving the routine."
+			);
+			return;
+		}
+
 		createWorkout(rountineName, exercises, duration);
 		handleUpdatePreConfirmation();
 	};
@@ -225,6 +255,22 @@ const RoutineSession = () => {
 			)
 		);
 	};
+
+	const handleExerciseNotesChange = (exerciseId: string, notes: string) => {
+		setExercises((prev) =>
+			prev.map((exercise) =>
+				exercise.id === exerciseId ? { ...exercise, notes } : exercise
+			)
+		);
+	};
+
+	const handeleDeleteExercise = (exerciseid: string) => {
+		setExercises((prevExercises) =>
+			prevExercises.filter((exercise) => exercise.id !== exerciseid)
+		);
+	};
+
+	//TODO: need to genrate a list of all of the features etc that each page has an compare them to see if stuff is missing or not
 
 	useEffect(() => {
 		if (isInitialLoad) {
@@ -266,7 +312,7 @@ const RoutineSession = () => {
 
 				setRoutineName(objectData.name || "");
 				setExercises(validatedExercises);
-				setExerciseSetCompleted(false);
+				//setExerciseSetCompleted(false);
 			} catch (error) {
 				new Error("Error fetching routine data");
 				setIsLoading(false);
@@ -277,6 +323,12 @@ const RoutineSession = () => {
 
 		fetchData();
 	}, [id, isInitialLoad]);
+
+	useEffect(() => {
+		setDuration(totalSeconds);
+		// eslint-disable-next-line
+		console.log(`Total elapsed time in seconds: ${totalSeconds}`);
+	}, [totalSeconds]);
 
 	return (
 		<>
@@ -295,29 +347,77 @@ const RoutineSession = () => {
 				)}
 
 				<Stack gap="md">
-					<Stack
-						gap="xs"
-						py="md"
-					>
+					<Group justify="space-between">
 						<TextInput
 							size="lg"
 							variant="unstyled"
 							value={rountineName}
 							onChange={(e) => setRoutineName(e.target.value)}
 						/>
-					</Stack>
+						<Text
+							c="teal.4"
+							fw={500}
+							size="lg"
+						>
+							Duration: {hours}:{minutes}:{seconds}
+						</Text>
+					</Group>
 
 					<Stack gap="xl">
-						{exercises.map((exercise) => (
-							<Stack key={exercise.id}>
-								<Group mb="xs">
-									<Text
-										fw={500}
-										size="lg"
+						{exercises.map((exercise, index) => (
+							<div key={exercise.id}>
+								<Stack gap="0">
+									<Group
+										justify="space-between"
+										align="center"
 									>
-										{exercise.name}
-									</Text>
-								</Group>
+										<Text
+											fw={500}
+											size="lg"
+										>
+											{exercise.name}
+										</Text>
+										<Menu
+											shadow="md"
+											width={200}
+										>
+											<Menu.Target>
+												<Button
+													variant="subtle"
+													color="gray"
+												>
+													<EllipsisVertical size={16} />
+												</Button>
+											</Menu.Target>
+											<Menu.Dropdown>
+												<Menu.Item
+													leftSection={
+														<Trash
+															size={14}
+															color="red"
+														/>
+													}
+													onClick={() => handeleDeleteExercise(exercise.id)}
+												>
+													<Text size="sm">Delete Exercise</Text>
+												</Menu.Item>
+											</Menu.Dropdown>
+										</Menu>
+									</Group>
+
+									<Textarea
+										key={index}
+										autosize
+										minRows={1}
+										maxRows={4}
+										variant="unstyled"
+										placeholder="Add notes here..."
+										value={exercise.notes}
+										onChange={(e) =>
+											handleExerciseNotesChange(exercise.id, e.target.value)
+										}
+									/>
+								</Stack>
 
 								<Table
 									striped
@@ -387,34 +487,33 @@ const RoutineSession = () => {
 													</Menu>
 												</Table.Td>
 												<Table.Td>
-													<TextInput
-														size="sm"
-														variant="unstyled"
-														placeholder="0kg"
-														value={set.weight}
-														onChange={(e) =>
+													<NumberInput
+														value=""
+														onChange={(value) =>
 															handleInputChange(
 																exercise.id,
 																set.id,
 																"weight",
-																e.currentTarget.value
+																value || 0
 															)
 														}
+														variant="unstyled"
+														placeholder="0kg"
 													/>
 												</Table.Td>
 												<Table.Td>
-													<TextInput
+													<NumberInput
 														variant="unstyled"
 														placeholder="0"
-														value={set.reps}
-														onChange={(e) =>
+														value=""
+														onChange={(value) => {
 															handleInputChange(
 																exercise.id,
 																set.id,
 																"reps",
-																e.currentTarget.value
-															)
-														}
+																value || 0
+															);
+														}}
 													/>
 												</Table.Td>
 												<Table.Td>
@@ -428,7 +527,7 @@ const RoutineSession = () => {
 																set.id,
 																e.currentTarget.checked
 															);
-															setExerciseSetCompleted(e.currentTarget.checked);
+															//setExerciseSetCompleted(e.currentTarget.checked);
 														}}
 													/>
 												</Table.Td>
@@ -446,7 +545,7 @@ const RoutineSession = () => {
 										Add Set
 									</Button>
 								</Group>
-							</Stack>
+							</div>
 						))}
 					</Stack>
 
@@ -463,20 +562,25 @@ const RoutineSession = () => {
 						</Button>
 						<Button
 							leftSection={<CheckCircle size={20} />}
-							color="teal"
+							color="green"
 							onClick={() => {
 								handlePreConfirmation();
 							}}
+							disabled={!rountineName || exercises.length === 0}
 						>
 							Finish
 						</Button>
+						{error && <Text c="red">{error}</Text>}
 					</Group>
 				</Stack>
 			</Container>
 
 			<Modal
 				opened={finishOpen}
-				onClose={finishHandler.close}
+				onClose={() => {
+					finishHandler.close();
+					start();
+				}}
 				title="Are you sure?"
 				centered
 			>
