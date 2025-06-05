@@ -1,9 +1,12 @@
 import { UserAuth } from "@/auth/AuthContext";
 import { db } from "@/auth/Firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { Play, Timer } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import {
+	Play,
+	//Timer
+} from "lucide-react";
 import {
 	Container,
 	Stack,
@@ -122,7 +125,7 @@ const WorkoutAbout = () => {
 										<Group justify="space-between">
 											<Text fw={500}>{exercise.name}</Text>
 										</Group>
-										<Group
+										{/* <Group
 											gap={0}
 											align="center"
 										>
@@ -133,18 +136,22 @@ const WorkoutAbout = () => {
 												ml={6}
 											>
 												Rest Timer:
-												{/* {exercise.rest} */}
+												
 											</Text>
-										</Group>
-										<Group>
-											<Textarea
-												autosize
-												minRows={1}
-												maxRows={4}
-												variant="unstyled"
-												value={exercise.notes}
-											/>
-										</Group>
+										</Group> */}
+										{exercise.notes && (
+											<Group>
+												<Textarea
+													autosize
+													minRows={1}
+													maxRows={4}
+													variant="unstyled"
+													value={exercise.notes}
+													readOnly
+													prefix="Notes: "
+												/>
+											</Group>
+										)}
 									</Stack>
 
 									<Table
