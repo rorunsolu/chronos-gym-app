@@ -1,5 +1,5 @@
 import { auth, db } from "@/auth/Firebase";
-import { getAuthenticatedUser } from "@/common/helper";
+import { getAuthenticatedUser } from "@/common/authChecker";
 import { RoutinesContext } from "@/hooks/useRoutinesHook";
 import {
 	addDoc,

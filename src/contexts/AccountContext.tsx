@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 import { useState, type ReactNode, useEffect } from "react";
 
-export interface AccountData {
+export type AccountData = {
 	id: string;
 	userId: string;
 	username: string;
@@ -21,7 +21,7 @@ export interface AccountData {
 	age: number;
 	createdAt: Timestamp;
 	isRegistered: boolean;
-}
+};
 
 export interface AccountContextType {
 	accounts: AccountData[];

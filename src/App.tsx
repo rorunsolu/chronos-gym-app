@@ -8,7 +8,7 @@ import Explore from "@/pages/Explore/Explore";
 import Homepage from "@/pages/Homepage/Homepage";
 import MeasurementsPage from "@/pages/Measurements/MeasurementsPage";
 import Portal from "@/pages/Portal/Portal";
-import Profile from "@/pages/Profile/Profile";
+import ProfilePage from "@/pages/Profile/ProfilePage";
 import RoutineAbout from "@/pages/Routine/RoutineAbout";
 import RoutineNew from "@/pages/Routine/RoutineNew";
 import RoutinePage from "@/pages/Routine/RoutinePage";
@@ -297,7 +297,7 @@ function App() {
 								path="/profile-page"
 								element={
 									<Protected>
-										<Profile />
+										<ProfilePage />
 									</Protected>
 								}
 							/>

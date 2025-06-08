@@ -1,5 +1,5 @@
 import { db } from "@/auth/Firebase";
-import { getAuthenticatedUser } from "@/common/helper";
+import { getAuthenticatedUser } from "@/common/authChecker";
 import { MeasurementsContext } from "@/hooks/useMeasurementsHook";
 import { useState, type ReactNode } from "react";
 import {
