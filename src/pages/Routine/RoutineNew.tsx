@@ -197,8 +197,8 @@ const Routine = () => {
 		}
 
 		setError("");
-		createRoutine(name, exercises, duration, notes);
-		navigate("/home-page");
+		await createRoutine(name, exercises, duration, notes);
+		navigate("/routine-page");
 	};
 
 	const handlePreConfirmation = () => {

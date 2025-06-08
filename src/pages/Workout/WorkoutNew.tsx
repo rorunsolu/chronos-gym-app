@@ -203,8 +203,8 @@ const WorkoutNew = () => {
 		}
 
 		setError("");
-		createWorkout(name, exercises, duration, notes);
-		navigate("/home-page");
+		await createWorkout(name, exercises, duration, notes);
+		navigate("/workout-page");
 	};
 
 	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({

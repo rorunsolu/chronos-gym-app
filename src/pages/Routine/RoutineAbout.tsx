@@ -1,9 +1,9 @@
 import { UserAuth } from "@/auth/AuthContext";
 import { db } from "@/auth/Firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { Play } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Play } from "lucide-react";
 import {
 	Container,
 	Stack,
@@ -23,6 +23,7 @@ const RoutineAbout = () => {
 	const { id } = useParams<{ id: string }>();
 	const [routineName, setRoutineName] = useState<string>("");
 	const [notes, setNotes] = useState<string>("");
+	const [totalElapsedTime, setTotalElapsedTime] = useState<number>(0);
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 	const [, setIsLoading] = useState(true);
 	const { user } = UserAuth();
@@ -66,6 +67,7 @@ const RoutineAbout = () => {
 
 				setRoutineName(objectData.name || "");
 				setNotes(objectData.notes || "");
+				setTotalElapsedTime(objectData.totalElapsedTimeSec || 0);
 				setExercises(validatedExercises);
 			} catch (error) {
 				new Error("Error fetching routine data");
@@ -169,6 +171,14 @@ const RoutineAbout = () => {
 						</>
 					))}
 				</Stack>
+				<Text
+					size="sm"
+					c="dimmed"
+				>
+					{totalElapsedTime > 60
+						? `Total Time: ${Math.floor(totalElapsedTime / 60)} minutes`
+						: `Total Time: ${totalElapsedTime} seconds`}
+				</Text>
 			</Stack>
 		</Container>
 	);
