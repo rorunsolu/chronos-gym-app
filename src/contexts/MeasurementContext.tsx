@@ -1,4 +1,5 @@
 import { db } from "@/auth/Firebase";
+import { getAuthenticatedUser } from "@/common/helper";
 import { MeasurementsContext } from "@/hooks/useMeasurementsHook";
 import { useState, type ReactNode } from "react";
 import {
@@ -9,6 +10,7 @@ import {
 	query,
 	getDocs,
 	Timestamp,
+	where,
 } from "firebase/firestore";
 
 export interface MeasurementData {
@@ -34,7 +36,12 @@ export const MeasurementProvider = ({ children }: { children: ReactNode }) => {
 	const [measurements, setMeasurements] = useState<MeasurementData[]>([]);
 
 	const fetchMeasurements = async () => {
-		const measurementsQuery = query(collection(db, "measurements"));
+		const user = getAuthenticatedUser();
+
+		const measurementsQuery = query(
+			collection(db, "measurements"),
+			where("userId", "==", user.uid)
+		);
 
 		const snapshotOfMeasurements = await getDocs(measurementsQuery);
 
@@ -44,6 +51,7 @@ export const MeasurementProvider = ({ children }: { children: ReactNode }) => {
 			height: doc.data().height,
 			bodyFat: doc.data().bodyFat,
 			date: doc.data().date,
+			userId: doc.data().userId,
 		}));
 
 		setMeasurements(
@@ -62,11 +70,14 @@ export const MeasurementProvider = ({ children }: { children: ReactNode }) => {
 			);
 		}
 
+		const user = getAuthenticatedUser();
+
 		const newMeasurement = {
 			weight,
 			height,
 			bodyFat,
 			date: Timestamp.fromDate(new Date()),
+			userId: user.uid,
 		};
 
 		try {
@@ -78,6 +89,7 @@ export const MeasurementProvider = ({ children }: { children: ReactNode }) => {
 				{ id: docRef.id, ...newMeasurement },
 				...prev,
 			]);
+			// eslint-disable-next-line
 			console.log("Measurement created with ID: ", docRef.id);
 			return docRef.id;
 		} catch (error) {
