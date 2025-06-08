@@ -20,6 +20,7 @@ import {
 	Input,
 	Menu,
 	Modal,
+	NumberInput,
 	Select,
 	Stack,
 	Table,
@@ -52,6 +53,7 @@ const WorkoutNew = () => {
 
 	// For createWorkout functionality
 	const [name, setName] = useState("");
+	const [notes, setNotes] = useState("");
 	const [duration, setDuration] = useState(0);
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 	const [, setExerciseSetCompleted] = useState(false);
@@ -164,7 +166,7 @@ const WorkoutNew = () => {
 		exerciseId: string,
 		setId: string,
 		field: "reps" | "weight",
-		value: string
+		value: string | number
 	) => {
 		setExercises((prev) =>
 			prev.map((exercise) =>
@@ -201,10 +203,7 @@ const WorkoutNew = () => {
 		}
 
 		setError("");
-		createWorkout(name, exercises, duration);
-		setExercises([]);
-		setName("");
-		setDuration(0);
+		createWorkout(name, exercises, duration, notes);
 		navigate("/home-page");
 	};
 
@@ -233,7 +232,7 @@ const WorkoutNew = () => {
 	return (
 		<>
 			<Container
-				size="sm"
+				size="xs"
 				p="md"
 				py="md"
 			>
@@ -360,31 +359,31 @@ const WorkoutNew = () => {
 															</Menu>
 														</Table.Td>
 														<Table.Td>
-															<TextInput
+															<NumberInput
 																variant="unstyled"
 																placeholder="0kg"
 																value={set.weight}
-																onChange={(event) =>
+																onChange={(value) =>
 																	handleInputChange(
-																		exercise.id, // this is refered to as exerciseId and setId as parameters inside the function
+																		exercise.id,
 																		set.id,
 																		"weight",
-																		event.currentTarget.value
+																		value || 0
 																	)
 																}
 															/>
 														</Table.Td>
 														<Table.Td>
-															<TextInput
+															<NumberInput
 																variant="unstyled"
 																placeholder="0"
 																value={set.reps}
-																onChange={(event) => {
+																onChange={(value) => {
 																	handleInputChange(
 																		exercise.id,
 																		set.id,
 																		"reps",
-																		event.currentTarget.value
+																		value || 0
 																	);
 																}}
 															/>
@@ -476,6 +475,19 @@ const WorkoutNew = () => {
 						Elapsed Time: {hours >= 0.1 && <>{hours} hours</>}{" "}
 						{minutes >= 0.1 && <>{minutes} minutes,</>} {seconds} seconds
 					</Text>
+
+					<Stack
+						gap={0}
+						mt="sm"
+					>
+						<TextInput
+							size="md"
+							value={notes}
+							variant="unstyled"
+							placeholder="How was your workout..."
+							onChange={(event) => setNotes(event.currentTarget.value)}
+						/>
+					</Stack>
 
 					{error && (
 						<Text

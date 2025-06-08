@@ -26,6 +26,7 @@ const WorkoutAbout = () => {
 	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
 	const [workoutName, setWorkoutName] = useState<string>("");
+
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 	const [notes, setNotes] = useState<string>("");
 	const [totalElapsedTime, setTotalElapsedTime] = useState<number>(0);
@@ -92,6 +93,7 @@ const WorkoutAbout = () => {
 					>
 						Created by {user?.displayName || "Anonymous"}
 					</Text>
+					{notes && <Text mt="xs">Notes: {notes}</Text>}
 				</Stack>
 
 				<Button

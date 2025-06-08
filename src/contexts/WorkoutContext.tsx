@@ -20,7 +20,8 @@ export type WorkoutContextType = {
 	createWorkout: (
 		name: string,
 		exercises: ExerciseData[],
-		totalElapsedTimeSec: number
+		totalElapsedTimeSec: number,
+		notes?: string
 	) => Promise<string>;
 	deleteWorkout: (id: string) => Promise<void>;
 };
@@ -54,7 +55,8 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 	const createWorkout = async (
 		name: string,
 		exercises: ExerciseData[],
-		totalElapsedTimeSec: number
+		totalElapsedTimeSec: number,
+		notes?: string
 	): Promise<string> => {
 		const user = getAuthenticatedUser();
 
@@ -64,6 +66,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 			userId: user.uid,
 			createdAt: Timestamp.now(),
 			totalElapsedTimeSec,
+			notes: notes || "",
 		};
 
 		try {
