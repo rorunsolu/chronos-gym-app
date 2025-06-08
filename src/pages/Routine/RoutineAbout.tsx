@@ -3,10 +3,7 @@ import { db } from "@/auth/Firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-	Play,
-	//Timer
-} from "lucide-react";
+import { Play } from "lucide-react";
 import {
 	Container,
 	Stack,
@@ -15,7 +12,6 @@ import {
 	Paper,
 	Group,
 	Table,
-	//SegmentedControl,
 	Divider,
 	Title,
 	Textarea,
@@ -26,6 +22,7 @@ const RoutineAbout = () => {
 	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
 	const [routineName, setRoutineName] = useState<string>("");
+	const [notes, setNotes] = useState<string>("");
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 	const [, setIsLoading] = useState(true);
 	const { user } = UserAuth();
@@ -68,6 +65,7 @@ const RoutineAbout = () => {
 				);
 
 				setRoutineName(objectData.name || "");
+				setNotes(objectData.notes || "");
 				setExercises(validatedExercises);
 			} catch (error) {
 				new Error("Error fetching routine data");
@@ -94,6 +92,7 @@ const RoutineAbout = () => {
 					>
 						Created by {user?.displayName || "Anonymous"}
 					</Text>
+					{notes && <Text mt="xs">Notes: {notes}</Text>}
 				</Stack>
 
 				<Button
@@ -109,31 +108,6 @@ const RoutineAbout = () => {
 				>
 					Start Routine
 				</Button>
-
-				{/* <Card
-					withBorder
-					padding="xl"
-					radius="md"
-					mt="md"
-				>
-					<Stack
-						gap="xs"
-						align="center"
-					>
-						<Text
-							size="sm"
-							c="dimmed"
-						>
-							No data yet
-						</Text>
-						<SegmentedControl
-							fullWidth
-							data={["Volume", "Reps", "Duration"]}
-							defaultValue="Volume"
-							color="blue"
-						/>
-					</Stack>
-				</Card> */}
 
 				<Divider
 					label="Exercises"
@@ -154,20 +128,7 @@ const RoutineAbout = () => {
 										<Group justify="space-between">
 											<Text fw={500}>{exercise.name}</Text>
 										</Group>
-										{/* <Group
-											gap={0}
-											align="center"
-										>
-											<Timer size={16} />
-											<Text
-												size="sm"
-												c="dimmed"
-												ml={6}
-											>
-												Rest Timer:
-												
-											</Text>
-										</Group> */}
+
 										<Group>
 											{exercise.notes && (
 												<Textarea

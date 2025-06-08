@@ -20,7 +20,8 @@ export interface RoutinesContextType {
 	createRoutine: (
 		name: string,
 		exercises: ExerciseData[],
-		totalElapsedTimeSec: number
+		totalElapsedTimeSec: number,
+		notes?: string
 	) => Promise<string>;
 	deleteRoutine: (id: string) => Promise<void>;
 }
@@ -56,7 +57,8 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 	const createRoutine = async (
 		name: string,
 		exercises: ExerciseData[],
-		totalElapsedTimeSec: number
+		totalElapsedTimeSec: number,
+		notes?: string
 	): Promise<string> => {
 		const user = getAuthenticatedUser();
 
@@ -66,6 +68,7 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 			userId: user.uid,
 			createdAt: Timestamp.now(),
 			totalElapsedTimeSec,
+			notes: notes || "",
 		};
 
 		try {

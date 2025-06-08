@@ -42,9 +42,10 @@ const Routine = () => {
 	const [selectedEquipment, setSelectedEquipment] = useState<string | null>(
 		null
 	);
-	//const [, setExerciseSetCompleted] = useState(false);
+
 	const navigate = useNavigate();
 	const [name, setName] = useState("");
+	const [notes, setNotes] = useState("");
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 	const [finishOpen, finishHandler] = useDisclosure(false);
 
@@ -196,9 +197,7 @@ const Routine = () => {
 		}
 
 		setError("");
-		createRoutine(name, exercises, duration);
-		setExercises([]);
-		setName("");
+		createRoutine(name, exercises, duration, notes);
 		navigate("/home-page");
 	};
 
@@ -225,8 +224,7 @@ const Routine = () => {
 						<TextInput
 							size="lg"
 							variant="unstyled"
-							value={name}
-							placeholder="Enter routine name"
+							placeholder="Name your routine"
 							onChange={(e) => setName(e.target.value)}
 						/>
 						<Text
@@ -518,11 +516,12 @@ const Routine = () => {
 					start();
 					setError("");
 				}}
-				title="Are you sure?"
+				title="Are you sure you want to finish?"
+				size="lg"
 				centered
 			>
 				<Stack
-					gap="xs"
+					gap={0}
 					mb="lg"
 				>
 					<Text
@@ -532,6 +531,19 @@ const Routine = () => {
 						Elapsed Time: {hours >= 0.1 && <>{hours} hours</>}{" "}
 						{minutes >= 0.1 && <>{minutes} minutes,</>} {seconds} seconds
 					</Text>
+
+					<Stack
+						gap={0}
+						mt="sm"
+					>
+						<TextInput
+							size="md"
+							value={notes}
+							variant="unstyled"
+							placeholder="How was your workout..."
+							onChange={(event) => setNotes(event.currentTarget.value)}
+						/>
+					</Stack>
 
 					{error && (
 						<Text
