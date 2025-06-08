@@ -91,17 +91,23 @@ const RegisterForm = () => {
 	};
 
 	useEffect(() => {
+		const checkRegistration = async () => {
+			if (user?.uid) {
+				const registered = await isUserRegistered(user.uid);
+				if (registered) {
+					navigate("/home-page");
+				}
+			}
+		};
+		checkRegistration();
+	}, [user, isUserRegistered, navigate]);
+
+	useEffect(() => {
 		if (user == null) {
 			navigate("/");
 		}
 		// don't want to redirect immediately after creation
 	}, [user, navigate]);
-
-	useEffect(() => {
-		if (isUserRegistered(user?.uid) && user != null) {
-			navigate("/home-page");
-		}
-	}, [user, isUserRegistered, navigate]);
 
 	return (
 		<>

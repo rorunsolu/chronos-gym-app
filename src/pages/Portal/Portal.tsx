@@ -1,17 +1,17 @@
 import { UserAuth } from "@/auth/AuthContext";
 import ChronosLogo from "@/components/Branding/ChronosLogo";
 import GoogleLogo from "@/components/Branding/GoogleLogo";
-import { useAccountsHook } from "@/hooks/useAccountsHook";
 import { Anchor, Button, Container, Stack, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+//import { useAccountsHook } from "@/hooks/useAccountsHook";
 
 const Portal = () => {
 	const navigate = useNavigate();
 	const [error, setError] = useState("");
 	const { googleSignIn, user } = UserAuth();
 	const icon = <GoogleLogo />;
-	const { isUserRegistered } = useAccountsHook();
+	//const { isUserRegistered } = useAccountsHook();
 
 	const handleGoogleSignUp = async () => {
 		try {
@@ -31,17 +31,39 @@ const Portal = () => {
 		}
 	};
 
-	useEffect(() => {
-		if (user != null && isUserRegistered(user.uid)) {
-			navigate("/home-page");
-		}
-	}, [user, isUserRegistered, navigate]);
+	// useEffect(() => {
+	// 	if (user != null && isUserRegistered(user.uid)) {
+	// 		navigate("/home-page");
+	// 	}
+	// }, [user, isUserRegistered, navigate]);
+
+	// useEffect(() => {
+	// 	if (user != null && !isUserRegistered(user.uid)) {
+	// 		navigate("/register-form");
+	// 	}
+	// }, [user, isUserRegistered, navigate]);
+
+	// useEffect(() => {
+	// 	const checkRegistration = async () => {
+	// 		if (user != null) {
+	// 			const registered = await isUserRegistered(user.uid);
+
+	// 			if (registered) {
+	// 				navigate("/home-page");
+	// 			} else {
+	// 				navigate("/register-form");
+	// 			}
+	// 		}
+	// 	};
+
+	// 	checkRegistration();
+	// }, [user, isUserRegistered, navigate]);
 
 	useEffect(() => {
-		if (user != null && !isUserRegistered(user.uid)) {
-			navigate("/register-form");
+		if (user != null) {
+			navigate("/home-page");
 		}
-	}, [user, isUserRegistered, navigate]);
+	}, [user, navigate]);
 
 	return (
 		<Container

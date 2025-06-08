@@ -4,7 +4,7 @@ import {
 	equipment,
 	localExerciseInfo,
 	primaryMuscleGroups,
-} from "@/assets/index";
+} from "@/common/index";
 import {
 	Container,
 	Input,
@@ -67,6 +67,7 @@ const Exercise = () => {
 						placeholder="All Equipment"
 						data={equipment}
 						clearable
+						searchable
 						nothingFoundMessage="Nothing found..."
 						checkIconPosition="right"
 						comboboxProps={{
@@ -78,6 +79,7 @@ const Exercise = () => {
 						placeholder="All Muscles"
 						data={primaryMuscleGroups}
 						clearable
+						searchable
 						nothingFoundMessage="Nothing found..."
 						checkIconPosition="right"
 						comboboxProps={{

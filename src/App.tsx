@@ -2,15 +2,13 @@ import "@/App.css";
 import { UserAuth } from "@/auth/AuthContext";
 import Protected from "@/auth/Protected";
 import ChronosLogoSmall from "@/components/Branding/ChronosLogoSmall";
-import { useAccountsHook } from "@/hooks/useAccountsHook";
-import Exercise from "@/pages/Exercise/Exercise";
 import ExerciseCreate from "@/pages/Exercise/ExerciseCreate";
+import ExercisePage from "@/pages/Exercise/ExercisePage";
 import Explore from "@/pages/Explore/Explore";
 import Homepage from "@/pages/Homepage/Homepage";
 import MeasurementsPage from "@/pages/Measurements/MeasurementsPage";
 import Portal from "@/pages/Portal/Portal";
 import Profile from "@/pages/Profile/Profile";
-import RegisterForm from "@/pages/Register/RegisterForm";
 import RoutineAbout from "@/pages/Routine/RoutineAbout";
 import RoutineNew from "@/pages/Routine/RoutineNew";
 import RoutinePage from "@/pages/Routine/RoutinePage";
@@ -22,6 +20,8 @@ import "@mantine/core/styles.css";
 import "@mantine/core/styles.layer.css";
 import { useDisclosure } from "@mantine/hooks";
 import { Link, Route, Routes } from "react-router-dom";
+//import RegisterForm from "@/pages/Register/RegisterForm";
+//import { useAccountsHook } from "@/hooks/useAccountsHook";
 import {
 	ChevronsUpDown,
 	Dumbbell,
@@ -56,12 +56,12 @@ const theme = createTheme({
 function App() {
 	const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
 	const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
-	const { isUserRegistered } = useAccountsHook();
+	//const { isUserRegistered } = useAccountsHook();
 	const { user, isGuest, logOut } = UserAuth();
 
 	const handleSignOut = async () => {
 		try {
-			await logOut();
+			logOut();
 		} catch (error) {
 			// eslint-disable-next-line no-console
 			console.log(error);
@@ -129,64 +129,60 @@ function App() {
 								gap={0}
 								h="100%"
 							>
-								{user && isUserRegistered(user.uid) && (
-									<>
-										<NavLink
-											label="Home"
-											leftSection={<Home />}
-											component={Link}
-											to="/home-page"
-											variant="subtle"
-											color="white"
-											p="md"
-										/>
-										<NavLink
-											label="Workouts"
-											leftSection={<Dumbbell />}
-											component={Link}
-											to="/workout-page"
-											variant="subtle"
-											color="white"
-											p="md"
-										/>
-										<NavLink
-											label="Routines"
-											leftSection={<NotebookText />}
-											component={Link}
-											to="/routine-page"
-											variant="subtle"
-											color="white"
-											p="md"
-										/>
-										<NavLink
-											label="Profile"
-											leftSection={<User />}
-											component={Link}
-											to="/profile-page"
-											variant="subtle"
-											color="white"
-											p="md"
-										/>
-										<NavLink
-											label="Measurements"
-											leftSection={<Ruler />}
-											component={Link}
-											to="/measurement-page"
-											variant="subtle"
-											color="white"
-											p="md"
-										/>
-										<NavLink
-											label="Exercises"
-											leftSection={<BicepsFlexed />}
-											component={Link}
-											to="/exercise-page"
-											variant="subtle"
-											color="white"
-											p="md"
-										/>
-									</>
-								)}
+								<NavLink
+									label="Home"
+									leftSection={<Home />}
+									component={Link}
+									to="/home-page"
+									variant="subtle"
+									color="white"
+									p="md"
+								/>
+								<NavLink
+									label="Workouts"
+									leftSection={<Dumbbell />}
+									component={Link}
+									to="/workout-page"
+									variant="subtle"
+									color="white"
+									p="md"
+								/>
+								<NavLink
+									label="Routines"
+									leftSection={<NotebookText />}
+									component={Link}
+									to="/routine-page"
+									variant="subtle"
+									color="white"
+									p="md"
+								/>
+								<NavLink
+									label="Profile"
+									leftSection={<User />}
+									component={Link}
+									to="/profile-page"
+									variant="subtle"
+									color="white"
+									p="md"
+								/>
+								<NavLink
+									label="Measurements"
+									leftSection={<Ruler />}
+									component={Link}
+									to="/measurement-page"
+									variant="subtle"
+									color="white"
+									p="md"
+								/>
+								<NavLink
+									label="Exercises"
+									leftSection={<BicepsFlexed />}
+									component={Link}
+									to="/exercise-page"
+									variant="subtle"
+									color="white"
+									p="md"
+								/>
 							</Stack>
 							<Menu
 								shadow="md"
@@ -273,10 +269,18 @@ function App() {
 								path="/"
 								element={<Portal />}
 							/>
-							<Route
+							{/* <Route
 								path="/register-form"
 								element={<RegisterForm />}
-							/>
+							/> */}
+							{/* <Route
+								path="/register-form"
+								element={
+									<Protected>
+										<RegisterForm />
+									</Protected>
+								}
+							/> */}
 
 							{/* Home */}
 							<Route
@@ -373,7 +377,7 @@ function App() {
 								path="/exercise-page"
 								element={
 									<Protected>
-										<Exercise />
+										<ExercisePage />
 									</Protected>
 								}
 							/>

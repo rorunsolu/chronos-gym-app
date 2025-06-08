@@ -55,9 +55,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 	const fetchAccounts = async () => {
 		setLoading(true);
 		try {
-			// const accountsQuery = query(collection(db, "accounts"));
-			// const snapshotOfAccounts = await getDocs(accountsQuery);
-
 			const accountsQuery = query(
 				collection(db, "accounts"),
 				where("userId", "==", auth.currentUser?.uid)
@@ -81,6 +78,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 				)
 			);
 		} catch (error) {
+			// eslint-disable-next-line
 			console.error("Error fetching accounts:", error);
 			throw new Error("Error fetching accounts");
 		} finally {
@@ -123,6 +121,8 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 			);
 
 			setAccounts([{ id: accountsRef.id, ...accountObjectData }, ...accounts]);
+
+			// eslint-disable-next-line
 			console.log("Account created successfully, firebaseID:", accountsRef.id);
 		} catch (error) {
 			throw new Error("Error creating account");
@@ -135,6 +135,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 			setAccounts((prevAccounts) =>
 				prevAccounts.filter((account) => account.id !== id)
 			);
+			// eslint-disable-next-line
 			console.log("Account deleted successfully, firebaseID:", id);
 		} catch (error) {
 			throw new Error("Error deleting account");
