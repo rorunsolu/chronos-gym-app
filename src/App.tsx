@@ -2,11 +2,11 @@ import "@/App.css";
 import { UserAuth } from "@/auth/AuthContext";
 import Protected from "@/auth/Protected";
 import ChronosLogoSmall from "@/components/Branding/ChronosLogoSmall";
+import styles from "@/hover.module.css";
 import ExerciseCreate from "@/pages/Exercise/ExerciseCreate";
 import ExercisePage from "@/pages/Exercise/ExercisePage";
 import Explore from "@/pages/Explore/Explore";
 import Homepage from "@/pages/Homepage/Homepage";
-import MeasurementsPage from "@/pages/Measurements/MeasurementsPage";
 import Portal from "@/pages/Portal/Portal";
 import ProfilePage from "@/pages/Profile/ProfilePage";
 import RoutineAbout from "@/pages/Routine/RoutineAbout";
@@ -31,7 +31,6 @@ import {
 	Settings,
 	User,
 	BicepsFlexed,
-	Ruler,
 } from "lucide-react";
 import {
 	ActionIcon,
@@ -76,7 +75,7 @@ function App() {
 				defaultColorScheme="dark"
 			>
 				<AppShell
-					bg="dark.8"
+					bg="dark.9"
 					header={{ height: 60 }}
 					padding="0"
 					navbar={
@@ -89,7 +88,7 @@ function App() {
 							: undefined
 					}
 				>
-					<AppShell.Header bg="dark.8">
+					<AppShell.Header bg="dark.9">
 						<Group
 							px="md"
 							justify="space-between"
@@ -120,10 +119,7 @@ function App() {
 					</AppShell.Header>
 
 					{user || isGuest ? (
-						<AppShell.Navbar
-							//pt="lg"
-							bg="dark.8"
-						>
+						<AppShell.Navbar bg="dark.9">
 							<Stack
 								align="stretch"
 								gap={0}
@@ -137,6 +133,7 @@ function App() {
 									variant="subtle"
 									color="white"
 									p="md"
+									className={styles.hover}
 								/>
 								<NavLink
 									label="Workouts"
@@ -146,6 +143,7 @@ function App() {
 									variant="subtle"
 									color="white"
 									p="md"
+									className={styles.hover}
 								/>
 								<NavLink
 									label="Routines"
@@ -155,24 +153,7 @@ function App() {
 									variant="subtle"
 									color="white"
 									p="md"
-								/>
-								<NavLink
-									label="Profile"
-									leftSection={<User />}
-									component={Link}
-									to="/profile-page"
-									variant="subtle"
-									color="white"
-									p="md"
-								/>
-								<NavLink
-									label="Measurements"
-									leftSection={<Ruler />}
-									component={Link}
-									to="/measurement-page"
-									variant="subtle"
-									color="white"
-									p="md"
+									className={styles.hover}
 								/>
 								<NavLink
 									label="Exercises"
@@ -182,6 +163,17 @@ function App() {
 									variant="subtle"
 									color="white"
 									p="md"
+									className={styles.hover}
+								/>
+								<NavLink
+									label="Profile"
+									leftSection={<User />}
+									component={Link}
+									to="/profile-page"
+									variant="subtle"
+									color="white"
+									p="md"
+									className={styles.hover}
 								/>
 							</Stack>
 							<Menu
@@ -189,7 +181,7 @@ function App() {
 								width={200}
 							>
 								<Paper
-									bg="dark.8"
+									bg="dark.9"
 									radius={0}
 									p="md"
 									style={{
@@ -239,6 +231,7 @@ function App() {
 													border:
 														"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color)",
 												}}
+												className={styles.hover}
 											>
 												<ChevronsUpDown size={18} />
 											</ActionIcon>
@@ -246,14 +239,18 @@ function App() {
 									</Group>
 								</Paper>
 
-								<Menu.Dropdown>
-									<Menu.Item leftSection={<Settings size={18} />}>
+								<Menu.Dropdown bg="dark.9">
+									<Menu.Item
+										leftSection={<Settings size={18} />}
+										className={styles.hover}
+									>
 										Settings
 									</Menu.Item>
 
 									<Menu.Item
 										leftSection={<LogOut size={18} />}
 										onClick={handleSignOut}
+										className={styles.hover}
 									>
 										Log out
 									</Menu.Item>
@@ -386,16 +383,6 @@ function App() {
 								element={
 									<Protected>
 										<ExerciseCreate />
-									</Protected>
-								}
-							/>
-
-							{/* Measurements */}
-							<Route
-								path="/measurement-page"
-								element={
-									<Protected>
-										<MeasurementsPage />
 									</Protected>
 								}
 							/>

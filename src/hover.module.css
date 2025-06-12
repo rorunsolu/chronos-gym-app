@@ -1,0 +1,13 @@
+.hover {
+	cursor: pointer;
+	background-color: var(--mantine-color-dark-9) !important;
+
+	&:hover {
+		background-color: var(--mantine-color-dark-8) !important;
+	}
+	/* &:active {
+		
+		outline: calc(0.12rem * var(--mantine-scale)) solid
+			var(--mantine-color-gray-6);
+	} */
+}

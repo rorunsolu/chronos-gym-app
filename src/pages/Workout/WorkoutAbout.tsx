@@ -1,11 +1,17 @@
 import { UserAuth } from "@/auth/AuthContext";
 import { db } from "@/auth/Firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { getSessionStats } from "@/common/singleSessionStats";
+import { format } from "date-fns";
+import { doc, getDoc, Timestamp } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+	//Clock,
+	//Dumbbell,
 	Play,
-	//Timer
+	//Plus,
+	//Tally5,
+	//Weight,
 } from "lucide-react";
 import {
 	Container,
@@ -17,7 +23,7 @@ import {
 	Table,
 	Divider,
 	Title,
-	Textarea,
+	Avatar,
 } from "@mantine/core";
 
 import type { SessionData, ExerciseData } from "@/common/types";
@@ -30,9 +36,15 @@ const WorkoutAbout = () => {
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 	const [notes, setNotes] = useState<string>("");
 	const [totalElapsedTime, setTotalElapsedTime] = useState<number>(0);
+	const [date, setDate] = useState<Timestamp>();
 	const [errorMessage, setErrorMessage] = useState<string>("");
 	const [, setIsLoading] = useState(true);
 	const { user } = UserAuth();
+	const [stats, setStats] = useState<{
+		totalVolume: number;
+		totalSets: number;
+		totalExercises: number;
+	} | null>(null);
 
 	useEffect(() => {
 		const fetchWorkoutData = async () => {
@@ -58,6 +70,7 @@ const WorkoutAbout = () => {
 				setExercises(workoutData.exercises || []);
 				setNotes(workoutData.notes || "");
 				setTotalElapsedTime(workoutData.totalElapsedTimeSec || 0);
+				setDate(workoutData.createdAt);
 			} catch (error) {
 				setErrorMessage("Error fetching workout data. Please try again later.");
 				setIsLoading(false);
@@ -70,9 +83,21 @@ const WorkoutAbout = () => {
 		fetchWorkoutData();
 	}, [id, user, navigate]);
 
+	useEffect(() => {
+		const loadStats = async () => {
+			if (exercises.length > 0) {
+				const calculatedStats = getSessionStats(exercises);
+				setStats(calculatedStats);
+			}
+		};
+		loadStats();
+	}, [exercises]);
+
+	// Todo: Add stats fior time, volume, sets, reps etc
+
 	return (
 		<Container
-			size="md"
+			size="xs"
 			py="lg"
 		>
 			<Stack gap="md">
@@ -85,20 +110,158 @@ const WorkoutAbout = () => {
 					</Text>
 				)}
 
-				<Stack gap={0}>
-					<Title order={2}>{workoutName}</Title>
-					<Text
-						size="sm"
-						c="dimmed"
+				<Stack gap={3}>
+					{/* <Group gap="xs">
+						<Avatar
+							size="sm"
+							radius="xl"
+							src={user?.photoURL}
+							alt="User Avatar"
+						/>
+						<Text
+							size="sm"
+							c="dimmed"
+						>
+							{user?.displayName || "Anonymous"}
+						</Text>
+					</Group> */}
+
+					<Title order={3}>{workoutName}</Title>
+
+					<Stack
+						gap="sm"
+						mt="sm"
 					>
-						Created by {user?.displayName || "Anonymous"}
-					</Text>
-					{notes && <Text mt="xs">Notes: {notes}</Text>}
+						<Group gap="xs">
+							<Avatar
+								size="md"
+								radius="xl"
+								src={user?.photoURL}
+								alt="User Avatar"
+							/>
+							<Stack gap={3}>
+								<Text
+									size="sm"
+									// c="dimmed"
+								>
+									{user?.displayName || "Anonymous"}
+								</Text>
+								<Text
+									size="xs"
+									c="dimmed"
+								>
+									{date ? format(date.toDate(), "PPP") : "Unknown Date"}
+								</Text>
+							</Stack>
+						</Group>
+
+						<Group
+						// mt="sm"
+						// mb="md"
+						>
+							{stats?.totalVolume && (
+								<Group gap="sm">
+									{/* <Weight size={30} /> */}
+									<Stack
+										gap={0}
+										align="flex-start"
+									>
+										<Text
+											size="sm"
+											fw={500}
+											c="dimmed"
+										>
+											Volume
+										</Text>
+										<Text size="sm">{stats.totalVolume}kg</Text>
+									</Stack>
+								</Group>
+							)}
+
+							{stats?.totalExercises && (
+								<Group gap="sm">
+									{/* <Tally5 size={30} /> */}
+									<Stack
+										gap={0}
+										align="flex-start"
+									>
+										<Text
+											size="sm"
+											fw={500}
+											c="dimmed"
+										>
+											Exercises
+										</Text>
+										<Text size="sm">{stats?.totalExercises || 0}</Text>
+									</Stack>
+								</Group>
+							)}
+
+							{stats?.totalSets && (
+								<Group gap="sm">
+									{/* <Weight size={30} /> */}
+									<Stack
+										gap={0}
+										align="flex-start"
+									>
+										<Text
+											size="sm"
+											fw={500}
+											c="dimmed"
+										>
+											Sets
+										</Text>
+										<Text size="sm">{stats?.totalSets || 0}</Text>
+									</Stack>
+								</Group>
+							)}
+							{/* 
+							{totalElapsedTime > 0 && (
+								<Group gap="sm">
+									<Clock size={30} />
+									<Stack
+										gap={0}
+										align="flex-start"
+									>
+										<Text
+											size="sm"
+											fw={500}
+											c="dimmed"
+										>
+											Total Time
+										</Text>
+										<Text size="sm">
+											{totalElapsedTime > 60
+												? `${Math.floor(totalElapsedTime / 60)} mins`
+												: `${totalElapsedTime} secs`}
+										</Text>
+									</Stack>
+								</Group>
+							)} */}
+						</Group>
+					</Stack>
+
+					{notes && (
+						<Stack
+							gap={0}
+							mt={5}
+						>
+							<Text
+								size="sm"
+								c="dimmed"
+								fw={500}
+							>
+								Description
+							</Text>
+
+							<Text size="sm">{notes}</Text>
+						</Stack>
+					)}
 				</Stack>
 
 				<Button
 					fullWidth
-					size="md"
+					size="sm"
 					variant="filled"
 					color="teal"
 					aria-label="Start workout"
@@ -115,19 +278,17 @@ const WorkoutAbout = () => {
 					labelPosition="center"
 				/>
 
-				<Stack gap="lg">
+				<Stack gap="xl">
 					{exercises.map((exercise) => (
-						<>
-							<Paper
-								key={exercise.id}
-								bg="transparent"
-							>
-								<Stack gap="xs">
-									<Stack gap="xs">
-										<Group justify="space-between">
-											<Text fw={500}>{exercise.name}</Text>
-										</Group>
-										{/* <Group
+						<Paper
+							key={exercise.id}
+							bg="transparent"
+						>
+							<Stack gap="md">
+								<Stack gap="3">
+									<Text fw={500}>{exercise.name}</Text>
+
+									{/* <Group
 											gap={0}
 											align="center"
 										>
@@ -141,66 +302,51 @@ const WorkoutAbout = () => {
 												
 											</Text>
 										</Group> */}
-										{exercise.notes && (
-											<Group>
-												<Textarea
-													autosize
-													minRows={1}
-													maxRows={4}
-													variant="unstyled"
-													value={exercise.notes}
-													readOnly
-													prefix="Notes: "
-												/>
-											</Group>
-										)}
-									</Stack>
-
-									<Table
-										striped
-										withRowBorders={false}
-									>
-										<Table.Thead>
-											<Table.Tr>
-												<Table.Th>Set</Table.Th>
-												<Table.Th>Weight</Table.Th>
-												<Table.Th>Reps</Table.Th>
-											</Table.Tr>
-										</Table.Thead>
-										<Table.Tbody>
-											{exercise.sets.map((set, index) => (
-												<Table.Tr key={set.id}>
-													<Table.Td>{index + 1}</Table.Td>
-													<Table.Td>{set.weight}</Table.Td>
-													<Table.Td>{set.reps}</Table.Td>
-												</Table.Tr>
-											))}
-										</Table.Tbody>
-									</Table>
+									{exercise.notes && (
+										<Group gap={5}>
+											{/* <Text size="sm">Notes:</Text> */}
+											<Text
+												size="sm"
+												c="dimmed"
+											>
+												{exercise.notes}
+											</Text>
+										</Group>
+									)}
 								</Stack>
-							</Paper>
-							<Divider />
-						</>
+
+								<Table
+									//striped
+									//withRowBorders={false}
+									withTableBorder
+									withColumnBorders
+								>
+									<Table.Thead>
+										<Table.Tr>
+											<Table.Th>Set</Table.Th>
+											<Table.Th>Weight</Table.Th>
+											<Table.Th>Reps</Table.Th>
+										</Table.Tr>
+									</Table.Thead>
+									<Table.Tbody>
+										{exercise.sets.map((set, index) => (
+											<Table.Tr key={set.id}>
+												<Table.Td>{index + 1}</Table.Td>
+												<Table.Td>{set.weight}</Table.Td>
+												<Table.Td>{set.reps}</Table.Td>
+											</Table.Tr>
+										))}
+									</Table.Tbody>
+								</Table>
+							</Stack>
+						</Paper>
 					))}
 				</Stack>
-
-				{notes && (
-					<Paper
-						mt="lg"
-						p="md"
-					>
-						<Text
-							size="sm"
-							c="dimmed"
-						>
-							Notes: {notes}
-						</Text>
-					</Paper>
-				)}
 
 				<Text
 					size="sm"
 					c="dimmed"
+					mt={10}
 				>
 					{totalElapsedTime > 60
 						? `Total Time: ${Math.floor(totalElapsedTime / 60)} minutes`

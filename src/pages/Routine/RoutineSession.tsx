@@ -688,6 +688,7 @@ const RoutineSession = () => {
 					<Stack>
 						{modalExercises.map((exerciseFromModal, index) => (
 							<Card
+								className={styles.hover}
 								key={index}
 								withBorder
 								radius="md"

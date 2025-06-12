@@ -1,4 +1,5 @@
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
+import styles from "@/hover.module.css";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +16,7 @@ import {
 	Card,
 	Checkbox,
 	Container,
-	Divider,
+	//Divider,
 	Group,
 	Input,
 	Menu,
@@ -531,7 +532,6 @@ const WorkoutNew = () => {
 				onClose={close}
 				title="Add Exercise"
 				fullScreen
-				radius={0}
 				transitionProps={{ transition: "fade", duration: 200 }}
 			>
 				<Stack gap="sm">
@@ -548,6 +548,7 @@ const WorkoutNew = () => {
 							data={equipment}
 							clearable
 							searchable
+							placeholder="Select equipment"
 							nothingFoundMessage="Nothing found..."
 							checkIconPosition="right"
 							comboboxProps={{
@@ -558,6 +559,7 @@ const WorkoutNew = () => {
 						<Select
 							defaultValue="All Muscles"
 							data={primaryMuscleGroups}
+							placeholder="Select muscle group"
 							clearable
 							searchable
 							nothingFoundMessage="Nothing found..."
@@ -569,16 +571,19 @@ const WorkoutNew = () => {
 						/>
 					</Group>
 
-					<Divider />
-
-					<Stack>
+					<Stack
+						gap="5"
+						mt="xs"
+					>
 						{filtered.map((exercise, index) => (
 							<Card
+								className={styles.hover}
 								key={index}
 								withBorder
 								radius="md"
+								//bg="dark.7"
 								p="sm"
-								style={{ cursor: "pointer" }}
+								//style={{ cursor: "pointer" }}
 								onClick={() => {
 									handleExerciseRender(exercise);
 									close();

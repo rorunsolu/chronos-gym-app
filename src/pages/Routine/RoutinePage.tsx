@@ -1,6 +1,8 @@
+import { UserAuth } from "@/auth/AuthContext";
 import { useRoutinesHook } from "@/hooks/useRoutinesHook";
+import styles from "@/hover.module.css";
 import { formatDistanceToNow } from "date-fns";
-import { EllipsisVertical, Play, Plus, Search, Trash } from "lucide-react";
+import { EllipsisVertical, Plus, Trash } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -13,11 +15,13 @@ import {
 	SimpleGrid,
 	Card,
 	Menu,
+	Avatar,
 } from "@mantine/core";
 
 const RoutinePage = () => {
 	const navigate = useNavigate();
 	const { routines, fetchRoutines, deleteRoutine } = useRoutinesHook();
+	const { user } = UserAuth();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -30,56 +34,45 @@ const RoutinePage = () => {
 
 	return (
 		<Container
-			size="md"
+			size="xs"
 			p="md"
 			py="md"
 		>
 			<Stack gap="xl">
-				<Stack gap="xl">
+				<Stack gap="md">
 					<Stack gap={0}>
 						<Title order={1}>Routines</Title>
 						<Text c="dimmed">View all your routines and create new ones.</Text>
 					</Stack>
 
-					<SimpleGrid
-						spacing="md"
-						cols={{ base: 1, xs: 2, sm: 2, lg: 2 }}
+					<Button
+						color="teal"
+						variant="filled"
+						leftSection={<Plus size={20} />}
+						onClick={() => {
+							navigate("/new-routine");
+						}}
+						style={{ boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
 					>
-						<Button
-							color="teal"
-							variant="filled"
-							leftSection={<Plus size={20} />}
-							onClick={() => {
-								navigate("/new-routine");
-							}}
-							style={{ boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
-						>
-							New Routine
-						</Button>
-						<Button
-							color="teal"
-							variant="light"
-							leftSection={<Search size={20} />}
-							onClick={() => {
-								navigate("/explore");
-							}}
-							style={{ boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
-						>
-							Explore
-						</Button>
-					</SimpleGrid>
+						New Routine
+					</Button>
 				</Stack>
 
 				<Stack>
 					<Group
-						mb="xs"
-						mt="xs"
+						mb="0"
+						mt="0"
 					>
-						<Title order={3}>My Routines</Title>
+						<Title
+							order={3}
+							fw={500}
+						>
+							My Routines
+						</Title>
 						<Card
 							radius="md"
 							shadow="md"
-							bg="dark.8"
+							bg="none"
 							withBorder
 							style={{
 								display: "flex",
@@ -95,34 +88,39 @@ const RoutinePage = () => {
 
 					<SimpleGrid
 						spacing="md"
-						cols={{ base: 1, xs: 2, sm: 2, lg: 2 }}
+						cols={{ base: 1, xs: 1, sm: 1, lg: 1 }}
 					>
-						{routines.map((routine, index) => (
+						{routines.map((routine) => (
 							<Card
-								key={index}
-								shadow="md"
-								padding="sm"
-								radius="md"
-								bg="dark.8"
+								className={styles.hover}
+								key={routine.id}
 								withBorder
+								radius="md"
+								shadow="md"
 								onClick={(e) => {
-									e.stopPropagation();
 									navigate(`/routine-about/${routine.id}`);
+									e.stopPropagation();
 								}}
 							>
-								<Stack
-									justify="space-between"
-									style={{ flex: 1 }}
-								>
-									<Group
-										justify="space-between"
-										align="top"
-									>
-										<Stack gap={8}>
-											<Title order={4}>{routine.name}</Title>
+								<Group justify="space-between">
+									<Group>
+										<Avatar
+											src={
+												user?.photoURL ??
+												"https://www.svgrepo.com/show/508699/landscape-placeholder.svg"
+											}
+											radius="xl"
+										/>
+										<div>
 											<Text
 												size="sm"
-												mb="sm"
+												fw={500}
+											>
+												{user?.displayName}
+											</Text>
+											<Text
+												size="xs"
+												c="dimmed"
 											>
 												{routine.createdAt
 													? formatDistanceToNow(routine.createdAt.toDate(), {
@@ -130,90 +128,66 @@ const RoutinePage = () => {
 														})
 													: "Unknown Date"}
 											</Text>
-
-											{routine.exercises.slice(0, 3).map((exercise, index) => (
-												<Group
-													gap="xs"
-													key={index}
-												>
-													<div
-														className="flex items-center justify-center w-6 h-6 rounded-md"
-														style={{
-															border:
-																"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color)",
-														}}
-													>
-														<Text size="sm">{index + 1}</Text>
-													</div>
-													<Text size="sm">{exercise.name}</Text>
-												</Group>
-											))}
-										</Stack>
-
-										<Menu
-											withinPortal
-											position="bottom-end"
-											shadow="md"
-										>
-											<Menu.Target>
-												<Button
-													p="xs"
-													variant="outline"
-													color="white"
-													onClick={(e) => {
-														e.stopPropagation();
-													}}
-													className="flex items-center justify-center"
+										</div>
+									</Group>
+									<Menu
+										withinPortal
+										position="bottom-end"
+										shadow="md"
+									>
+										<Menu.Target>
+											<Button
+												px="5"
+												py="0"
+												variant="subtle"
+												color="white"
+												onClick={(e) => {
+													e.stopPropagation();
+												}}
+											>
+												<EllipsisVertical size={16} />
+											</Button>
+										</Menu.Target>
+										<Menu.Dropdown bg="dark.9">
+											<Menu.Item
+												color="red"
+												leftSection={<Trash size={14} />}
+												className={styles.hover}
+												onClick={(e) => {
+													e.stopPropagation();
+													deleteRoutine(routine.id);
+												}}
+											>
+												Delete
+											</Menu.Item>
+										</Menu.Dropdown>
+									</Menu>
+								</Group>
+								<Stack
+									mt="lg"
+									gap="xs"
+								>
+									<Title order={4}>{routine.name}</Title>
+									<Stack>
+										{routine.notes && <Text size="sm">{routine.notes}</Text>}
+										{routine.exercises.slice(0, 3).map((exercise, index) => (
+											<Group
+												gap="xs"
+												key={index}
+											>
+												<div
+													className="flex items-center justify-center w-6 h-6 rounded-md"
 													style={{
 														border:
 															"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color)",
 													}}
 												>
-													<EllipsisVertical size={16} />
-												</Button>
-											</Menu.Target>
-											<Menu.Dropdown>
-												<Menu.Item
-													color="red"
-													leftSection={<Trash size={14} />}
-													onClick={(e) => {
-														e.stopPropagation();
-														deleteRoutine(routine.id);
-													}}
-												>
-													Delete
-												</Menu.Item>
-											</Menu.Dropdown>
-										</Menu>
-									</Group>
-
-									<div className="flex flex-col lg:flex-row gap-4 w-full">
-										{/* <Button
-											fullWidth
-											variant="filled"
-											color="teal"
-											leftSection={<Play size={20} />}
-											aria-label="View routine"
-											onClick={() => {
-												navigate(`/routine-about/${routine.id}`);
-											}}
-										>
-											View Routine
-										</Button> */}
-										<Button
-											fullWidth
-											variant="filled"
-											color="teal"
-											leftSection={<Play size={20} />}
-											aria-label="Start routine"
-											onClick={(e) => {
-												e.stopPropagation();
-												navigate(`/routines/${routine.id}`);
-											}}
-										>
-											Start
-										</Button>
-									</div>
+													<Text size="sm">{index + 1}</Text>
+												</div>
+												<Text size="sm">{exercise.name}</Text>
+											</Group>
+										))}
+									</Stack>
 								</Stack>
 							</Card>
 						))}

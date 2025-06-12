@@ -484,6 +484,7 @@ const Routine = () => {
 					<Stack>
 						{filtered.map((exercise, index) => (
 							<Card
+								className={styles.hover}
 								key={index}
 								withBorder
 								radius="md"

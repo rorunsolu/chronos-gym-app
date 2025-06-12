@@ -1,7 +1,8 @@
 import { UserAuth } from "@/auth/AuthContext";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
+import styles from "@/hover.module.css";
 import { formatDistanceToNow } from "date-fns";
-import { EllipsisVertical, Eye, Plus, Search, Trash } from "lucide-react";
+import { EllipsisVertical, Plus, Trash } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -33,12 +34,12 @@ const WorkoutPage = () => {
 
 	return (
 		<Container
-			size="md"
+			size="xs"
 			p="md"
 			py="md"
 		>
 			<Stack gap="xl">
-				<Stack gap="xl">
+				<Stack gap="md">
 					<Stack gap={0}>
 						<Title order={1}>Workouts</Title>
 						<Text c="dimmed">
@@ -46,45 +47,35 @@ const WorkoutPage = () => {
 						</Text>
 					</Stack>
 
-					<SimpleGrid
-						spacing="md"
-						cols={{ base: 1, xs: 2, sm: 2, lg: 2 }}
+					<Button
+						color="teal"
+						variant="filled"
+						leftSection={<Plus size={20} />}
+						onClick={() => {
+							navigate("/new-workout");
+						}}
+						style={{ boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
 					>
-						<Button
-							color="teal"
-							variant="filled"
-							leftSection={<Plus size={20} />}
-							onClick={() => {
-								navigate("/new-workout");
-							}}
-							style={{ boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
-						>
-							New Workout
-						</Button>
-						<Button
-							color="teal"
-							variant="light"
-							leftSection={<Search size={20} />}
-							onClick={() => {
-								navigate("/explore");
-							}}
-							style={{ boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
-						>
-							Explore
-						</Button>
-					</SimpleGrid>
+						New Workout
+					</Button>
 				</Stack>
 
 				<Stack>
 					<Group
-						mb="xs"
-						mt="xs"
+						mb="0"
+						mt="0"
 					>
-						<Title order={3}>My Workouts</Title>
+						<Title
+							order={3}
+							fw={500}
+						>
+							My Workouts
+						</Title>
 						<Card
+							//className={styles.hover}
 							radius="md"
 							shadow="md"
-							bg="dark.8"
+							bg="none"
 							withBorder
 							style={{
 								display: "flex",
@@ -100,16 +91,21 @@ const WorkoutPage = () => {
 
 					<SimpleGrid
 						spacing="md"
-						cols={{ base: 1, sm: 2, lg: 2 }}
+						cols={{ base: 1, xs: 1, sm: 1, lg: 1 }}
 					>
 						{workouts.map((workout) => {
 							return (
 								<Card
+									className={styles.hover}
 									key={workout.id}
 									withBorder
 									radius="md"
 									shadow="md"
 									bg="dark.8"
+									onClick={(e) => {
+										navigate(`/workout-about/${workout.id}`);
+										e.stopPropagation();
+									}}
 								>
 									<Group justify="space-between">
 										<Group>
@@ -146,25 +142,22 @@ const WorkoutPage = () => {
 										>
 											<Menu.Target>
 												<Button
-													p="xs"
-													variant="outline"
+													px="5"
+													py="0"
+													variant="subtle"
 													color="white"
 													onClick={(e) => {
 														e.stopPropagation();
-													}}
-													className="flex items-center justify-center"
-													style={{
-														border:
-															"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color)",
 													}}
 												>
 													<EllipsisVertical size={16} />
 												</Button>
 											</Menu.Target>
-											<Menu.Dropdown>
+											<Menu.Dropdown bg="dark.9">
 												<Menu.Item
 													color="red"
 													leftSection={<Trash size={14} />}
+													className={styles.hover}
 													onClick={(e) => {
 														e.stopPropagation();
 														deleteWorkout(workout.id);
@@ -178,49 +171,33 @@ const WorkoutPage = () => {
 
 									<Stack
 										mt="lg"
-										mb="lg"
-										gap={8}
+										gap="xs"
 									>
-										<Title
-											order={4}
-											mb="xs"
-										>
-											{workout.name}
-										</Title>
-										{workout.notes && <Text size="sm">{workout.notes}</Text>}
-
-										{workout.exercises.slice(0, 3).map((exercise, index) => (
-											<Group
-												gap="xs"
-												key={index}
-											>
-												<div
-													className="flex items-center justify-center w-6 h-6 rounded-md"
-													style={{
-														border:
-															"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color)",
-													}}
-												>
-													<Text size="sm">{index + 1}</Text>
-												</div>
-												<Text size="sm">{exercise.name}</Text>
-											</Group>
-										))}
-									</Stack>
-									<Stack>
-										<Button
-											fullWidth
-											variant="filled"
-											color="teal"
-											leftSection={<Eye size={20} />}
-											aria-label="Start Workout"
-											onClick={(e) => {
-												navigate(`/workout-about/${workout.id}`);
-												e.stopPropagation();
-											}}
-										>
-											View Workout
-										</Button>
+										<Title order={4}>{workout.name}</Title>
+										<Stack>
+											{workout.notes && <Text size="sm">{workout.notes}</Text>}
+											<Stack gap="xs">
+												{workout.exercises
+													.slice(0, 3)
+													.map((exercise, index) => (
+														<Group
+															gap="xs"
+															key={index}
+														>
+															<div
+																className="flex items-center justify-center w-6 h-6 rounded-md"
+																style={{
+																	border:
+																		"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color)",
+																}}
+															>
+																<Text size="sm">{index + 1}</Text>
+															</div>
+															<Text size="sm">{exercise.name}</Text>
+														</Group>
+													))}
+											</Stack>
+										</Stack>
 									</Stack>
 								</Card>
 							);
