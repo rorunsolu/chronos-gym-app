@@ -111,6 +111,7 @@ const Profile = () => {
 							mt={-30}
 							src={user?.photoURL}
 							alt="User Avatar"
+							bg="dark.9"
 						/>
 
 						{user?.displayName && (

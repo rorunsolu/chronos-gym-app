@@ -20,6 +20,11 @@ export type SessionData = {
 	createdAt: Timestamp;
 	exercises: ExerciseData[];
 	totalElapsedTimeSec: number;
+	stats: {
+		totalVolume: number;
+		totalSets: number;
+		totalExercises: number;
+	};
 };
 
 export type SessionHistoryData = {

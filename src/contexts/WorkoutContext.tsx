@@ -1,5 +1,6 @@
 import { auth, db } from "@/auth/Firebase";
 import { getAuthenticatedUser } from "@/common/authChecker";
+import { getSessionStats } from "@/common/singleSessionStats";
 import { WorkoutContext } from "@/hooks/useWorkoutHook";
 import {
 	addDoc,
@@ -36,15 +37,20 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 		);
 		const snapshotOfWorkouts = await getDocs(workoutsQuery);
 
-		const workoutList = snapshotOfWorkouts.docs.map((doc) => ({
-			id: doc.id,
-			name: doc.data().name,
-			createdAt: doc.data().createdAt,
-			exercises: doc.data().exercises,
-			totalElapsedTimeSec: doc.data().totalElapsedTimeSec,
-			userId: doc.data().userId,
-			notes: doc.data().notes,
-		}));
+		const workoutList = snapshotOfWorkouts.docs.map((doc) => {
+			const data = doc.data();
+			const stats = getSessionStats(data.exercises);
+			return {
+				id: doc.id,
+				name: data.name,
+				createdAt: data.createdAt,
+				exercises: data.exercises,
+				totalElapsedTimeSec: data.totalElapsedTimeSec,
+				userId: data.userId,
+				notes: data.notes,
+				stats,
+			};
+		});
 		setWorkouts(
 			workoutList.sort(
 				(a, b) => b.createdAt.toMillis() - a.createdAt.toMillis()
@@ -67,6 +73,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 			createdAt: Timestamp.now(),
 			totalElapsedTimeSec,
 			notes: notes || "",
+			stats: getSessionStats(exercises),
 		};
 
 		try {

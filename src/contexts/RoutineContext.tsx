@@ -1,5 +1,6 @@
 import { auth, db } from "@/auth/Firebase";
 import { getAuthenticatedUser } from "@/common/authChecker";
+import { getSessionStats } from "@/common/singleSessionStats";
 import { RoutinesContext } from "@/hooks/useRoutinesHook";
 import {
 	addDoc,
@@ -37,15 +38,20 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 		);
 		const snapshotOfRoutines = await getDocs(routinesQuery);
 
-		const routineList = snapshotOfRoutines.docs.map((doc) => ({
-			id: doc.id,
-			name: doc.data().name,
-			createdAt: doc.data().createdAt,
-			exercises: doc.data().exercises,
-			totalElapsedTimeSec: doc.data().totalElapsedTimeSec,
-			userId: doc.data().userId,
-			notes: doc.data().notes,
-		}));
+		const routineList = snapshotOfRoutines.docs.map((doc) => {
+			const data = doc.data();
+			const stats = getSessionStats(data.exercises);
+			return {
+				id: doc.id,
+				name: data.name,
+				createdAt: data.createdAt,
+				exercises: data.exercises,
+				totalElapsedTimeSec: data.totalElapsedTimeSec,
+				userId: data.userId,
+				notes: data.notes,
+				stats,
+			};
+		});
 
 		setRoutines(
 			routineList.sort(
@@ -69,6 +75,7 @@ export const RoutineProvider = ({ children }: { children: ReactNode }) => {
 			createdAt: Timestamp.now(),
 			totalElapsedTimeSec,
 			notes: notes || "",
+			stats: getSessionStats(exercises),
 		};
 
 		try {

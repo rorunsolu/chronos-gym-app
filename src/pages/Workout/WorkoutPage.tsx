@@ -3,7 +3,7 @@ import { useWorkOutHook } from "@/hooks/useWorkoutHook";
 import styles from "@/hover.module.css";
 import { formatDistanceToNow } from "date-fns";
 import { EllipsisVertical, Plus, Trash } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
 	Button,
@@ -21,10 +21,12 @@ import {
 const WorkoutPage = () => {
 	const navigate = useNavigate();
 	const { user } = UserAuth();
+	const [, setLoading] = useState(true);
 	const { workouts, fetchWorkouts, deleteWorkout } = useWorkOutHook();
 
 	useEffect(() => {
 		const fetchData = async () => {
+			setLoading(true);
 			await fetchWorkouts();
 		};
 
@@ -112,9 +114,10 @@ const WorkoutPage = () => {
 											<Avatar
 												src={
 													user?.photoURL ??
-													"https://www.svgrepo.com/show/508699/landscape-placeholder.svg"
+													"https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
 												}
 												radius="xl"
+												bg="dark.9"
 											/>
 											<div>
 												<Text
@@ -170,12 +173,82 @@ const WorkoutPage = () => {
 									</Group>
 
 									<Stack
-										mt="lg"
+										mt="sm"
 										gap="xs"
 									>
-										<Title order={4}>{workout.name}</Title>
 										<Stack>
-											{workout.notes && <Text size="sm">{workout.notes}</Text>}
+											<Stack gap={4}>
+												<Title order={4}>{workout.name}</Title>
+												{workout.notes && (
+													<Text size="sm">{workout.notes}</Text>
+												)}
+											</Stack>
+
+											<Group>
+												{workout.stats.totalVolume && (
+													<Group gap="sm">
+														{/* <Weight size={30} /> */}
+														<Stack
+															gap={0}
+															align="flex-start"
+														>
+															<Text
+																size="sm"
+																fw={500}
+																c="dimmed"
+															>
+																Volume
+															</Text>
+															<Text size="sm">
+																{workout.stats.totalVolume}kg
+															</Text>
+														</Stack>
+													</Group>
+												)}
+
+												{workout.stats.totalExercises && (
+													<Group gap="sm">
+														{/* <Tally5 size={30} /> */}
+														<Stack
+															gap={0}
+															align="flex-start"
+														>
+															<Text
+																size="sm"
+																fw={500}
+																c="dimmed"
+															>
+																Exercises
+															</Text>
+															<Text size="sm">
+																{workout.stats.totalExercises || 0}
+															</Text>
+														</Stack>
+													</Group>
+												)}
+
+												{workout.stats.totalSets && (
+													<Group gap="sm">
+														{/* <Weight size={30} /> */}
+														<Stack
+															gap={0}
+															align="flex-start"
+														>
+															<Text
+																size="sm"
+																fw={500}
+																c="dimmed"
+															>
+																Sets
+															</Text>
+															<Text size="sm">
+																{workout.stats.totalSets || 0}
+															</Text>
+														</Stack>
+													</Group>
+												)}
+											</Group>
+
 											<Stack gap="xs">
 												{workout.exercises
 													.slice(0, 3)

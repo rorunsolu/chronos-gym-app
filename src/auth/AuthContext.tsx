@@ -12,6 +12,8 @@ import {
 	signInAnonymously,
 	signInWithPopup,
 	signOut,
+	createUserWithEmailAndPassword,
+	signInWithEmailAndPassword,
 	type User,
 	type UserCredential,
 } from "firebase/auth";
@@ -29,6 +31,14 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
 	const googleSignIn = () => {
 		const provider = new GoogleAuthProvider();
 		return signInWithPopup(auth, provider);
+	};
+
+	const emailSignIn = (email: string, password: string) => {
+		return signInWithEmailAndPassword(auth, email, password);
+	};
+
+	const emailSignUp = (email: string, password: string) => {
+		return createUserWithEmailAndPassword(auth, email, password);
 	};
 
 	const signInAsGuest = async () => {
@@ -50,6 +60,8 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
 			setUser(currentUser);
 			setIsGuest(currentUser?.isAnonymous || false);
 			setLoading(false);
+
+			// eslint-disable-next-line no-console
 			console.log("The current user is:", currentUser);
 		});
 
@@ -63,6 +75,8 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
 			value={{
 				googleSignIn,
 				signInAsGuest,
+				emailSignIn,
+				emailSignUp,
 				logOut,
 				user,
 				isGuest,
@@ -85,6 +99,8 @@ export const UserAuth = (): AuthContextType => {
 interface AuthContextType {
 	googleSignIn: () => Promise<UserCredential>;
 	signInAsGuest: () => Promise<UserCredential>;
+	emailSignIn: (email: string, password: string) => Promise<UserCredential>;
+	emailSignUp: (email: string, password: string) => Promise<UserCredential>;
 	logOut: () => void;
 	user: User | null;
 	isGuest: boolean;
