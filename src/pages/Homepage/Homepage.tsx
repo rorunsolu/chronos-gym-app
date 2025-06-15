@@ -1,5 +1,6 @@
 import { UserAuth } from "@/auth/AuthContext";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
+import styles from "@/hover.module.css";
 import { formatDistanceToNow } from "date-fns";
 import { EllipsisVertical } from "lucide-react";
 import { useEffect } from "react";
@@ -33,26 +34,27 @@ const Home = () => {
 
 	return (
 		<Container
-			size="md"
+			size="xs"
 			p="md"
 			py="md"
 		>
 			<Stack gap="xl">
 				<Stack gap="xs">
-					<Title order={1}>Your Workouts</Title>
+					{/* <Title order={1}>Your Workouts</Title>
 					<Text c="dimmed">
 						View your recent workouts below. Click on a workout to see details,
 						or use the menu to delete a workout.
-					</Text>
+					</Text> */}
 				</Stack>
 
 				<SimpleGrid
 					spacing="md"
-					cols={{ base: 1, sm: 2, lg: 2 }}
+					cols={{ base: 1, xs: 1, sm: 1, lg: 1 }}
 				>
 					{workouts.map((workout) => {
 						return (
 							<Card
+								className={styles.hover}
 								key={workout.id}
 								withBorder
 								radius="md"
@@ -63,16 +65,16 @@ const Home = () => {
 										state: { workout },
 									});
 								}}
-								className="cursor-pointer"
 							>
 								<Group justify="space-between">
 									<Group>
 										<Avatar
 											src={
 												user?.photoURL ??
-												"https://www.svgrepo.com/show/508699/landscape-placeholder.svg"
+												"https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
 											}
 											radius="xl"
+											bg="dark.9"
 										/>
 										<div>
 											<Text
@@ -115,8 +117,9 @@ const Home = () => {
 												<EllipsisVertical size={16} />
 											</Button>
 										</Menu.Target>
-										<Menu.Dropdown>
+										<Menu.Dropdown bg="dark.9">
 											<Menu.Item
+												className={styles.hover}
 												c="red"
 												onClick={(e) => {
 													e.stopPropagation();

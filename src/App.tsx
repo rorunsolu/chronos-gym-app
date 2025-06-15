@@ -178,7 +178,8 @@ function App() {
 							</Stack>
 							<Menu
 								shadow="md"
-								width={200}
+								width={150}
+								position="right-start"
 							>
 								<Paper
 									bg="dark.9"

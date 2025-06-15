@@ -16,7 +16,7 @@ import {
 	Card,
 	Checkbox,
 	Container,
-	//Divider,
+	Divider,
 	Group,
 	Input,
 	Menu,
@@ -238,7 +238,7 @@ const WorkoutNew = () => {
 				py="md"
 			>
 				<Stack justify="space-between">
-					<Stack>
+					<Stack gap="xs">
 						<Group justify="space-between">
 							<TextInput
 								size="lg"
@@ -256,6 +256,11 @@ const WorkoutNew = () => {
 								Duration: {hours}:{minutes}:{seconds}
 							</Text>
 						</Group>
+
+						<Divider
+							label="Exercises"
+							labelPosition="center"
+						/>
 
 						<Stack gap="xl">
 							{exercises.map((exercise) => {
@@ -275,7 +280,8 @@ const WorkoutNew = () => {
 
 											<Menu
 												shadow="md"
-												width={200}
+												width={150}
+												position="bottom-end"
 											>
 												<Menu.Target>
 													<Button
@@ -285,8 +291,9 @@ const WorkoutNew = () => {
 														<EllipsisVertical size={16} />
 													</Button>
 												</Menu.Target>
-												<Menu.Dropdown>
+												<Menu.Dropdown bg="dark.9">
 													<Menu.Item
+														className={styles.hover}
 														leftSection={
 															<Trash
 																size={14}
@@ -332,7 +339,8 @@ const WorkoutNew = () => {
 														<Table.Td>
 															<Menu
 																shadow="md"
-																width={200}
+																width={150}
+																position="bottom-start"
 															>
 																<Menu.Target>
 																	<Text
@@ -342,8 +350,9 @@ const WorkoutNew = () => {
 																		{index + 1}
 																	</Text>
 																</Menu.Target>
-																<Menu.Dropdown>
+																<Menu.Dropdown bg="dark.9">
 																	<Menu.Item
+																		className={styles.hover}
 																		leftSection={
 																			<Trash
 																				size={14}

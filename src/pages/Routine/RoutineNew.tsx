@@ -1,4 +1,5 @@
 import { useRoutinesHook } from "@/hooks/useRoutinesHook";
+import styles from "@/hover.module.css";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -253,18 +254,22 @@ const Routine = () => {
 											</Text>
 											<Menu
 												shadow="md"
-												width={200}
+												width={150}
+												position="bottom-end"
 											>
 												<Menu.Target>
 													<Button
+														px="5"
+														py="0"
 														variant="subtle"
-														color="gray"
+														color="white"
 													>
 														<EllipsisVertical size={16} />
 													</Button>
 												</Menu.Target>
-												<Menu.Dropdown>
+												<Menu.Dropdown bg="dark.9">
 													<Menu.Item
+														className={styles.hover}
 														leftSection={
 															<Trash
 																size={14}
@@ -313,7 +318,8 @@ const Routine = () => {
 														<Table.Td>
 															<Menu
 																shadow="md"
-																width={200}
+																width={150}
+																position="bottom-start"
 															>
 																<Menu.Target>
 																	<Text
@@ -323,8 +329,9 @@ const Routine = () => {
 																		{index + 1}
 																	</Text>
 																</Menu.Target>
-																<Menu.Dropdown>
+																<Menu.Dropdown bg="dark.9">
 																	<Menu.Item
+																		className={styles.hover}
 																		leftSection={
 																			<Trash
 																				size={14}

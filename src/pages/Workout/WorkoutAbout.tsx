@@ -5,19 +5,11 @@ import { format } from "date-fns";
 import { doc, getDoc, Timestamp } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-	//Clock,
-	//Dumbbell,
-	Play,
-	//Plus,
-	//Tally5,
-	//Weight,
-} from "lucide-react";
+
 import {
 	Container,
 	Stack,
 	Text,
-	Button,
 	Paper,
 	Group,
 	Table,
@@ -111,21 +103,6 @@ const WorkoutAbout = () => {
 				)}
 
 				<Stack gap={3}>
-					{/* <Group gap="xs">
-						<Avatar
-							size="sm"
-							radius="xl"
-							src={user?.photoURL}
-							alt="User Avatar"
-						/>
-						<Text
-							size="sm"
-							c="dimmed"
-						>
-							{user?.displayName || "Anonymous"}
-						</Text>
-					</Group> */}
-
 					<Title order={3}>{workoutName}</Title>
 
 					<Stack
@@ -140,12 +117,7 @@ const WorkoutAbout = () => {
 								alt="User Avatar"
 							/>
 							<Stack gap={3}>
-								<Text
-									size="sm"
-									// c="dimmed"
-								>
-									{user?.displayName || "Anonymous"}
-								</Text>
+								<Text size="sm">{user?.displayName || "Anonymous"}</Text>
 								<Text
 									size="xs"
 									c="dimmed"
@@ -155,13 +127,9 @@ const WorkoutAbout = () => {
 							</Stack>
 						</Group>
 
-						<Group
-						// mt="sm"
-						// mb="md"
-						>
+						<Group>
 							{stats?.totalVolume && (
 								<Group gap="sm">
-									{/* <Weight size={30} /> */}
 									<Stack
 										gap={0}
 										align="flex-start"
@@ -180,7 +148,6 @@ const WorkoutAbout = () => {
 
 							{stats?.totalExercises && (
 								<Group gap="sm">
-									{/* <Tally5 size={30} /> */}
 									<Stack
 										gap={0}
 										align="flex-start"
@@ -199,7 +166,6 @@ const WorkoutAbout = () => {
 
 							{stats?.totalSets && (
 								<Group gap="sm">
-									{/* <Weight size={30} /> */}
 									<Stack
 										gap={0}
 										align="flex-start"
@@ -259,20 +225,6 @@ const WorkoutAbout = () => {
 					)}
 				</Stack>
 
-				<Button
-					fullWidth
-					size="sm"
-					variant="filled"
-					color="teal"
-					aria-label="Start workout"
-					leftSection={<Play size={20} />}
-					onClick={() => {
-						navigate(`/workouts/${id}`);
-					}}
-				>
-					Start Workout
-				</Button>
-
 				<Divider
 					label="Exercises"
 					labelPosition="center"
@@ -316,7 +268,7 @@ const WorkoutAbout = () => {
 								</Stack>
 
 								<Table
-									//striped
+									striped
 									//withRowBorders={false}
 									withTableBorder
 									withColumnBorders

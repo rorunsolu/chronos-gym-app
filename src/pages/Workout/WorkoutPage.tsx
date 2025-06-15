@@ -187,7 +187,6 @@ const WorkoutPage = () => {
 											<Group>
 												{workout.stats.totalVolume && (
 													<Group gap="sm">
-														{/* <Weight size={30} /> */}
 														<Stack
 															gap={0}
 															align="flex-start"
@@ -208,7 +207,6 @@ const WorkoutPage = () => {
 
 												{workout.stats.totalExercises && (
 													<Group gap="sm">
-														{/* <Tally5 size={30} /> */}
 														<Stack
 															gap={0}
 															align="flex-start"
@@ -229,7 +227,6 @@ const WorkoutPage = () => {
 
 												{workout.stats.totalSets && (
 													<Group gap="sm">
-														{/* <Weight size={30} /> */}
 														<Stack
 															gap={0}
 															align="flex-start"

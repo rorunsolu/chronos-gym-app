@@ -1,5 +1,6 @@
 import { db } from "@/auth/Firebase";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
+import styles from "@/hover.module.css";
 import { useDisclosure } from "@mantine/hooks";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -346,7 +347,7 @@ const RoutineSession = () => {
 					/>
 				)}
 
-				<Stack gap="md">
+				<Stack gap="xs">
 					<Group justify="space-between">
 						<TextInput
 							size="lg"
@@ -362,6 +363,11 @@ const RoutineSession = () => {
 							Duration: {hours}:{minutes}:{seconds}
 						</Text>
 					</Group>
+
+					<Divider
+						label="Exercises"
+						labelPosition="center"
+					/>
 
 					<Stack gap="xl">
 						{exercises.map((exercise, index) => (
@@ -379,7 +385,8 @@ const RoutineSession = () => {
 										</Text>
 										<Menu
 											shadow="md"
-											width={200}
+											width={150}
+											position="bottom-end"
 										>
 											<Menu.Target>
 												<Button
@@ -389,8 +396,9 @@ const RoutineSession = () => {
 													<EllipsisVertical size={16} />
 												</Button>
 											</Menu.Target>
-											<Menu.Dropdown>
+											<Menu.Dropdown bg="dark.9">
 												<Menu.Item
+													className={styles.hover}
 													leftSection={
 														<Trash
 															size={14}
@@ -459,7 +467,8 @@ const RoutineSession = () => {
 												<Table.Td>
 													<Menu
 														shadow="md"
-														width={200}
+														width={150}
+														position="bottom-start"
 													>
 														<Menu.Target>
 															<Text
@@ -469,8 +478,9 @@ const RoutineSession = () => {
 																{index + 1}
 															</Text>
 														</Menu.Target>
-														<Menu.Dropdown>
+														<Menu.Dropdown bg="dark.9">
 															<Menu.Item
+																className={styles.hover}
 																leftSection={
 																	<Trash
 																		size={14}
