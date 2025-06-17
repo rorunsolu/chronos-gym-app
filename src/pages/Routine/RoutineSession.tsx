@@ -188,7 +188,7 @@ const RoutineSession = () => {
 		}
 
 		setError("");
-		navigate("/routine-page");
+		navigate("/home");
 		// Since routines don't have to have thir changes saved/updated , if the user opts to not update the routine, we can just navigate back to the routine page.
 	};
 
@@ -385,7 +385,7 @@ const RoutineSession = () => {
 										</Text>
 										<Menu
 											shadow="md"
-											width={150}
+											width="fit-content"
 											position="bottom-end"
 										>
 											<Menu.Target>
@@ -467,7 +467,7 @@ const RoutineSession = () => {
 												<Table.Td>
 													<Menu
 														shadow="md"
-														width={150}
+														width="fit-content"
 														position="bottom-start"
 													>
 														<Menu.Target>

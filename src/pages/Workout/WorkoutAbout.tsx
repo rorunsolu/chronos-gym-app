@@ -113,7 +113,7 @@ const WorkoutAbout = () => {
 							<Avatar
 								size="md"
 								radius="xl"
-								src={user?.photoURL}
+								src={user?.photoURL ? user.photoURL : "p.png"}
 								alt="User Avatar"
 							/>
 							<Stack gap={3}>
@@ -238,7 +238,14 @@ const WorkoutAbout = () => {
 						>
 							<Stack gap="md">
 								<Stack gap="3">
-									<Text fw={500}>{exercise.name}</Text>
+									<Text
+										fw={500}
+										onClick={() => {
+											navigate(`/exercise-about/${exercise.name}`);
+										}}
+									>
+										{exercise.name}
+									</Text>
 
 									{/* <Group
 											gap={0}

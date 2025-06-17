@@ -73,7 +73,7 @@ const Portal = () => {
 
 	useEffect(() => {
 		if (user != null) {
-			navigate("/home-page");
+			navigate("/home");
 		}
 	}, [user, navigate]);
 

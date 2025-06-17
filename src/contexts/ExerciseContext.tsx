@@ -1,111 +1,106 @@
 import { ExerciseContext } from "@/hooks/useExercisesHook";
-//import { db } from "@/auth/Firebase";
-//import { addDoc, collection, getDocs, query } from "firebase/firestore";
+import {
+	//auth,
+	db,
+} from "@/auth/Firebase";
+// import { getAuthenticatedUser } from "@/common/authChecker";
+import {
+	addDoc,
+	collection,
+	deleteDoc,
+	doc,
+	query,
+	getDocs,
+	//where,
+} from "firebase/firestore";
 import { useState, type ReactNode } from "react";
-
-// export interface MinorExerciseData {
-// 	name: string;
-// 	muscleGroup: string;
-// 	secondaryMuscleGroup: string;
-// 	equipment: string;
-// 	instructions: string;
-// }
-
-import { type ExerciseData } from "@/common/types";
+import type { FBExerciseData } from "@/common/types";
 
 export interface ExerciseContextType {
-	//exercises: MinorExerciseData[];
-	//fetchExercises: () => Promise<void>;
-	// createExercise: (
-	// 	name: string,
-	// 	muscleGroup: string,
-	// 	secondaryMuscleGroup: string,
-	// 	equipment: string,
-	// 	instructions: string
-	// ) => Promise<string>;
-	// The promise type can't be a void otherwise the function won't be able to access any of the needed data
-	handleDeleteSet: (exerciseId: string, setId: string) => void;
+	FBExercises: FBExerciseData[];
+	fetchFBExercises: () => Promise<void>;
+	createExercise: (
+		name: string,
+		muscleGroup: string,
+		equipment: string,
+		secondaryMuscleGroup?: string,
+		instructions?: string
+	) => Promise<string>;
+	deleteExercise: (id: string) => Promise<void>;
 }
 
 export const ExerciseProvider = ({ children }: { children: ReactNode }) => {
-	const [, setExercises] = useState<ExerciseData[]>([]);
+	const [FBExercises, setFBExercises] = useState<FBExerciseData[]>([]);
 
-	// const fetchExercises = async () => {
-	// 	const exercisesQuery = query(collection(db, "excercises"));
+	const fetchFBExercises = async () => {
+		const exercisesQuery = query(collection(db, "exercises"));
 
-	// 	const snapshotOfExercises = await getDocs(exercisesQuery);
+		const snapshotOfExercises = await getDocs(exercisesQuery);
 
-	// 	const exerciseList = snapshotOfExercises.docs.map((doc) => ({
-	// 		id: doc.id,
-	// 		name: doc.data().name,
-	// 		muscleGroup: doc.data().muscleGroup,
-	// 		secondaryMuscleGroup: doc.data().secondaryMuscleGroup,
-	// 		equipment: doc.data().equipment,
-	// 		instructions: doc.data().instructions,
-	// 	}));
+		const exerciseList = snapshotOfExercises.docs.map((doc) => ({
+			id: doc.id,
+			name: doc.data().name,
+			muscleGroup: doc.data().muscleGroup,
+			secondaryMuscleGroup: doc.data().secondaryMuscleGroup,
+			equipment: doc.data().equipment,
+			instructions: doc.data().instructions,
+		}));
+		setFBExercises(exerciseList.sort((a, b) => b.name.localeCompare(a.name)));
+	};
 
-	// 	setExercises(exerciseList.sort((a, b) => b.name.localeCompare(a.name)));
-	// };
+	const createExercise = async (
+		name: string,
+		muscleGroup: string,
+		equipment: string,
+		secondaryMuscleGroup?: string,
+		instructions?: string
+	) => {
+		//const user = getAuthenticatedUser();
+		const data = {
+			name,
+			muscleGroup,
+			secondaryMuscleGroup,
+			equipment,
+			instructions: instructions || "",
+			// userId: user.uid,
+		};
+		try {
+			const exerciseDocRef = await addDoc(collection(db, "exercises"), data);
+			setFBExercises((prev) => [...prev, { ...data, id: exerciseDocRef.id }]);
+			// eslint-disable-next-line
+			console.log("Exercise created: ", exerciseDocRef.id);
+			return exerciseDocRef.id;
+		} catch (error) {
+			// eslint-disable-next-line
+			console.error("Error creating exercise: ", error);
+			throw new Error("Unable to create exercise.");
+		}
+	};
 
-	// const createExercise = async (
-	// 	name: string,
-	// 	muscleGroup: string,
-	// 	secondaryMuscleGroup: string,
-	// 	equipment: string,
-	// 	instructions: string
-	// ) => {
-	// 	try {
-	// 		const data = {
-	// 			name,
-	// 			muscleGroup,
-	// 			secondaryMuscleGroup,
-	// 			equipment,
-	// 			instructions,
-	// 		};
-
-	// 		const exerciseDocRef = await addDoc(collection(db, "excercises"), data);
-
-	// 		// get the prev/current list, add the new exercise to along with the id at the point of creation
-	// 		setExercises((prev) => [
-	// 			...prev, // open up the exisitng list to make space for the new exercise
-	// 			{
-	// 				// below is the new exercise in question
-	// 				...data,
-	// 				id: exerciseDocRef.id,
-	// 			},
-	// 		]);
-
-	// 		console.log("Exercise created: ", exerciseDocRef.id);
-	// 		return exerciseDocRef.id;
-	// 	} catch (error) {
-	// 		console.error("Error creating exercise: ", error);
-	// 		throw new Error("Unable to create exercise.");
-	// 	}
-	// };
-
-	const handleDeleteSet = (exerciseId: string, setId: string) => {
-		setExercises((prevExercises) =>
-			prevExercises.map((exercise) =>
-				exercise.id === exerciseId
-					? {
-							...exercise,
-							sets: exercise.sets.filter((set) => set.id !== setId),
-						}
-					: exercise
-			)
-		);
+	const deleteExercise = async (id: string) => {
+		try {
+			await deleteDoc(doc(db, "exercises", id));
+			setFBExercises((prev) => prev.filter((exercise) => exercise.id !== id));
+			// eslint-disable-next-line
+			console.log("Exercise deleted:", id);
+		} catch (error) {
+			// eslint-disable-next-line
+			console.error("Error deleting exercise:", error);
+			throw new Error("Error deleting exercise");
+		}
 	};
 
 	return (
 		<ExerciseContext.Provider
 			value={{
-				// exercises,
-				// fetchExercises,
-				// createExercise,
-				handleDeleteSet,
+				FBExercises,
+				fetchFBExercises,
+				createExercise,
+				deleteExercise,
 			}}
 		>
 			{children}
 		</ExerciseContext.Provider>
 	);
 };
+// Now ExerciseContext uses only FBExerciseData, since it includes id.

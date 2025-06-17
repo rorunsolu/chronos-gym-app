@@ -1,0 +1,43 @@
+.root {
+	border-radius: var(--mantine-radius-sm);
+	background-color: light-dark(
+		var(--mantine-color-gray-0),
+		var(--mantine-color-dark-6)
+	);
+}
+
+.item {
+	background-color: var(--mantine-color-body);
+	border: 1px solid transparent;
+	position: relative;
+	z-index: 0;
+	border-radius: var(--mantine-radius-sm);
+	border-color: light-dark(
+		var(--mantine-color-gray-2),
+		var(--mantine-color-dark-4)
+	);
+
+	&[data-active] {
+		z-index: 1;
+		overflow: hidden;
+		background-color: var(--mantine-color-body);
+
+		box-shadow: var(--mantine-shadow-md);
+		border-radius: var(--mantine-radius-sm);
+	}
+}
+
+.control {
+	overflow: hidden;
+	border-radius: var(--mantine-radius-sm);
+
+	&:hover {
+		background-color: var(--mantine-color-body);
+	}
+}
+
+.chevron {
+	&[data-rotate] {
+		transform: rotate(-90deg);
+	}
+}

@@ -4,12 +4,22 @@ export type ExerciseData = {
 	id: string;
 	name: string;
 	notes?: string;
+	mappedId: string; // might help with the whole exercise about page nonsense idk
 	sets: {
 		id: string;
 		weight: string | number;
 		reps: string | number;
 		isCompleted: boolean;
 	}[];
+};
+
+export type FBExerciseData = {
+	id: string;
+	name: string;
+	muscleGroup: string;
+	equipment: string;
+	secondaryMuscleGroup?: string;
+	instructions?: string;
 };
 
 export type SessionData = {

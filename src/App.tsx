@@ -3,15 +3,14 @@ import { UserAuth } from "@/auth/AuthContext";
 import Protected from "@/auth/Protected";
 import ChronosLogoSmall from "@/components/Branding/ChronosLogoSmall";
 import styles from "@/hover.module.css";
+import ExerciseAbout from "@/pages/Exercise/ExerciseAbout";
 import ExerciseCreate from "@/pages/Exercise/ExerciseCreate";
 import ExercisePage from "@/pages/Exercise/ExercisePage";
 import Explore from "@/pages/Explore/Explore";
-import Homepage from "@/pages/Homepage/Homepage";
 import Portal from "@/pages/Portal/Portal";
 import ProfilePage from "@/pages/Profile/ProfilePage";
 import RoutineAbout from "@/pages/Routine/RoutineAbout";
 import RoutineNew from "@/pages/Routine/RoutineNew";
-import RoutinePage from "@/pages/Routine/RoutinePage";
 import RoutineSession from "@/pages/Routine/RoutineSession";
 import WorkoutAbout from "@/pages/Workout/WorkoutAbout";
 import WorkoutNew from "@/pages/Workout/WorkoutNew";
@@ -20,15 +19,17 @@ import "@mantine/core/styles.css";
 import "@mantine/core/styles.layer.css";
 import { useDisclosure } from "@mantine/hooks";
 import { Link, Route, Routes } from "react-router-dom";
+// import RoutinePage from "@/pages/Routine/RoutinePage";
+//import Homepage from "@/pages/Homepage/Homepage";
 //import RegisterForm from "@/pages/Register/RegisterForm";
 //import { useAccountsHook } from "@/hooks/useAccountsHook";
 import {
 	ChevronsUpDown,
-	Dumbbell,
+	//Dumbbell,
 	Home,
 	LogOut,
-	NotebookText,
-	Settings,
+	// NotebookText,
+	//Settings,
 	User,
 	BicepsFlexed,
 } from "lucide-react";
@@ -125,27 +126,28 @@ function App() {
 								gap={0}
 								h="100%"
 							>
-								<NavLink
+								{/* <NavLink
 									label="Home"
 									leftSection={<Home />}
 									component={Link}
-									to="/home-page"
+									to="/home"
 									variant="subtle"
 									color="white"
 									p="md"
 									className={styles.hover}
-								/>
+								/> */}
 								<NavLink
-									label="Workouts"
-									leftSection={<Dumbbell />}
+									label="Home"
+									// leftSection={<Dumbbell />}
+									leftSection={<Home />}
 									component={Link}
-									to="/workout-page"
+									to="/home"
 									variant="subtle"
 									color="white"
 									p="md"
 									className={styles.hover}
 								/>
-								<NavLink
+								{/* <NavLink
 									label="Routines"
 									leftSection={<NotebookText />}
 									component={Link}
@@ -154,7 +156,7 @@ function App() {
 									color="white"
 									p="md"
 									className={styles.hover}
-								/>
+								/> */}
 								<NavLink
 									label="Exercises"
 									leftSection={<BicepsFlexed />}
@@ -178,7 +180,7 @@ function App() {
 							</Stack>
 							<Menu
 								shadow="md"
-								width={150}
+								width="fit-content"
 								position="right-start"
 							>
 								<Paper
@@ -196,7 +198,7 @@ function App() {
 											<Avatar
 												size="md"
 												radius="xl"
-												src={user?.photoURL}
+												src={user?.photoURL ? user.photoURL : "p.png"}
 												alt="User Avatar"
 											/>
 											<Stack gap="0">
@@ -241,12 +243,12 @@ function App() {
 								</Paper>
 
 								<Menu.Dropdown bg="dark.9">
-									<Menu.Item
+									{/* <Menu.Item
 										leftSection={<Settings size={18} />}
 										className={styles.hover}
 									>
 										Settings
-									</Menu.Item>
+									</Menu.Item> */}
 
 									<Menu.Item
 										leftSection={<LogOut size={18} />}
@@ -281,14 +283,14 @@ function App() {
 							/> */}
 
 							{/* Home */}
-							<Route
-								path="/home-page"
+							{/* <Route
+								path="/home"
 								element={
 									<Protected>
 										<Homepage />
 									</Protected>
 								}
-							/>
+							/> */}
 
 							{/* Profile */}
 							<Route
@@ -312,7 +314,7 @@ function App() {
 
 							{/* Workouts */}
 							<Route
-								path="/workout-page"
+								path="/home"
 								element={
 									<Protected>
 										<WorkoutPage />
@@ -337,14 +339,14 @@ function App() {
 							/>
 
 							{/* Routines */}
-							<Route
+							{/* <Route
 								path="/routine-page"
 								element={
 									<Protected>
 										<RoutinePage />
 									</Protected>
 								}
-							/>
+							/> */}
 							<Route
 								path="/new-routine"
 								element={
@@ -376,6 +378,15 @@ function App() {
 								element={
 									<Protected>
 										<ExercisePage />
+									</Protected>
+								}
+							/>
+
+							<Route
+								path="/exercise-about/:id"
+								element={
+									<Protected>
+										<ExerciseAbout />
 									</Protected>
 								}
 							/>

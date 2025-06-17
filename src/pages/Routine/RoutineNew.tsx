@@ -199,7 +199,7 @@ const Routine = () => {
 
 		setError("");
 		await createRoutine(name, exercises, duration, notes);
-		navigate("/routine-page");
+		navigate("/home");
 	};
 
 	const handlePreConfirmation = () => {
@@ -237,6 +237,8 @@ const Routine = () => {
 						</Text>
 					</Group>
 
+					<Divider label="Exercises" />
+
 					<Stack gap="xl">
 						{exercises.map((exercise, index) => {
 							return (
@@ -254,7 +256,7 @@ const Routine = () => {
 											</Text>
 											<Menu
 												shadow="md"
-												width={150}
+												width="fit-content"
 												position="bottom-end"
 											>
 												<Menu.Target>
@@ -318,7 +320,7 @@ const Routine = () => {
 														<Table.Td>
 															<Menu
 																shadow="md"
-																width={150}
+																width="fit-content"
 																position="bottom-start"
 															>
 																<Menu.Target>
@@ -447,9 +449,10 @@ const Routine = () => {
 				opened={opened}
 				onClose={close}
 				title="Add Exercise"
-				fullScreen
+				//fullScreen
 				radius={0}
 				transitionProps={{ transition: "fade", duration: 200 }}
+				bg="dark.9"
 			>
 				<Stack gap="sm">
 					<Input
@@ -471,6 +474,7 @@ const Routine = () => {
 								transitionProps: { transition: "fade-down", duration: 200 },
 							}}
 							onChange={setSelectedEquipment}
+							placeholder="Select Equipment"
 						/>
 						<Select
 							defaultValue="All Muscles"
@@ -483,12 +487,13 @@ const Routine = () => {
 								transitionProps: { transition: "fade-down", duration: 200 },
 							}}
 							onChange={setSelectedMuscle}
+							placeholder="Select Muscle"
 						/>
 					</Group>
 
 					<Divider />
 
-					<Stack>
+					<Stack gap="5">
 						{filtered.map((exercise, index) => (
 							<Card
 								className={styles.hover}

@@ -106,7 +106,7 @@ const RoutineAbout = () => {
 							<Avatar
 								size="md"
 								radius="xl"
-								src={user?.photoURL}
+								src={user?.photoURL ? user.photoURL : "p.png"}
 								alt="User Avatar"
 							/>
 							<Stack gap={3}>

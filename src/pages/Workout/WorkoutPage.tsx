@@ -1,33 +1,47 @@
 import { UserAuth } from "@/auth/AuthContext";
+import { useRoutinesHook } from "@/hooks/useRoutinesHook";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
 import styles from "@/hover.module.css";
+import { useDisclosure } from "@mantine/hooks";
 import { formatDistanceToNow } from "date-fns";
-import { EllipsisVertical, Plus, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+	ChevronDown,
+	ChevronUp,
+	EllipsisVertical,
+	Plus,
+	Trash,
+	ChevronRight,
+} from "lucide-react";
+import {
+	Avatar,
 	Button,
+	Card,
+	Collapse,
 	Container,
 	Group,
+	Menu,
+	SimpleGrid,
 	Stack,
 	Text,
 	Title,
-	SimpleGrid,
-	Card,
-	Menu,
-	Avatar,
+	Paper,
 } from "@mantine/core";
 
 const WorkoutPage = () => {
+	const [opened, { toggle }] = useDisclosure(false);
 	const navigate = useNavigate();
 	const { user } = UserAuth();
 	const [, setLoading] = useState(true);
 	const { workouts, fetchWorkouts, deleteWorkout } = useWorkOutHook();
+	const { routines, fetchRoutines } = useRoutinesHook();
 
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
 			await fetchWorkouts();
+			await fetchRoutines();
 		};
 
 		fetchData();
@@ -40,32 +54,147 @@ const WorkoutPage = () => {
 			p="md"
 			py="md"
 		>
-			<Stack gap="xl">
-				<Stack gap="md">
+			<Stack gap="0">
+				<Stack
+					gap="md"
+					mb="xl"
+				>
 					<Stack gap={0}>
-						<Title order={1}>Workouts</Title>
-						<Text c="dimmed">
-							View all of your routines and create new ones.
-						</Text>
+						<Title order={1}>Home</Title>
 					</Stack>
+					<Group grow>
+						<Button
+							color="teal"
+							variant="filled"
+							leftSection={<Plus size={20} />}
+							onClick={() => {
+								navigate("/new-workout");
+							}}
+							style={{ boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
+						>
+							Create Workout
+						</Button>
 
-					<Button
-						color="teal"
-						variant="filled"
-						leftSection={<Plus size={20} />}
-						onClick={() => {
-							navigate("/new-workout");
-						}}
-						style={{ boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
-					>
-						New Workout
-					</Button>
+						<Button
+							color="teal"
+							variant="outline"
+							leftSection={<Plus size={20} />}
+							onClick={() => {
+								navigate("/new-routine");
+							}}
+							style={{ boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
+						>
+							Create Routine
+						</Button>
+					</Group>
+				</Stack>
+
+				<Stack mb="-10">
+					<Group justify="space-between">
+						<Group
+							mb="0"
+							mt="0"
+						>
+							<Title
+								order={3}
+								fw={500}
+							>
+								My Routines
+							</Title>
+							<Card
+								radius="md"
+								shadow="md"
+								bg="none"
+								withBorder
+								style={{
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									width: "25px",
+									height: "25px",
+								}}
+							>
+								<Text
+									fw={500}
+									size="sm"
+								>
+									{routines.length}
+								</Text>
+							</Card>
+						</Group>
+						<Button
+							variant="subtle"
+							color="gray"
+							onClick={toggle}
+							px="xs"
+							py="xs"
+							style={{
+								minWidth: 0,
+								width: 36,
+								height: 36,
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+							}}
+						>
+							{opened ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+						</Button>
+					</Group>
+
+					<Collapse in={opened}>
+						<SimpleGrid
+							spacing="xs"
+							cols={{ base: 1, xs: 1, sm: 1, lg: 1 }}
+							mb="xl"
+						>
+							{routines.map((routine) => (
+								<Paper
+									p="md"
+									key={routine.id}
+									withBorder
+									radius="md"
+									shadow="md"
+									bg="dark.9"
+								>
+									<Stack gap="xs">
+										<Group
+											gap="xs"
+											justify="space-between"
+										>
+											<Text
+												size="md"
+												fw={500}
+											>
+												{routine.name}
+											</Text>
+											<Paper
+												p={5}
+												radius="sm"
+												c="white"
+												onClick={(e) => {
+													e.stopPropagation();
+													navigate(`/routine-about/${routine.id}`);
+												}}
+												className={styles.hover}
+												style={{
+													border:
+														"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color)",
+												}}
+											>
+												<ChevronRight size={16} />
+											</Paper>
+										</Group>
+									</Stack>
+								</Paper>
+							))}
+						</SimpleGrid>
+					</Collapse>
 				</Stack>
 
 				<Stack>
 					<Group
-						mb="0"
-						mt="0"
+						mt="md"
+						mb="5"
 					>
 						<Title
 							order={3}
@@ -74,7 +203,6 @@ const WorkoutPage = () => {
 							My Workouts
 						</Title>
 						<Card
-							//className={styles.hover}
 							radius="md"
 							shadow="md"
 							bg="none"
@@ -148,7 +276,7 @@ const WorkoutPage = () => {
 													px="5"
 													py="0"
 													variant="subtle"
-													color="white"
+													color="gray"
 													onClick={(e) => {
 														e.stopPropagation();
 													}}

@@ -1,6 +1,7 @@
 .hover {
 	cursor: pointer;
 	background-color: var(--mantine-color-dark-9) !important;
+	//background-color: var(--mantine-color-body);
 
 	&:hover {
 		background-color: var(--mantine-color-dark-8) !important;

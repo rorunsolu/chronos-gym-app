@@ -109,7 +109,7 @@ const Profile = () => {
 							radius={80}
 							mx="auto"
 							mt={-30}
-							src={user?.photoURL}
+							src={user?.photoURL ? user.photoURL : "p.png"}
 							alt="User Avatar"
 							bg="dark.9"
 						/>

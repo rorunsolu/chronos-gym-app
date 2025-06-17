@@ -15,7 +15,7 @@ import {
 	primaryMuscleGroups,
 	secondaryMuscleGroups,
 	equipment,
-} from "@/assets/index";
+} from "@/common/index";
 
 const ExerciseCreate = () => {
 	const [exerciseName, setExerciseName] = useState("");
@@ -57,10 +57,15 @@ const ExerciseCreate = () => {
 		>
 			<form onSubmit={handleExerciseCreate}>
 				<Stack gap="md">
-					<Title order={3}>Create New Exercise</Title>
+					<Title
+						order={3}
+						fw={500}
+					>
+						Create New Exercise
+					</Title>
 
 					<TextInput
-						label="Exercise Name"
+						label="Name"
 						placeholder="e.g. Barbell Bench Press"
 						required
 						value={exerciseName}
@@ -113,6 +118,7 @@ const ExerciseCreate = () => {
 						<Button
 							type="submit"
 							fullWidth
+							disabled={!exerciseName || !primaryMuscleGroup || !equipmentType}
 						>
 							Create Exercise
 						</Button>

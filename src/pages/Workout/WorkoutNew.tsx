@@ -1,16 +1,11 @@
+import { useExercisesHook } from "../../hooks/useExercisesHook";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
 import styles from "@/hover.module.css";
 import { useDisclosure } from "@mantine/hooks";
+import { CheckCircle, EllipsisVertical, Plus, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStopwatch } from "react-timer-hook";
-import {
-	CheckCircle,
-	EllipsisVertical,
-	Plus,
-	Search,
-	Trash,
-} from "lucide-react";
 import {
 	Button,
 	Card,
@@ -18,39 +13,34 @@ import {
 	Container,
 	Divider,
 	Group,
-	Input,
 	Menu,
 	Modal,
 	NumberInput,
-	Select,
 	Stack,
 	Table,
 	Text,
 	Textarea,
 	TextInput,
 } from "@mantine/core";
-import {
-	equipment,
-	localExerciseInfo,
-	primaryMuscleGroups,
-} from "@/common/index";
+
 import type { ExerciseData } from "@/common/types";
 
 const WorkoutNew = () => {
-	// Hooks
 	const navigate = useNavigate();
 	const { createWorkout } = useWorkOutHook();
+	const { FBExercises, fetchFBExercises } = useExercisesHook();
 
-	// For Mantine modal
+	useEffect(() => {
+		const fetchData = async () => {
+			await fetchFBExercises();
+		};
+
+		fetchData();
+		// eslint-disable-next-line
+	}, []);
+
 	const [opened, { open, close }] = useDisclosure(false);
 	const [finishOpen, finishHandler] = useDisclosure(false);
-
-	// For the search functionality
-	const [search, setSearch] = useState("");
-	const [selectedMuscle, setSelectedMuscle] = useState<string | null>(null);
-	const [selectedEquipment, setSelectedEquipment] = useState<string | null>(
-		null
-	);
 
 	// For createWorkout functionality
 	const [name, setName] = useState("");
@@ -59,38 +49,20 @@ const WorkoutNew = () => {
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 	const [, setExerciseSetCompleted] = useState(false);
 
-	// Filter exercises based on search, muscle group, and equipment
-	const filtered = localExerciseInfo.filter((exercise) => {
-		const matchesSearch = exercise.name
-			.toLowerCase()
-			.includes(search.toLowerCase());
-		const matchesMuscle = selectedMuscle
-			? exercise.muscleGroup === selectedMuscle
-			: true;
-		const matchesEquipment = selectedEquipment
-			? exercise.equipment === selectedEquipment
-			: true;
-
-		const showAllMuscles = selectedMuscle === "All Muscles";
-		const showAllEquipment = selectedEquipment === "All Equipment";
-
-		return (
-			(matchesSearch && matchesMuscle && matchesEquipment) ||
-			showAllMuscles ||
-			showAllEquipment
-		);
-	});
-
 	// Docs referenced
 	// Dealing with the exercise & row rendering - https://react.dev/learn/rendering-lists
 
 	// Add a new exercise with an initial set that includes the required "id" property
-	const handleExerciseRender = (exercise: { name: string }) => {
+	const handleExerciseRender = (
+		exercise: { name: string },
+		mappedId: string
+	) => {
 		setExercises((prev) => [
 			...prev,
 			{
 				id: Date.now().toString(),
 				name: exercise.name, // the type defintion (exercise: { name: string }) for the exercise paramater is for this ONLY
+				mappedId,
 				sets: [
 					// This is an ARRAY not just an object
 					{
@@ -205,7 +177,7 @@ const WorkoutNew = () => {
 
 		setError("");
 		await createWorkout(name, exercises, duration, notes);
-		navigate("/workout-page");
+		navigate("/home");
 	};
 
 	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({
@@ -280,7 +252,7 @@ const WorkoutNew = () => {
 
 											<Menu
 												shadow="md"
-												width={150}
+												width="fit-content"
 												position="bottom-end"
 											>
 												<Menu.Target>
@@ -339,7 +311,7 @@ const WorkoutNew = () => {
 														<Table.Td>
 															<Menu
 																shadow="md"
-																width={150}
+																width="fit-content"
 																position="bottom-start"
 															>
 																<Menu.Target>
@@ -544,13 +516,13 @@ const WorkoutNew = () => {
 				transitionProps={{ transition: "fade", duration: 200 }}
 			>
 				<Stack gap="sm">
-					<Input
+					{/* <Input
 						leftSection={<Search size={16} />}
 						placeholder="Search exercise"
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
-					/>
-
+					/> */}
+					{/* 
 					<Group grow>
 						<Select
 							defaultValue="All Equipment"
@@ -578,23 +550,23 @@ const WorkoutNew = () => {
 							}}
 							onChange={setSelectedMuscle}
 						/>
-					</Group>
+					</Group> */}
 
 					<Stack
 						gap="5"
 						mt="xs"
 					>
-						{filtered.map((exercise, index) => (
+						{FBExercises.map((exercise, id) => (
 							<Card
 								className={styles.hover}
-								key={index}
+								key={id}
 								withBorder
 								radius="md"
 								//bg="dark.7"
 								p="sm"
 								//style={{ cursor: "pointer" }}
 								onClick={() => {
-									handleExerciseRender(exercise);
+									handleExerciseRender(exercise, exercise.id);
 									close();
 								}}
 							>
