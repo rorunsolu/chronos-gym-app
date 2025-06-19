@@ -3,6 +3,7 @@ import { UserAuth } from "@/auth/AuthContext";
 import Protected from "@/auth/Protected";
 import ChronosLogoSmall from "@/components/Branding/ChronosLogoSmall";
 import styles from "@/hover.module.css";
+import BulkExUpload from "@/pages/Exercise/BulkExUpload";
 import ExerciseAbout from "@/pages/Exercise/ExerciseAbout";
 import ExerciseCreate from "@/pages/Exercise/ExerciseCreate";
 import ExercisePage from "@/pages/Exercise/ExercisePage";
@@ -12,9 +13,9 @@ import ProfilePage from "@/pages/Profile/ProfilePage";
 import RoutineAbout from "@/pages/Routine/RoutineAbout";
 import RoutineNew from "@/pages/Routine/RoutineNew";
 import RoutineSession from "@/pages/Routine/RoutineSession";
+import Homepage from "@/pages/Workout/Homepage";
 import WorkoutAbout from "@/pages/Workout/WorkoutAbout";
 import WorkoutNew from "@/pages/Workout/WorkoutNew";
-import WorkoutPage from "@/pages/Workout/WorkoutPage";
 import "@mantine/core/styles.css";
 import "@mantine/core/styles.layer.css";
 import { useDisclosure } from "@mantine/hooks";
@@ -67,7 +68,6 @@ function App() {
 			console.log(error);
 		}
 	};
-	// using the Mnatine "disabled" prop woyuld be easier? Perhaps?
 
 	return (
 		<>
@@ -126,20 +126,16 @@ function App() {
 								gap={0}
 								h="100%"
 							>
-								{/* <NavLink
-									label="Home"
-									leftSection={<Home />}
-									component={Link}
-									to="/home"
-									variant="subtle"
-									color="white"
-									p="md"
-									className={styles.hover}
-								/> */}
 								<NavLink
+									c="white"
 									label="Home"
-									// leftSection={<Dumbbell />}
-									leftSection={<Home />}
+									leftSection={
+										<Home
+											size={20}
+											stroke="#fff"
+											strokeWidth={1.5}
+										/>
+									}
 									component={Link}
 									to="/home"
 									variant="subtle"
@@ -147,19 +143,17 @@ function App() {
 									p="md"
 									className={styles.hover}
 								/>
-								{/* <NavLink
-									label="Routines"
-									leftSection={<NotebookText />}
-									component={Link}
-									to="/routine-page"
-									variant="subtle"
-									color="white"
-									p="md"
-									className={styles.hover}
-								/> */}
+
 								<NavLink
+									c="white"
 									label="Exercises"
-									leftSection={<BicepsFlexed />}
+									leftSection={
+										<BicepsFlexed
+											size={20}
+											stroke="#fff"
+											strokeWidth={1.5}
+										/>
+									}
 									component={Link}
 									to="/exercise-page"
 									variant="subtle"
@@ -167,9 +161,17 @@ function App() {
 									p="md"
 									className={styles.hover}
 								/>
+
 								<NavLink
+									c="white"
 									label="Profile"
-									leftSection={<User />}
+									leftSection={
+										<User
+											size={20}
+											stroke="#fff"
+											strokeWidth={1.5}
+										/>
+									}
 									component={Link}
 									to="/profile-page"
 									variant="subtle"
@@ -243,13 +245,6 @@ function App() {
 								</Paper>
 
 								<Menu.Dropdown bg="dark.9">
-									{/* <Menu.Item
-										leftSection={<Settings size={18} />}
-										className={styles.hover}
-									>
-										Settings
-									</Menu.Item> */}
-
 									<Menu.Item
 										leftSection={<LogOut size={18} />}
 										onClick={handleSignOut}
@@ -264,35 +259,11 @@ function App() {
 
 					<AppShell.Main>
 						<Routes>
-							{/* General/Portal */}
 							<Route
 								path="/"
 								element={<Portal />}
 							/>
-							{/* <Route
-								path="/register-form"
-								element={<RegisterForm />}
-							/> */}
-							{/* <Route
-								path="/register-form"
-								element={
-									<Protected>
-										<RegisterForm />
-									</Protected>
-								}
-							/> */}
 
-							{/* Home */}
-							{/* <Route
-								path="/home"
-								element={
-									<Protected>
-										<Homepage />
-									</Protected>
-								}
-							/> */}
-
-							{/* Profile */}
 							<Route
 								path="/profile-page"
 								element={
@@ -302,7 +273,6 @@ function App() {
 								}
 							/>
 
-							{/* Explore */}
 							<Route
 								path="/explore-page"
 								element={
@@ -312,12 +282,11 @@ function App() {
 								}
 							/>
 
-							{/* Workouts */}
 							<Route
 								path="/home"
 								element={
 									<Protected>
-										<WorkoutPage />
+										<Homepage />
 									</Protected>
 								}
 							/>
@@ -338,15 +307,6 @@ function App() {
 								}
 							/>
 
-							{/* Routines */}
-							{/* <Route
-								path="/routine-page"
-								element={
-									<Protected>
-										<RoutinePage />
-									</Protected>
-								}
-							/> */}
 							<Route
 								path="/new-routine"
 								element={
@@ -372,7 +332,15 @@ function App() {
 								}
 							/>
 
-							{/* Exercises */}
+							<Route
+								path="/bulk"
+								element={
+									<Protected>
+										<BulkExUpload />
+									</Protected>
+								}
+							/>
+
 							<Route
 								path="/exercise-page"
 								element={

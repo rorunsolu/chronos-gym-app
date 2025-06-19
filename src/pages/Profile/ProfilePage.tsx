@@ -1,3 +1,4 @@
+import styles from "@/accordion.module.css";
 import { UserAuth } from "@/auth/AuthContext";
 import { getUserWorkoutStats } from "@/common/calculateStats";
 import { useMeasurementsHook } from "@/hooks/useMeasurementsHook";
@@ -10,18 +11,13 @@ import {
 	Avatar,
 	Button,
 	Container,
-	//Divider,
 	Group,
 	Modal,
 	NumberInput,
-	Paper,
-	SimpleGrid,
 	Stack,
 	Table,
 	Text,
 	Title,
-	Card,
-	Image,
 } from "@mantine/core";
 
 const Profile = () => {
@@ -37,6 +33,7 @@ const Profile = () => {
 		totalDuration: number;
 	} | null>(null);
 
+	const { user } = UserAuth();
 	const { workouts, fetchWorkouts } = useWorkOutHook();
 	const {
 		measurements,
@@ -74,41 +71,83 @@ const Profile = () => {
 		loadStats();
 	}, [fetchWorkouts, workouts]);
 
-	const { user } = UserAuth();
+	const statCards = [
+		{
+			icon: (
+				<Dumbbell
+					size={20}
+					color="#fff"
+				/>
+			),
+			value: stats?.totalWorkouts,
+			title: "Workouts",
+			description: "Total number of workouts completed.",
+		},
+		{
+			icon: (
+				<Tally5
+					size={20}
+					color="#fff"
+				/>
+			),
+			value: stats?.totalSets,
+			title: "Sets",
+			description: "Total sets performed.",
+		},
+		{
+			icon: (
+				<Weight
+					size={20}
+					color="#fff"
+				/>
+			),
+			value: stats?.totalVolume,
+			unit: "kg",
+			title: "Volume",
+			description: "Total weight lifted.",
+		},
+		{
+			icon: (
+				<Clock
+					size={20}
+					color="#fff"
+				/>
+			),
+			value:
+				stats && typeof stats.totalDuration === "number"
+					? stats.totalDuration > 60
+						? ` ${Math.floor(stats.totalDuration / 60)} mins`
+						: `${stats.totalDuration} secs`
+					: "-",
+			title: "Time Spent",
+			description: "Total time spent working out.",
+		},
+	];
 
 	return (
 		<Container
-			size="sm"
-			p="md"
+			size="xs"
+			p="sm"
 			py="md"
 		>
-			<Stack gap="lg">
-				<Card
-					//withBorder
-					radius="md"
-					//align="center"
-					//gap="4"
-					bg="none"
-					p={0}
-					//shadow="md"
+			<Title order={1}>My Profile</Title>
+			<Stack
+				gap="lg"
+				mt="md"
+			>
+				<Stack
+					gap="sm"
+					p="md"
+					className={styles.item}
 				>
-					<Card.Section>
-						<Image
-							src="\gym-bg.jpg"
-							h={140}
-							alt="Gym Background"
-						/>
-					</Card.Section>
-					<Stack
-						align="center"
+					<Group
+						justify="flex-start"
 						gap="xs"
-						//radius="md"
+						mb="xs"
 					>
 						<Avatar
-							size={60}
+							size={40}
 							radius={80}
-							mx="auto"
-							mt={-30}
 							src={user?.photoURL ? user.photoURL : "p.png"}
 							alt="User Avatar"
 							bg="dark.9"
@@ -118,168 +157,58 @@ const Profile = () => {
 							<Text
 								fw={500}
 								c="white"
-								size="md"
+								size="sm"
 							>
 								{user.displayName}
 							</Text>
 						)}
+					</Group>
+
+					<Stack gap="sm">
+						{statCards.map((stat, index) => (
+							<Group key={index}>
+								<Group>
+									{stat.icon}
+									<Stack gap={0}>
+										<Text
+											c="gray.4"
+											size="xs"
+										>
+											{stat.description}
+										</Text>
+										<Text
+											size="lg"
+											fw={600}
+											c="#fff"
+										>
+											{stat.value}
+											{stat.unit ? ` ${stat.unit}` : ""}
+										</Text>
+									</Stack>
+								</Group>
+							</Group>
+						))}
 					</Stack>
+				</Stack>
 
-					<Title
-						c="dimmed"
-						order={5}
-						fw={400}
-						size="sm"
-					>
-						Career Stats
-					</Title>
-
-					<SimpleGrid
-						spacing="xs"
-						cols={{ base: 1, xs: 2, sm: 2 }}
-						mt="lg"
-					>
-						<Paper
-							shadow="md"
-							withBorder
-							radius="md"
-							p="xs"
-							bg="none"
-						>
-							<Group gap="sm">
-								<Dumbbell size={30} />
-								<Stack
-									gap={0}
-									align="flex-start"
-								>
-									<Text
-										size="xl"
-										fw={700}
-									>
-										{stats?.totalWorkouts}
-									</Text>
-									<Text
-										c="dimmed"
-										size="sm"
-									>
-										Workouts
-									</Text>
-								</Stack>
-							</Group>
-						</Paper>
-
-						<Paper
-							shadow="md"
-							withBorder
-							p="xs"
-							radius="md"
-							bg="none"
-						>
-							<Group gap="sm">
-								<Tally5 size={30} />
-								<Stack
-									align="flex-start"
-									gap={0}
-								>
-									<Text
-										size="xl"
-										fw={700}
-									>
-										{stats?.totalSets}
-									</Text>
-									<Text
-										c="dimmed"
-										size="sm"
-									>
-										Sets
-									</Text>
-								</Stack>
-							</Group>
-						</Paper>
-
-						<Paper
-							shadow="md"
-							withBorder
-							p="xs"
-							radius="md"
-							bg="none"
-						>
-							<Group gap="sm">
-								<Weight size={30} />
-								<Stack
-									gap={0}
-									align="flex-start"
-								>
-									<Text
-										size="xl"
-										fw={700}
-									>
-										{stats?.totalVolume} kg
-									</Text>
-									<Text
-										c="dimmed"
-										size="sm"
-									>
-										Volume
-									</Text>
-								</Stack>
-							</Group>
-						</Paper>
-
-						<Paper
-							shadow="md"
-							withBorder
-							p="xs"
-							radius="md"
-							bg="none"
-						>
-							<Group gap="sm">
-								<Clock size={30} />
-								<Stack
-									gap={0}
-									align="flex-start"
-								>
-									<Text
-										size="xl"
-										fw={700}
-									>
-										{stats && typeof stats.totalDuration === "number" && (
-											<>
-												{stats.totalDuration > 60
-													? ` ${Math.floor(stats.totalDuration / 60)} mins`
-													: `${stats.totalDuration} secs`}{" "}
-											</>
-										)}
-									</Text>
-									<Text
-										c="dimmed"
-										size="sm"
-									>
-										Time Spent
-									</Text>
-								</Stack>
-							</Group>
-						</Paper>
-					</SimpleGrid>
-				</Card>
-
-				{/* <Divider
-					mt="lg"
-					mb="xs"
-				/> */}
-
-				<Stack>
-					<Stack
+				<Stack
+					p="0"
+					mt="sm"
+				>
+					<Group
 						align="center"
-						mb="sm"
+						mb="5"
+						justify="space-between"
 					>
-						<Title
-							order={3}
+						<Text
 							fw={500}
+							c="white"
+							size="md"
 						>
 							Measurements
-						</Title>
+						</Text>
 						<Button
+							variant="filled"
 							color="teal"
 							radius="xs"
 							size="sm"
@@ -288,38 +217,61 @@ const Profile = () => {
 						>
 							Add
 						</Button>
-					</Stack>
+					</Group>
 
 					<Table.ScrollContainer minWidth={200}>
-						<Table
-							//striped
-							//highlightOnHover
-							withTableBorder
-							withColumnBorders
-						>
+						<Table striped>
 							<Table.Thead>
 								<Table.Tr>
-									<Table.Th>Date</Table.Th>
-									<Table.Th>Weight</Table.Th>
-									<Table.Th>Height</Table.Th>
-									<Table.Th>BF</Table.Th>
-
+									<Table.Th>
+										<Text
+											size="sm"
+											fw={500}
+											c="white"
+										>
+											Date
+										</Text>
+									</Table.Th>
+									<Table.Th>
+										<Text
+											size="sm"
+											fw={500}
+											c="white"
+										>
+											Weight
+										</Text>
+									</Table.Th>
+									<Table.Th>
+										<Text
+											size="sm"
+											fw={500}
+											c="white"
+										>
+											Height
+										</Text>
+									</Table.Th>
+									<Table.Th>
+										<Text
+											size="sm"
+											fw={500}
+											c="white"
+										>
+											BF
+										</Text>
+									</Table.Th>
 									<Table.Th>&nbsp;</Table.Th>
 								</Table.Tr>
 							</Table.Thead>
 							<Table.Tbody>
 								{measurements.map((measurement) => {
 									return (
-										<Table.Tr
-											key={measurement.id}
-											// style={{ cursor: "pointer" }}
-										>
-											<Table.Td>
+										<Table.Tr key={measurement.id}>
+											<Table.Td c="white">
 												{format(measurement.date.toDate(), "dd/MM/yy")}
 											</Table.Td>
-											<Table.Td>{measurement.weight}kg</Table.Td>
-											<Table.Td>{measurement.height}cm</Table.Td>
-											<Table.Td>
+											<Table.Td c="white">{measurement.weight}kg</Table.Td>
+											<Table.Td c="white">{measurement.height}cm</Table.Td>
+											<Table.Td c="white">
 												{measurement.bodyFat
 													? `${measurement.bodyFat}%`
 													: "N/A"}
@@ -343,7 +295,6 @@ const Profile = () => {
 					</Table.ScrollContainer>
 				</Stack>
 			</Stack>
-
 			<Modal
 				opened={opened}
 				onClose={close}

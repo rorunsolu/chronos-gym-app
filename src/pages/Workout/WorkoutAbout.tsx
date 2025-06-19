@@ -241,8 +241,9 @@ const WorkoutAbout = () => {
 									<Text
 										fw={500}
 										onClick={() => {
-											navigate(`/exercise-about/${exercise.name}`);
+											navigate(`/exercise-about/${exercise.mappedId}`);
 										}}
+										style={{ cursor: "pointer" }}
 									>
 										{exercise.name}
 									</Text>

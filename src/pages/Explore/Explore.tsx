@@ -41,7 +41,12 @@ const Explore = () => {
 			py="md"
 		>
 			<Stack gap="md">
-				<Title order={3}>Programs</Title>
+				<Title
+					order={3}
+					fw={500}
+				>
+					Programs
+				</Title>
 
 				<Group grow>
 					<Select
@@ -60,6 +65,7 @@ const Explore = () => {
 
 				{filters.map((program, idx) => (
 					<Card
+						className={styles.hover}
 						key={idx}
 						radius="md"
 						shadow="md"
@@ -105,6 +111,7 @@ const Explore = () => {
 				>
 					{routineCategories.map((item, index) => (
 						<Card
+							className={styles.hover}
 							key={index}
 							radius="md"
 							shadow="md"

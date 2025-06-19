@@ -1,8 +1,8 @@
 import { auth, db } from "@/auth/Firebase";
-import { getAuthenticatedUser } from "@/common/helper";
+import { getAuthenticatedUser } from "@/common/authChecker";
 import { SessionHistoryContext } from "@/hooks/useSessionHistoryHook";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { useState, type ReactNode } from "react";
-import { addDoc, collection, query, getDocs, where } from "firebase/firestore";
 import type { SessionHistoryData } from "@/common/types";
 
 export type SessionHistoryContextType = {

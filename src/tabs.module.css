@@ -7,7 +7,7 @@
 	background-color: var(--mantine-color-white);
 	border-radius: var(--mantine-radius-md);
 	border: 1px solid var(--mantine-color-gray-2);
-	box-shadow: var(--mantine-shadow-sm);
+	box-shadow: var(--mantine-shadow-md);
 
 	@mixin dark {
 		background-color: var(--mantine-color-dark-6);

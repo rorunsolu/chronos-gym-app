@@ -81,7 +81,7 @@ const RegisterForm = () => {
 				true
 			);
 			// Navigate to home AFTER account creation completes
-			navigate("/home-page");
+			navigate("/home");
 			// eslint-disable-next-line
 			console.log("Form submitted with values:", values);
 		} catch (error) {
@@ -95,7 +95,7 @@ const RegisterForm = () => {
 			if (user?.uid) {
 				const registered = await isUserRegistered(user.uid);
 				if (registered) {
-					navigate("/home-page");
+					navigate("/home");
 				}
 			}
 		};
@@ -122,6 +122,7 @@ const RegisterForm = () => {
 						description="Profile settings"
 					>
 						<TextInput
+							c="white"
 							mt="md"
 							label="Username"
 							placeholder="Username"
@@ -130,6 +131,7 @@ const RegisterForm = () => {
 							required
 						/>
 						<TextInput
+							c="white"
 							mt="md"
 							label="Name"
 							placeholder="Name"
@@ -168,6 +170,7 @@ const RegisterForm = () => {
 						description="Confirm your details"
 					>
 						<TextInput
+							c="white"
 							mt="md"
 							label="Username"
 							value={form.values.username}
@@ -175,6 +178,7 @@ const RegisterForm = () => {
 							disabled
 						/>
 						<TextInput
+							c="white"
 							mt="md"
 							label="Name"
 							value={form.values.name}
@@ -183,6 +187,7 @@ const RegisterForm = () => {
 						/>
 
 						<TextInput
+							c="white"
 							mt="md"
 							label="Gender"
 							value={form.values.gender}
@@ -190,6 +195,7 @@ const RegisterForm = () => {
 							disabled
 						/>
 						<TextInput
+							c="white"
 							mt="md"
 							label="Age"
 							value={form.values.age}

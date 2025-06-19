@@ -8,11 +8,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
 	ChevronDown,
-	ChevronUp,
-	EllipsisVertical,
-	Plus,
-	Trash,
 	ChevronRight,
+	ChevronUp,
+	Dumbbell,
+	EllipsisVertical,
+	Trash,
 } from "lucide-react";
 import {
 	Avatar,
@@ -63,29 +63,49 @@ const WorkoutPage = () => {
 						<Title order={1}>Home</Title>
 					</Stack>
 					<Group grow>
-						<Button
-							color="teal"
-							variant="filled"
-							leftSection={<Plus size={20} />}
+						<Card
+							//className={styles.hover}
+							radius="md"
+							shadow="md"
+							bg="teal.6"
+							p="md"
+							//withBorder
+							c="white"
 							onClick={() => {
 								navigate("/new-workout");
 							}}
-							style={{ boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
+							style={{ cursor: "pointer" }}
 						>
-							Create Workout
-						</Button>
+							<Group justify="space-between">
+								<Stack gap={0}>
+									<Text fw={500}>Start a</Text>
+									<Text fw={500}>Workout</Text>
+								</Stack>
 
-						<Button
-							color="teal"
-							variant="outline"
-							leftSection={<Plus size={20} />}
+								<Dumbbell size={20} />
+							</Group>
+						</Card>
+
+						<Card
+							className={styles.hover}
+							radius="md"
+							shadow="md"
+							p="md"
+							c="white"
+							withBorder
 							onClick={() => {
 								navigate("/new-routine");
 							}}
-							style={{ boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
 						>
-							Create Routine
-						</Button>
+							<Group justify="space-between">
+								<Stack gap={0}>
+									<Text fw={500}>Create a</Text>
+									<Text fw={500}>Routine</Text>
+								</Stack>
+
+								<Dumbbell size={20} />
+							</Group>
+						</Card>
 					</Group>
 				</Stack>
 

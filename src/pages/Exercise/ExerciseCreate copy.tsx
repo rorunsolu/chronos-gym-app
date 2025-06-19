@@ -5,16 +5,23 @@ import {
 	Container,
 	Stack,
 	TextInput,
+	Select,
 	Textarea,
 	Title,
 	Button,
 } from "@mantine/core";
 
+import {
+	primaryMuscleGroups,
+	secondaryMuscleGroups,
+	equipment,
+} from "@/common/index";
+
 const ExerciseCreate = () => {
 	const [exerciseName, setExerciseName] = useState("");
 	const [primaryMuscleGroup, setPrimaryMuscleGroup] = useState("");
 	const [secondaryMuscleGroup, setSecondaryMuscleGroup] = useState("");
-	const [equipment, setEquipment] = useState("");
+	const [equipmentType, setEquipmentType] = useState("");
 	const [instructions, setInstructions] = useState("");
 
 	const { user } = UserAuth();
@@ -30,23 +37,21 @@ const ExerciseCreate = () => {
 			exerciseName,
 			primaryMuscleGroup,
 			secondaryMuscleGroup,
-			equipment,
+			equipmentType,
 			instructions
-				.split("\n")
-				.map((line) => line.trim())
-				.filter((line) => line.length > 0)
 		);
 
 		setExerciseName("");
 		setPrimaryMuscleGroup("");
 		setSecondaryMuscleGroup("");
-		setEquipment("");
+
+		setEquipmentType("");
 		setInstructions("");
 	};
 
 	return (
 		<Container
-			size="xs"
+			size="sm"
 			p="md"
 			py="md"
 		>
@@ -54,45 +59,50 @@ const ExerciseCreate = () => {
 				<Stack gap="md">
 					<Title
 						order={3}
-						fw={600}
-						c="white"
+						fw={500}
 					>
-						Create an Exercise
+						Create New Exercise
 					</Title>
 
 					<TextInput
 						c="white"
-						label="Name"
-						placeholder="Enter a name"
+						label="Exercise Name"
+						placeholder="e.g. Barbell Bench Press"
 						required
 						value={exerciseName}
 						onChange={(e) => setExerciseName(e.target.value)}
 					/>
 
-					<TextInput
-						c="white"
+					<Select
 						label="Muscle Group"
 						placeholder="Select a primary muscle"
+						data={primaryMuscleGroups}
 						required
+						clearable
+						searchable
 						value={primaryMuscleGroup}
-						onChange={(e) => setPrimaryMuscleGroup(e.target.value)}
+						onChange={(value) => setPrimaryMuscleGroup(value || "")}
 					/>
 
-					<TextInput
-						c="white"
+					<Select
 						label="Secondary Muscle Group"
 						placeholder="Select a secondary muscle"
+						data={secondaryMuscleGroups}
+						clearable
+						searchable
 						value={secondaryMuscleGroup}
-						onChange={(e) => setSecondaryMuscleGroup(e.target.value)}
+						onChange={(value) => setSecondaryMuscleGroup(value || "")}
 					/>
 
-					<TextInput
-						c="white"
-						label="Equipment"
+					<Select
+						label="Equipment Type"
 						placeholder="Select equipment"
+						data={equipment}
 						required
-						value={equipment}
-						onChange={(e) => setEquipment(e.target.value)}
+						clearable
+						searchable
+						value={equipmentType}
+						onChange={(value) => setEquipmentType(value || "")}
 					/>
 
 					<Textarea
@@ -110,7 +120,6 @@ const ExerciseCreate = () => {
 						<Button
 							type="submit"
 							fullWidth
-							disabled={!exerciseName || !primaryMuscleGroup || !equipment}
 						>
 							Create Exercise
 						</Button>
