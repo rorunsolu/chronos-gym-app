@@ -6,6 +6,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStopwatch } from "react-timer-hook";
+import { v4 as uuidv4 } from "uuid";
 import {
 	CheckCircle,
 	Plus,
@@ -22,7 +23,6 @@ import {
 	Input,
 	Menu,
 	Modal,
-	//Select,
 	Stack,
 	Table,
 	Text,
@@ -75,14 +75,12 @@ const Routine = () => {
 		setExercises((prev) => [
 			...prev,
 			{
-				id: Date.now().toString(),
-				name: exercise.name, // the type defintion (exercise: { name: string }) for the exercise paramater is for this ONLY
-				notes: "",
+				id: uuidv4(),
+				name: exercise.name,
 				mappedId,
 				sets: [
-					// This is an ARRAY not just an object
 					{
-						id: Date.now().toString(),
+						id: uuidv4(),
 						reps: "",
 						weight: "",
 						isCompleted: false,
@@ -101,7 +99,7 @@ const Routine = () => {
 							sets: [
 								...exercise.sets,
 								{
-									id: Date.now().toString(),
+									id: uuidv4(),
 									reps: "",
 									weight: "",
 									isCompleted: false,
@@ -456,7 +454,6 @@ const Routine = () => {
 				opened={opened}
 				onClose={close}
 				title="Add Exercise"
-				//fullScreen
 				radius={0}
 				transitionProps={{ transition: "fade", duration: 200 }}
 				bg="dark.9"
@@ -512,8 +509,6 @@ const Routine = () => {
 				size="lg"
 				centered
 				transitionProps={{ transition: "fade", duration: 200 }}
-				//bg="dark.9"
-				//className={classes.modal}
 			>
 				<Stack
 					gap={0}

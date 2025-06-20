@@ -6,6 +6,7 @@ import { CheckCircle, EllipsisVertical, Plus, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStopwatch } from "react-timer-hook";
+import { v4 as uuidv4 } from "uuid";
 import {
 	Button,
 	Card,
@@ -49,10 +50,6 @@ const WorkoutNew = () => {
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 	const [, setExerciseSetCompleted] = useState(false);
 
-	// Docs referenced
-	// Dealing with the exercise & row rendering - https://react.dev/learn/rendering-lists
-
-	// Add a new exercise with an initial set that includes the required "id" property
 	const handleExerciseRender = (
 		exercise: { name: string },
 		mappedId: string
@@ -60,13 +57,12 @@ const WorkoutNew = () => {
 		setExercises((prev) => [
 			...prev,
 			{
-				id: Date.now().toString(),
-				name: exercise.name, // the type defintion (exercise: { name: string }) for the exercise paramater is for this ONLY
+				id: uuidv4(),
+				name: exercise.name,
 				mappedId,
 				sets: [
-					// This is an ARRAY not just an object
 					{
-						id: Date.now().toString(), // the prev error was becasue i forgot to add the id property here
+						id: uuidv4(),
 						reps: "",
 						weight: "",
 						isCompleted: false,
@@ -85,7 +81,7 @@ const WorkoutNew = () => {
 							sets: [
 								...exercise.sets,
 								{
-									id: Date.now().toString(),
+									id: uuidv4(),
 									reps: "",
 									weight: "",
 									isCompleted: false,
@@ -519,42 +515,6 @@ const WorkoutNew = () => {
 				transitionProps={{ transition: "fade", duration: 200 }}
 			>
 				<Stack gap="sm">
-					{/* <Input
-						leftSection={<Search size={16} />}
-						placeholder="Search exercise"
-						value={search}
-						onChange={(e) => setSearch(e.target.value)}
-					/> */}
-					{/* 
-					<Group grow>
-						<Select
-							defaultValue="All Equipment"
-							data={equipment}
-							clearable
-							searchable
-							placeholder="Select equipment"
-							nothingFoundMessage="Nothing found..."
-							checkIconPosition="right"
-							comboboxProps={{
-								transitionProps: { transition: "fade-down", duration: 200 },
-							}}
-							onChange={setSelectedEquipment}
-						/>
-						<Select
-							defaultValue="All Muscles"
-							data={primaryMuscleGroups}
-							placeholder="Select muscle group"
-							clearable
-							searchable
-							nothingFoundMessage="Nothing found..."
-							checkIconPosition="right"
-							comboboxProps={{
-								transitionProps: { transition: "fade-down", duration: 200 },
-							}}
-							onChange={setSelectedMuscle}
-						/>
-					</Group> */}
-
 					<Stack
 						gap="5"
 						mt="xs"
@@ -565,9 +525,7 @@ const WorkoutNew = () => {
 								key={id}
 								withBorder
 								radius="md"
-								//bg="dark.7"
 								p="sm"
-								//style={{ cursor: "pointer" }}
 								onClick={() => {
 									handleExerciseRender(exercise, exercise.id);
 									close();

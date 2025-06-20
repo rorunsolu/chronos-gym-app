@@ -1,8 +1,5 @@
+import { db } from "@/auth/Firebase";
 import { ExerciseContext } from "@/hooks/useExercisesHook";
-import {
-	//auth,
-	db,
-} from "@/auth/Firebase";
 // import { getAuthenticatedUser } from "@/common/authChecker";
 import {
 	addDoc,
@@ -103,4 +100,3 @@ export const ExerciseProvider = ({ children }: { children: ReactNode }) => {
 		</ExerciseContext.Provider>
 	);
 };
-// Now ExerciseContext uses only FBExerciseData, since it includes id.
