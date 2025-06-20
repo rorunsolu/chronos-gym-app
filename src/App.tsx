@@ -7,7 +7,7 @@ import styles from "@/hover.module.css";
 import ExerciseAbout from "@/pages/Exercise/ExerciseAbout";
 import ExerciseCreate from "@/pages/Exercise/ExerciseCreate";
 import ExercisePage from "@/pages/Exercise/ExercisePage";
-import Homepage from "@/pages/Homepage/Homepage";
+import Homepage from "@/pages/Homepage/Home";
 import Portal from "@/pages/Portal/Portal";
 import ProfilePage from "@/pages/Profile/ProfilePage";
 import RoutineAbout from "@/pages/Routine/RoutineAbout";
