@@ -49,7 +49,7 @@ function App() {
 		try {
 			logOut();
 		} catch (error) {
-			// eslint-disable-next-line no-console
+			// eslint-disable-next-line
 			console.log(error);
 		}
 	};
@@ -257,7 +257,6 @@ function App() {
 									</Protected>
 								}
 							/>
-
 							<Route
 								path="/profile-page"
 								element={

@@ -4,7 +4,7 @@ export type ExerciseData = {
 	id: string;
 	name: string;
 	notes?: string;
-	mappedId: string; // might help with the whole exercise about page nonsense idk
+	mappedId: string;
 	sets: {
 		id: string;
 		weight: string | number;

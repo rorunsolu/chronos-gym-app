@@ -46,11 +46,12 @@ const RoutineSession = () => {
 	const [isInitialLoad, setIsInitialLoad] = useState(true);
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 	const [error, setError] = useState("");
+
+	const { FBExercises, fetchFBExercises } = useExercisesHook();
 	const [finishOpen, finishHandler] = useDisclosure(false);
 	const [checked, setChecked] = useState(false);
 	const [duration, setDuration] = useState(0);
 
-	const { FBExercises, fetchFBExercises } = useExercisesHook();
 	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({
 		autoStart: true,
 		interval: 20,
@@ -58,6 +59,15 @@ const RoutineSession = () => {
 
 	const navigate = useNavigate();
 	const { createWorkout } = useWorkOutHook();
+
+	useEffect(() => {
+		const fetchData = async () => {
+			await fetchFBExercises();
+		};
+
+		fetchData();
+		// eslint-disable-next-line
+	}, []);
 
 	const handleExerciseRender = (
 		exercise: { name: string },
@@ -72,8 +82,8 @@ const RoutineSession = () => {
 				sets: [
 					{
 						id: uuidv4(),
-						reps: "",
 						weight: "",
+						reps: "",
 						isCompleted: false,
 					},
 				],
@@ -630,7 +640,10 @@ const RoutineSession = () => {
 						onChange={(e) => setSearch(e.target.value)}
 					/>
 
-					<Stack>
+					<Stack
+						gap="5"
+						mt="xs"
+					>
 						{FBExercises.map((exercise, id) => (
 							<Card
 								className={styles.hover}

@@ -44,6 +44,7 @@ const WorkoutNew = () => {
 		interval: 20,
 	});
 
+
 	const handleExerciseRender = (
 		exercise: { name: string },
 		mappedId: string
@@ -388,7 +389,6 @@ const WorkoutNew = () => {
 												variant="light"
 												color="teal"
 												leftSection={<Plus size={20} />}
-												// pass the exercise.id taken from the id property of an exercise
 												onClick={() => handleRowRender(exercise.id)}
 											>
 												Add Set
@@ -537,6 +537,45 @@ const WorkoutNew = () => {
 							Confirm
 						</Button>
 					</Group>
+				</Stack>
+			</Modal>
+
+			<Modal
+				opened={opened}
+				onClose={close}
+				title="Add Exercise"
+				fullScreen
+				transitionProps={{ transition: "fade", duration: 200 }}
+			>
+				<Stack gap="sm">
+					<Stack
+						gap="5"
+						mt="xs"
+					>
+						{FBExercises.map((exercise, id) => (
+							<Card
+								className={styles.hover}
+								key={id}
+								withBorder
+								radius="md"
+								p="sm"
+								onClick={() => {
+									handleExerciseRender(exercise, exercise.id);
+									close();
+								}}
+							>
+								<Group>
+									<Text fw={500}>{exercise.name}</Text>
+									<Text
+										size="xs"
+										c="dimmed"
+									>
+										{exercise.muscleGroup}
+									</Text>
+								</Group>
+							</Card>
+						))}
+					</Stack>
 				</Stack>
 			</Modal>
 		</>

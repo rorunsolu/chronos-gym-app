@@ -12,22 +12,12 @@ import {
 	Paper,
 	Button,
 	TextInput,
-	//Select,
 } from "@mantine/core";
 
 const Exercise = () => {
 	const [, setLoading] = useState(true);
 	const [search, setSearch] = useState("");
 	const { FBExercises, fetchFBExercises } = useExercisesHook();
-	const [
-		selectedMuscle,
-		//setSelectedMuscle
-	] = useState<string | null>(null);
-	const [
-		selectedEquipment,
-		//setSelectedEquipment
-	] = useState<string | null>(null);
-
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -45,15 +35,7 @@ const Exercise = () => {
 			.toLowerCase()
 			.includes(search.toLowerCase());
 
-		const matchesMuscle = selectedMuscle
-			? exercise.muscleGroup === selectedMuscle
-			: true;
-
-		const matchesEquipment = selectedEquipment
-			? exercise.equipment === selectedEquipment
-			: true;
-
-		return matchesSearch && matchesMuscle && matchesEquipment;
+		return matchesSearch;
 	});
 
 	return (
@@ -87,28 +69,6 @@ const Exercise = () => {
 							Create Exercise
 						</Button>
 					</Group>
-
-					{/* <div className="flex flex-col sm:flex-row gap-2">
-						<Select
-							defaultValue="All Equipment"
-							data={FBExercises.map((exercise) => exercise.equipment).filter(
-								(value, index, self) => self.indexOf(value) === index
-							)}
-							placeholder="Select equipment"
-							nothingFoundMessage="Nothing found..."
-							checkIconPosition="right"
-							onChange={setSelectedEquipment}
-						/>
-						<Select
-							data={FBExercises.map((exercise) => exercise.muscleGroup).filter(
-								(value, index, self) => self.indexOf(value) === index
-							)}
-							placeholder="Select muscle"
-							nothingFoundMessage="Nothing found..."
-							checkIconPosition="right"
-							onChange={setSelectedMuscle}
-						/>
-					</div> */}
 				</Stack>
 			</Stack>
 

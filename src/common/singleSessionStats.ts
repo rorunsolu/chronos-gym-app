@@ -17,17 +17,3 @@ export const getSessionStats = (exercises: ExerciseData[]) => {
 		totalExercises: exercises.length,
 	};
 };
-
-// its a single workout and inside each workout is an array of exercises
-// each exercise then has an array of sets
-// each set has weight and reps
-
-// -> workout
-// --> exercises
-// ----> sets
-// -----> weight
-// -----> reps
-
-// for each exercise in a session
-// for each set in an exercise
-// for each weight and reps in a set

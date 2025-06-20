@@ -61,7 +61,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
 			setIsGuest(currentUser?.isAnonymous || false);
 			setLoading(false);
 
-			// eslint-disable-next-line no-console
+			// eslint-disable-next-line
 			console.log("The current user is:", currentUser);
 		});
 
