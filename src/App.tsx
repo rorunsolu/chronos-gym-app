@@ -7,7 +7,7 @@ import styles from "@/hover.module.css";
 import ExerciseAbout from "@/pages/Exercise/ExerciseAbout";
 import ExerciseCreate from "@/pages/Exercise/ExerciseCreate";
 import ExercisePage from "@/pages/Exercise/ExercisePage";
-import Homepage from "@/pages/Homepage/Homepage";
+import WorkoutPage from "@/pages/Homepage/WorkoutPage";
 import Portal from "@/pages/Portal/Portal";
 import ProfilePage from "@/pages/Profile/ProfilePage";
 import RoutineAbout from "@/pages/Routine/RoutineAbout";
@@ -49,7 +49,7 @@ function App() {
 		try {
 			logOut();
 		} catch (error) {
-			// eslint-disable-next-line no-console
+			// eslint-disable-next-line
 			console.log(error);
 		}
 	};
@@ -253,12 +253,10 @@ function App() {
 								path="/home"
 								element={
 									<Protected>
-										<Homepage />
+										<WorkoutPage />
 									</Protected>
 								}
 							/>
-
-							<Route
 								path="/profile-page"
 								element={
 									<Protected>
@@ -266,7 +264,7 @@ function App() {
 									</Protected>
 								}
 							/>
-
+              
 							<Route
 								path="/new-workout"
 								element={
