@@ -6,6 +6,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStopwatch } from "react-timer-hook";
+import { v4 as uuidv4 } from "uuid";
 import {
 	CheckCircle,
 	Plus,
@@ -22,7 +23,6 @@ import {
 	Input,
 	Menu,
 	Modal,
-	//Select,
 	Stack,
 	Table,
 	Text,
@@ -30,43 +30,26 @@ import {
 	Textarea,
 	NumberInput,
 } from "@mantine/core";
-
 import { type ExerciseData } from "@/common/types";
 
 const Routine = () => {
-	const [opened, { open, close }] = useDisclosure(false);
+	const [error, setError] = useState("");
 	const [search, setSearch] = useState("");
-
-	const navigate = useNavigate();
-	const [name, setName] = useState("");
-	const [notes, setNotes] = useState("");
-	const [exercises, setExercises] = useState<ExerciseData[]>([]);
+	const [opened, { open, close }] = useDisclosure(false);
 	const [finishOpen, finishHandler] = useDisclosure(false);
 
+	const [name, setName] = useState("");
+	const [notes, setNotes] = useState("");
+	const [duration, setDuration] = useState(0);
+	const [exercises, setExercises] = useState<ExerciseData[]>([]);
+
+	const navigate = useNavigate();
 	const { createRoutine } = useRoutinesHook();
+	const { FBExercises, fetchFBExercises } = useExercisesHook();
 	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({
 		autoStart: true,
 		interval: 20,
 	});
-
-	const handleDeleteSet = (exerciseId: string, setId: string) => {
-		setExercises((prevExercises) =>
-			prevExercises.map((exercise) =>
-				exercise.id === exerciseId
-					? {
-							...exercise,
-							sets: exercise.sets.filter((set) => set.id !== setId),
-						}
-					: exercise
-			)
-		);
-	};
-
-	const handeleDeleteExercise = (exerciseid: string) => {
-		setExercises((prevExercises) =>
-			prevExercises.filter((exercise) => exercise.id !== exerciseid)
-		);
-	};
 
 	const handleExerciseRender = (
 		exercise: { name: string },
@@ -75,14 +58,12 @@ const Routine = () => {
 		setExercises((prev) => [
 			...prev,
 			{
-				id: Date.now().toString(),
-				name: exercise.name, // the type defintion (exercise: { name: string }) for the exercise paramater is for this ONLY
-				notes: "",
+				id: uuidv4(),
+				name: exercise.name,
 				mappedId,
 				sets: [
-					// This is an ARRAY not just an object
 					{
-						id: Date.now().toString(),
+						id: uuidv4(),
 						reps: "",
 						weight: "",
 						isCompleted: false,
@@ -101,7 +82,7 @@ const Routine = () => {
 							sets: [
 								...exercise.sets,
 								{
-									id: Date.now().toString(),
+									id: uuidv4(),
 									reps: "",
 									weight: "",
 									isCompleted: false,
@@ -133,6 +114,14 @@ const Routine = () => {
 		);
 	};
 
+	const handleExerciseNotesChange = (exerciseId: string, notes: string) => {
+		setExercises((prev) =>
+			prev.map((exercise) =>
+				exercise.id === exerciseId ? { ...exercise, notes } : exercise
+			)
+		);
+	};
+
 	const handleSetCompletion = (
 		exerciseId: string,
 		setId: string,
@@ -152,15 +141,29 @@ const Routine = () => {
 		);
 	};
 
-	const handleExerciseNotesChange = (exerciseId: string, notes: string) => {
-		setExercises((prev) =>
-			prev.map((exercise) =>
-				exercise.id === exerciseId ? { ...exercise, notes } : exercise
+	const handeleDeleteExercise = (exerciseid: string) => {
+		setExercises((prevExercises) =>
+			prevExercises.filter((exercise) => exercise.id !== exerciseid)
+		);
+	};
+
+	const handleDeleteSet = (exerciseId: string, setId: string) => {
+		setExercises((prevExercises) =>
+			prevExercises.map((exercise) =>
+				exercise.id === exerciseId
+					? {
+							...exercise,
+							sets: exercise.sets.filter((set) => set.id !== setId),
+						}
+					: exercise
 			)
 		);
 	};
 
-	const [error, setError] = useState("");
+	const handlePreConfirmation = () => {
+		pause();
+		finishHandler.open();
+	};
 
 	const handleRoutineUpload = async () => {
 		const hasEmptySets = exercises.some((exercise) =>
@@ -179,18 +182,9 @@ const Routine = () => {
 		navigate("/home");
 	};
 
-	const handlePreConfirmation = () => {
-		pause();
-		finishHandler.open();
-	};
-
-	const [duration, setDuration] = useState(0);
-
 	useEffect(() => {
 		setDuration(totalSeconds);
 	}, [totalSeconds]);
-
-	const { FBExercises, fetchFBExercises } = useExercisesHook();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -456,7 +450,6 @@ const Routine = () => {
 				opened={opened}
 				onClose={close}
 				title="Add Exercise"
-				//fullScreen
 				radius={0}
 				transitionProps={{ transition: "fade", duration: 200 }}
 				bg="dark.9"
@@ -512,8 +505,6 @@ const Routine = () => {
 				size="lg"
 				centered
 				transitionProps={{ transition: "fade", duration: 200 }}
-				//bg="dark.9"
-				//className={classes.modal}
 			>
 				<Stack
 					gap={0}

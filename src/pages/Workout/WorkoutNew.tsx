@@ -6,6 +6,7 @@ import { CheckCircle, EllipsisVertical, Plus, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStopwatch } from "react-timer-hook";
+import { v4 as uuidv4 } from "uuid";
 import {
 	Button,
 	Card,
@@ -26,33 +27,23 @@ import {
 import type { ExerciseData } from "@/common/types";
 
 const WorkoutNew = () => {
-	const navigate = useNavigate();
-	const { createWorkout } = useWorkOutHook();
-	const { FBExercises, fetchFBExercises } = useExercisesHook();
-
-	useEffect(() => {
-		const fetchData = async () => {
-			await fetchFBExercises();
-		};
-
-		fetchData();
-		// eslint-disable-next-line
-	}, []);
-
+	const [error, setError] = useState("");
 	const [opened, { open, close }] = useDisclosure(false);
 	const [finishOpen, finishHandler] = useDisclosure(false);
 
-	// For createWorkout functionality
 	const [name, setName] = useState("");
 	const [notes, setNotes] = useState("");
 	const [duration, setDuration] = useState(0);
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
-	const [, setExerciseSetCompleted] = useState(false);
 
-	// Docs referenced
-	// Dealing with the exercise & row rendering - https://react.dev/learn/rendering-lists
+	const navigate = useNavigate();
+	const { createWorkout } = useWorkOutHook();
+	const { FBExercises, fetchFBExercises } = useExercisesHook();
+	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({
+		autoStart: true,
+		interval: 20,
+	});
 
-	// Add a new exercise with an initial set that includes the required "id" property
 	const handleExerciseRender = (
 		exercise: { name: string },
 		mappedId: string
@@ -60,13 +51,12 @@ const WorkoutNew = () => {
 		setExercises((prev) => [
 			...prev,
 			{
-				id: Date.now().toString(),
-				name: exercise.name, // the type defintion (exercise: { name: string }) for the exercise paramater is for this ONLY
+				id: uuidv4(),
+				name: exercise.name,
 				mappedId,
 				sets: [
-					// This is an ARRAY not just an object
 					{
-						id: Date.now().toString(), // the prev error was becasue i forgot to add the id property here
+						id: uuidv4(),
 						reps: "",
 						weight: "",
 						isCompleted: false,
@@ -85,50 +75,12 @@ const WorkoutNew = () => {
 							sets: [
 								...exercise.sets,
 								{
-									id: Date.now().toString(),
+									id: uuidv4(),
 									reps: "",
 									weight: "",
 									isCompleted: false,
 								},
 							],
-						}
-					: exercise
-			)
-		);
-	};
-
-	const handleDeleteSet = (exerciseId: string, setId: string) => {
-		setExercises((prevExercises) =>
-			prevExercises.map((exercise) =>
-				exercise.id === exerciseId
-					? {
-							...exercise,
-							sets: exercise.sets.filter((set) => set.id !== setId),
-						}
-					: exercise
-			)
-		);
-	};
-
-	const handleDeleteExercise = (exerciseId: string) => {
-		setExercises((prevExercises) =>
-			prevExercises.filter((exercise) => exercise.id !== exerciseId)
-		);
-	};
-
-	const handleSetCompletion = (
-		exerciseId: string,
-		setId: string,
-		isCompleted: boolean
-	) => {
-		setExercises((prevExercises) =>
-			prevExercises.map((exercise) =>
-				exercise.id === exerciseId
-					? {
-							...exercise,
-							sets: exercise.sets.map((set) =>
-								set.id === setId ? { ...set, isCompleted } : set
-							),
 						}
 					: exercise
 			)
@@ -155,13 +107,62 @@ const WorkoutNew = () => {
 		);
 	};
 
+	const handleExerciseNotesChange = (exerciseId: string, notes: string) => {
+		setExercises((prev) =>
+			prev.map((exercise) =>
+				exercise.id === exerciseId
+					? {
+							...exercise,
+							notes,
+						}
+					: exercise
+			)
+		);
+	};
+
+	const handleSetCompletion = (
+		exerciseId: string,
+		setId: string,
+		isCompleted: boolean
+	) => {
+		setExercises((prevExercises) =>
+			prevExercises.map((exercise) =>
+				exercise.id === exerciseId
+					? {
+							...exercise,
+							sets: exercise.sets.map((set) =>
+								set.id === setId ? { ...set, isCompleted } : set
+							),
+						}
+					: exercise
+			)
+		);
+	};
+
+	const handleDeleteExercise = (exerciseId: string) => {
+		setExercises((prevExercises) =>
+			prevExercises.filter((exercise) => exercise.id !== exerciseId)
+		);
+	};
+
+	const handleDeleteSet = (exerciseId: string, setId: string) => {
+		setExercises((prevExercises) =>
+			prevExercises.map((exercise) =>
+				exercise.id === exerciseId
+					? {
+							...exercise,
+							sets: exercise.sets.filter((set) => set.id !== setId),
+						}
+					: exercise
+			)
+		);
+	};
+
 	const handlePreConfirmation = () => {
 		pause();
 		setDuration(totalSeconds);
 		finishHandler.open();
 	};
-
-	const [error, setError] = useState("");
 
 	const handleSessionUpload = async () => {
 		const hasEmptySets = exercises.some((exercise) =>
@@ -180,27 +181,18 @@ const WorkoutNew = () => {
 		navigate("/home");
 	};
 
-	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({
-		autoStart: true,
-		interval: 20,
-	});
-
 	useEffect(() => {
 		setDuration(totalSeconds);
 	}, [totalSeconds]);
 
-	const handleExerciseNotesChange = (exerciseId: string, notes: string) => {
-		setExercises((prev) =>
-			prev.map((exercise) =>
-				exercise.id === exerciseId
-					? {
-							...exercise,
-							notes,
-						}
-					: exercise
-			)
-		);
-	};
+	useEffect(() => {
+		const fetchData = async () => {
+			await fetchFBExercises();
+		};
+
+		fetchData();
+		// eslint-disable-next-line
+	}, []);
 
 	return (
 		<>
@@ -383,9 +375,6 @@ const WorkoutNew = () => {
 																		set.id,
 																		e.currentTarget.checked
 																	);
-																	setExerciseSetCompleted(
-																		e.currentTarget.checked
-																	);
 																}}
 															/>
 														</Table.Td>
@@ -437,6 +426,46 @@ const WorkoutNew = () => {
 					</Stack>
 				</Stack>
 			</Container>
+
+			<Modal
+				opened={opened}
+				onClose={close}
+				title="Add Exercise"
+				fullScreen
+				transitionProps={{ transition: "fade", duration: 200 }}
+			>
+				<Stack gap="sm">
+					<Stack
+						gap="5"
+						mt="xs"
+					>
+						{FBExercises.map((exercise, id) => (
+							<Card
+								className={styles.hover}
+								key={id}
+								withBorder
+								radius="md"
+								p="sm"
+								style={{ cursor: "pointer" }}
+								onClick={() => {
+									handleExerciseRender(exercise, exercise.id);
+									close();
+								}}
+							>
+								<Group>
+									<Text fw={500}>{exercise.name}</Text>
+									<Text
+										size="xs"
+										c="dimmed"
+									>
+										{exercise.muscleGroup}
+									</Text>
+								</Group>
+							</Card>
+						))}
+					</Stack>
+				</Stack>
+			</Modal>
 
 			<Modal
 				opened={finishOpen}
@@ -508,83 +537,6 @@ const WorkoutNew = () => {
 							Confirm
 						</Button>
 					</Group>
-				</Stack>
-			</Modal>
-
-			<Modal
-				opened={opened}
-				onClose={close}
-				title="Add Exercise"
-				fullScreen
-				transitionProps={{ transition: "fade", duration: 200 }}
-			>
-				<Stack gap="sm">
-					{/* <Input
-						leftSection={<Search size={16} />}
-						placeholder="Search exercise"
-						value={search}
-						onChange={(e) => setSearch(e.target.value)}
-					/> */}
-					{/* 
-					<Group grow>
-						<Select
-							defaultValue="All Equipment"
-							data={equipment}
-							clearable
-							searchable
-							placeholder="Select equipment"
-							nothingFoundMessage="Nothing found..."
-							checkIconPosition="right"
-							comboboxProps={{
-								transitionProps: { transition: "fade-down", duration: 200 },
-							}}
-							onChange={setSelectedEquipment}
-						/>
-						<Select
-							defaultValue="All Muscles"
-							data={primaryMuscleGroups}
-							placeholder="Select muscle group"
-							clearable
-							searchable
-							nothingFoundMessage="Nothing found..."
-							checkIconPosition="right"
-							comboboxProps={{
-								transitionProps: { transition: "fade-down", duration: 200 },
-							}}
-							onChange={setSelectedMuscle}
-						/>
-					</Group> */}
-
-					<Stack
-						gap="5"
-						mt="xs"
-					>
-						{FBExercises.map((exercise, id) => (
-							<Card
-								className={styles.hover}
-								key={id}
-								withBorder
-								radius="md"
-								//bg="dark.7"
-								p="sm"
-								//style={{ cursor: "pointer" }}
-								onClick={() => {
-									handleExerciseRender(exercise, exercise.id);
-									close();
-								}}
-							>
-								<Group>
-									<Text fw={500}>{exercise.name}</Text>
-									<Text
-										size="xs"
-										c="dimmed"
-									>
-										{exercise.muscleGroup}
-									</Text>
-								</Group>
-							</Card>
-						))}
-					</Stack>
 				</Stack>
 			</Modal>
 		</>

@@ -1,4 +1,5 @@
 import { db } from "@/auth/Firebase";
+import { useExercisesHook } from "@/hooks/useExercisesHook";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
 import styles from "@/hover.module.css";
 import { useDisclosure } from "@mantine/hooks";
@@ -6,22 +7,16 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useStopwatch } from "react-timer-hook";
+import { v4 as uuidv4 } from "uuid";
 import {
 	Check,
 	CheckCircle,
 	EllipsisVertical,
-	Hash,
 	Plus,
 	Search,
 	Trash,
-	Weight,
 	X,
 } from "lucide-react";
-import {
-	equipment,
-	localExerciseInfo,
-	primaryMuscleGroups,
-} from "@/common/index";
 import {
 	Container,
 	Group,
@@ -30,11 +25,9 @@ import {
 	Button,
 	Table,
 	TextInput,
-	LoadingOverlay,
 	Modal,
 	Card,
 	Divider,
-	Select,
 	Input,
 	Switch,
 	Checkbox,
@@ -46,50 +39,41 @@ import { type ExerciseData } from "@/common/types";
 
 const RoutineSession = () => {
 	const { id } = useParams<{ id: string }>();
-	const [visible] = useDisclosure(false);
 	const [search, setSearch] = useState("");
-	const [isLoading, setIsLoading] = useState(true);
+	const [, setIsLoading] = useState(true);
 	const [rountineName, setRoutineName] = useState("");
 	const [opened, { open, close }] = useDisclosure(false);
 	const [isInitialLoad, setIsInitialLoad] = useState(true);
-	const [muscle, setMuscle] = useState<string | null>(null);
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
-	const [modalEquipment, setModalEquipment] = useState<string | null>(null);
 	const [error, setError] = useState("");
+	const [finishOpen, finishHandler] = useDisclosure(false);
+	const [checked, setChecked] = useState(false);
+	const [duration, setDuration] = useState(0);
+
+	const { FBExercises, fetchFBExercises } = useExercisesHook();
+	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({
+		autoStart: true,
+		interval: 20,
+	});
 
 	const navigate = useNavigate();
 	const { createWorkout } = useWorkOutHook();
 
-	const modalExercises = localExerciseInfo.filter((modalExercise) => {
-		const matchesSearch = modalExercise.name
-			.toLowerCase()
-			.includes(search.toLowerCase());
-		const matchesMuscle = muscle ? modalExercise.muscleGroup === muscle : true;
-		const matchesEquipment = equipment
-			? modalExercise.equipment === modalEquipment
-			: true;
-
-		const showAllMuscles = muscle === "All Muscles";
-		const showAllEquipment = modalEquipment === "All Equipment";
-
-		return (
-			(matchesSearch && matchesMuscle && matchesEquipment) ||
-			showAllMuscles ||
-			showAllEquipment
-		);
-	});
-
-	const handleExerciseRender = (exerciseFromModal: { name: string }) => {
+	const handleExerciseRender = (
+		exercise: { name: string },
+		mappedId: string
+	) => {
 		setExercises((prev) => [
 			...prev,
 			{
-				id: Date.now().toString(),
-				name: exerciseFromModal.name,
+				id: uuidv4(),
+				name: exercise.name,
+				mappedId,
 				sets: [
 					{
-						id: Date.now().toString(),
-						weight: "",
+						id: uuidv4(),
 						reps: "",
+						weight: "",
 						isCompleted: false,
 					},
 				],
@@ -106,7 +90,7 @@ const RoutineSession = () => {
 							sets: [
 								...exercise.sets,
 								{
-									id: Date.now().toString(),
+									id: uuidv4(),
 									reps: "",
 									weight: "",
 									isCompleted: false,
@@ -160,17 +144,6 @@ const RoutineSession = () => {
 		);
 	};
 
-	//const [, setExerciseSetCompleted] = useState(false);
-
-	const [finishOpen, finishHandler] = useDisclosure(false);
-	const [checked, setChecked] = useState(false);
-	const [duration, setDuration] = useState(0);
-
-	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({
-		autoStart: true,
-		interval: 20,
-	});
-
 	const handleUpdatePreConfirmation = async () => {
 		const hasEmptySets = exercises.some((exercise) =>
 			exercise.sets.some((set) => !set.weight || !set.reps || !set.isCompleted)
@@ -221,7 +194,7 @@ const RoutineSession = () => {
 			return;
 		}
 
-		createWorkout(rountineName, exercises, duration);
+		await createWorkout(rountineName, exercises, duration);
 		handleUpdatePreConfirmation();
 	};
 
@@ -271,8 +244,6 @@ const RoutineSession = () => {
 		);
 	};
 
-	//TODO: need to genrate a list of all of the features etc that each page has an compare them to see if stuff is missing or not
-
 	useEffect(() => {
 		if (isInitialLoad) {
 			setIsInitialLoad(false);
@@ -313,7 +284,6 @@ const RoutineSession = () => {
 
 				setRoutineName(objectData.name || "");
 				setExercises(validatedExercises);
-				//setExerciseSetCompleted(false);
 			} catch (error) {
 				new Error("Error fetching routine data");
 				setIsLoading(false);
@@ -326,9 +296,16 @@ const RoutineSession = () => {
 	}, [id, isInitialLoad]);
 
 	useEffect(() => {
-		setDuration(totalSeconds);
+		const fetchData = async () => {
+			await fetchFBExercises();
+		};
+
+		fetchData();
 		// eslint-disable-next-line
-		console.log(`Total elapsed time in seconds: ${totalSeconds}`);
+	}, []);
+
+	useEffect(() => {
+		setDuration(totalSeconds);
 	}, [totalSeconds]);
 
 	return (
@@ -339,14 +316,6 @@ const RoutineSession = () => {
 				py="md"
 				pos="relative"
 			>
-				{isLoading && (
-					<LoadingOverlay
-						visible={visible}
-						zIndex={1000}
-						overlayProps={{ radius: "sm", blur: 2 }}
-					/>
-				)}
-
 				<Stack gap="xs">
 					<Group justify="space-between">
 						<TextInput
@@ -437,16 +406,10 @@ const RoutineSession = () => {
 										<Table.Tr>
 											<Table.Th>Set</Table.Th>
 											<Table.Th>
-												<Group gap="5">
-													<Weight size={16} />
-													Weight
-												</Group>
+												<Group gap="5">Weight</Group>
 											</Table.Th>
 											<Table.Th>
-												<Group gap="5">
-													<Hash size={16} />
-													Reps
-												</Group>
+												<Group gap="5">Reps</Group>
 											</Table.Th>
 											<Table.Th>
 												<Group justify="center">
@@ -539,7 +502,6 @@ const RoutineSession = () => {
 																set.id,
 																e.currentTarget.checked
 															);
-															//setExerciseSetCompleted(e.currentTarget.checked);
 														}}
 													/>
 												</Table.Td>
@@ -668,56 +630,27 @@ const RoutineSession = () => {
 						onChange={(e) => setSearch(e.target.value)}
 					/>
 
-					<Group grow>
-						<Select
-							defaultValue="All Equipment"
-							data={equipment}
-							clearable
-							searchable
-							nothingFoundMessage="Nothing found..."
-							checkIconPosition="right"
-							comboboxProps={{
-								transitionProps: { transition: "fade-down", duration: 200 },
-							}}
-							onChange={setModalEquipment}
-						/>
-						<Select
-							defaultValue="All Muscles"
-							data={primaryMuscleGroups}
-							clearable
-							searchable
-							nothingFoundMessage="Nothing found..."
-							checkIconPosition="right"
-							comboboxProps={{
-								transitionProps: { transition: "fade-down", duration: 200 },
-							}}
-							onChange={setMuscle}
-						/>
-					</Group>
-
-					<Divider />
-
 					<Stack>
-						{modalExercises.map((exerciseFromModal, index) => (
+						{FBExercises.map((exercise, id) => (
 							<Card
 								className={styles.hover}
-								key={index}
+								key={id}
 								withBorder
 								radius="md"
 								p="sm"
 								style={{ cursor: "pointer" }}
 								onClick={() => {
-									handleExerciseRender(exerciseFromModal);
+									handleExerciseRender(exercise, exercise.id);
 									close();
 								}}
 							>
 								<Group>
-									<Text fw={500}>{exerciseFromModal.name}</Text>
+									<Text fw={500}>{exercise.name}</Text>
 									<Text
 										size="xs"
 										c="dimmed"
 									>
-										{exerciseFromModal.muscleGroup}
+										{exercise.muscleGroup}
 									</Text>
 								</Group>
 							</Card>
