@@ -1,39 +1,25 @@
 import "@/App.css";
 import { UserAuth } from "@/auth/AuthContext";
 import Protected from "@/auth/Protected";
+import BulkExUpload from "@/BulkExUpload";
 import ChronosLogoSmall from "@/components/Branding/ChronosLogoSmall";
 import styles from "@/hover.module.css";
-import BulkExUpload from "@/pages/Exercise/BulkExUpload";
 import ExerciseAbout from "@/pages/Exercise/ExerciseAbout";
 import ExerciseCreate from "@/pages/Exercise/ExerciseCreate";
 import ExercisePage from "@/pages/Exercise/ExercisePage";
-import Explore from "@/pages/Explore/Explore";
+import Homepage from "@/pages/Homepage/Homepage";
 import Portal from "@/pages/Portal/Portal";
 import ProfilePage from "@/pages/Profile/ProfilePage";
 import RoutineAbout from "@/pages/Routine/RoutineAbout";
 import RoutineNew from "@/pages/Routine/RoutineNew";
 import RoutineSession from "@/pages/Routine/RoutineSession";
-import Homepage from "@/pages/Workout/Homepage";
 import WorkoutAbout from "@/pages/Workout/WorkoutAbout";
 import WorkoutNew from "@/pages/Workout/WorkoutNew";
 import "@mantine/core/styles.css";
 import "@mantine/core/styles.layer.css";
 import { useDisclosure } from "@mantine/hooks";
+import { BicepsFlexed, ChevronsUpDown, Home, LogOut, User } from "lucide-react";
 import { Link, Route, Routes } from "react-router-dom";
-// import RoutinePage from "@/pages/Routine/RoutinePage";
-//import Homepage from "@/pages/Homepage/Homepage";
-//import RegisterForm from "@/pages/Register/RegisterForm";
-//import { useAccountsHook } from "@/hooks/useAccountsHook";
-import {
-	ChevronsUpDown,
-	//Dumbbell,
-	Home,
-	LogOut,
-	// NotebookText,
-	//Settings,
-	User,
-	BicepsFlexed,
-} from "lucide-react";
 import {
 	ActionIcon,
 	AppShell,
@@ -57,7 +43,6 @@ const theme = createTheme({
 function App() {
 	const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
 	const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
-	//const { isUserRegistered } = useAccountsHook();
 	const { user, isGuest, logOut } = UserAuth();
 
 	const handleSignOut = async () => {
@@ -265,6 +250,15 @@ function App() {
 							/>
 
 							<Route
+								path="/home"
+								element={
+									<Protected>
+										<Homepage />
+									</Protected>
+								}
+							/>
+
+							<Route
 								path="/profile-page"
 								element={
 									<Protected>
@@ -273,23 +267,6 @@ function App() {
 								}
 							/>
 
-							<Route
-								path="/explore-page"
-								element={
-									<Protected>
-										<Explore />
-									</Protected>
-								}
-							/>
-
-							<Route
-								path="/home"
-								element={
-									<Protected>
-										<Homepage />
-									</Protected>
-								}
-							/>
 							<Route
 								path="/new-workout"
 								element={
