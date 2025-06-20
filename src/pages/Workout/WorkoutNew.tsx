@@ -213,6 +213,7 @@ const WorkoutNew = () => {
 					<Stack gap="xs">
 						<Group justify="space-between">
 							<TextInput
+								c="white"
 								size="lg"
 								variant="unstyled"
 								value={name}
@@ -281,6 +282,7 @@ const WorkoutNew = () => {
 										</Group>
 
 										<Textarea
+											c="white"
 											autosize
 											minRows={1}
 											maxRows={4}
@@ -463,6 +465,7 @@ const WorkoutNew = () => {
 						mt="sm"
 					>
 						<TextInput
+							c="white"
 							size="md"
 							value={notes}
 							variant="unstyled"

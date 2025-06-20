@@ -1,3 +1,5 @@
+import classes from "@/accordion.module.css";
+import { useExercisesHook } from "@/hooks/useExercisesHook";
 import { useRoutinesHook } from "@/hooks/useRoutinesHook";
 import styles from "@/hover.module.css";
 import { useDisclosure } from "@mantine/hooks";
@@ -16,12 +18,11 @@ import {
 	Card,
 	Checkbox,
 	Container,
-	Divider,
 	Group,
 	Input,
 	Menu,
 	Modal,
-	Select,
+	//Select,
 	Stack,
 	Table,
 	Text,
@@ -29,20 +30,12 @@ import {
 	Textarea,
 	NumberInput,
 } from "@mantine/core";
-import {
-	equipment,
-	localExerciseInfo,
-	primaryMuscleGroups,
-} from "@/common/index";
+
 import { type ExerciseData } from "@/common/types";
 
 const Routine = () => {
 	const [opened, { open, close }] = useDisclosure(false);
 	const [search, setSearch] = useState("");
-	const [selectedMuscle, setSelectedMuscle] = useState<string | null>(null);
-	const [selectedEquipment, setSelectedEquipment] = useState<string | null>(
-		null
-	);
 
 	const navigate = useNavigate();
 	const [name, setName] = useState("");
@@ -54,27 +47,6 @@ const Routine = () => {
 	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({
 		autoStart: true,
 		interval: 20,
-	});
-
-	const filtered = localExerciseInfo.filter((exercise) => {
-		const matchesSearch = exercise.name
-			.toLowerCase()
-			.includes(search.toLowerCase());
-		const matchesMuscle = selectedMuscle
-			? exercise.muscleGroup === selectedMuscle
-			: true;
-		const matchesEquipment = selectedEquipment
-			? exercise.equipment === selectedEquipment
-			: true;
-
-		const showAllMuscles = selectedMuscle === "All Muscles";
-		const showAllEquipment = selectedEquipment === "All Equipment";
-
-		return (
-			(matchesSearch && matchesMuscle && matchesEquipment) ||
-			showAllMuscles ||
-			showAllEquipment
-		);
 	});
 
 	const handleDeleteSet = (exerciseId: string, setId: string) => {
@@ -96,12 +68,17 @@ const Routine = () => {
 		);
 	};
 
-	const handleExerciseRender = (exercise: { name: string }) => {
+	const handleExerciseRender = (
+		exercise: { name: string },
+		mappedId: string
+	) => {
 		setExercises((prev) => [
 			...prev,
 			{
 				id: Date.now().toString(),
 				name: exercise.name, // the type defintion (exercise: { name: string }) for the exercise paramater is for this ONLY
+				notes: "",
+				mappedId,
 				sets: [
 					// This is an ARRAY not just an object
 					{
@@ -213,6 +190,17 @@ const Routine = () => {
 		setDuration(totalSeconds);
 	}, [totalSeconds]);
 
+	const { FBExercises, fetchFBExercises } = useExercisesHook();
+
+	useEffect(() => {
+		const fetchData = async () => {
+			await fetchFBExercises();
+		};
+
+		fetchData();
+		// eslint-disable-next-line
+	}, []);
+
 	return (
 		<>
 			<Container
@@ -221,23 +209,35 @@ const Routine = () => {
 				py="md"
 			>
 				<Stack gap="md">
-					<Group justify="space-between">
+					<Group
+						px="sm"
+						py="4"
+						justify="space-between"
+						className={classes.item}
+						bg="dark.9"
+					>
 						<TextInput
+							c="white"
 							size="lg"
 							variant="unstyled"
 							placeholder="Name your routine"
 							onChange={(e) => setName(e.target.value)}
 						/>
-						<Text
-							c="teal.4"
-							fw={500}
-							size="lg"
+						<Card
+							className={classes.item}
+							py="5"
+							px="10"
+							withBorder
 						>
-							Duration: {hours}:{minutes}:{seconds}
-						</Text>
+							<Text
+								fw={500}
+								size="sm"
+							>
+								Duration: {hours > 0 ? `${hours}s:` : ""}
+								{minutes}min {seconds}s
+							</Text>
+						</Card>
 					</Group>
-
-					<Divider label="Exercises" />
 
 					<Stack gap="xl">
 						{exercises.map((exercise, index) => {
@@ -265,6 +265,11 @@ const Routine = () => {
 														py="0"
 														variant="subtle"
 														color="white"
+														className={styles.hover}
+														style={{
+															border:
+																"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color)",
+														}}
 													>
 														<EllipsisVertical size={16} />
 													</Button>
@@ -287,6 +292,7 @@ const Routine = () => {
 										</Group>
 
 										<Textarea
+											c="white"
 											key={index}
 											autosize
 											minRows={1}
@@ -390,9 +396,6 @@ const Routine = () => {
 																		set.id,
 																		e.currentTarget.checked
 																	);
-																	// setExerciseSetCompleted(
-																	// 	e.currentTarget.checked
-																	// );
 																}}
 															/>
 														</Table.Td>
@@ -425,8 +428,12 @@ const Routine = () => {
 						>
 							<Button
 								leftSection={<Plus size={20} />}
-								variant="default"
 								onClick={open}
+								className={styles.hover}
+								style={{
+									border:
+										"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color) !important",
+								}}
 							>
 								Add Exercise
 							</Button>
@@ -462,48 +469,20 @@ const Routine = () => {
 						onChange={(e) => setSearch(e.target.value)}
 					/>
 
-					<Group grow>
-						<Select
-							defaultValue="All Equipment"
-							data={equipment}
-							clearable
-							searchable
-							nothingFoundMessage="Nothing found..."
-							checkIconPosition="right"
-							comboboxProps={{
-								transitionProps: { transition: "fade-down", duration: 200 },
-							}}
-							onChange={setSelectedEquipment}
-							placeholder="Select Equipment"
-						/>
-						<Select
-							defaultValue="All Muscles"
-							data={primaryMuscleGroups}
-							clearable
-							searchable
-							nothingFoundMessage="Nothing found..."
-							checkIconPosition="right"
-							comboboxProps={{
-								transitionProps: { transition: "fade-down", duration: 200 },
-							}}
-							onChange={setSelectedMuscle}
-							placeholder="Select Muscle"
-						/>
-					</Group>
-
-					<Divider />
-
-					<Stack gap="5">
-						{filtered.map((exercise, index) => (
+					<Stack
+						gap="5"
+						mt="xs"
+					>
+						{FBExercises.map((exercise, id) => (
 							<Card
 								className={styles.hover}
-								key={index}
+								key={id}
 								withBorder
 								radius="md"
 								p="sm"
 								style={{ cursor: "pointer" }}
 								onClick={() => {
-									handleExerciseRender(exercise);
+									handleExerciseRender(exercise, exercise.id);
 									close();
 								}}
 							>
@@ -532,6 +511,9 @@ const Routine = () => {
 				title="Are you sure you want to finish?"
 				size="lg"
 				centered
+				transitionProps={{ transition: "fade", duration: 200 }}
+				//bg="dark.9"
+				//className={classes.modal}
 			>
 				<Stack
 					gap={0}
@@ -550,6 +532,7 @@ const Routine = () => {
 						mt="sm"
 					>
 						<TextInput
+							c="white"
 							size="md"
 							value={notes}
 							variant="unstyled"
@@ -571,8 +554,11 @@ const Routine = () => {
 				<Stack>
 					<Group justify="flex-end">
 						<Button
-							variant="light"
-							color="red"
+							className={styles.hover}
+							style={{
+								border:
+									"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color)",
+							}}
 							onClick={() => {
 								finishHandler.close();
 								start();

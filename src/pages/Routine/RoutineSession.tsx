@@ -350,6 +350,7 @@ const RoutineSession = () => {
 				<Stack gap="xs">
 					<Group justify="space-between">
 						<TextInput
+							c="white"
 							size="lg"
 							variant="unstyled"
 							value={rountineName}
@@ -414,6 +415,7 @@ const RoutineSession = () => {
 									</Group>
 
 									<Textarea
+										c="white"
 										key={index}
 										autosize
 										minRows={1}

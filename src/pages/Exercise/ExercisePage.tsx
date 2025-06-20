@@ -1,142 +1,176 @@
-import { Search } from "lucide-react";
-import { useState } from "react";
-import {
-	equipment,
-	localExerciseInfo,
-	primaryMuscleGroups,
-} from "@/common/index";
+import classes from "@/accordion.module.css";
+import { useExercisesHook } from "@/hooks/useExercisesHook";
+import { Plus, Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
 	Container,
-	Input,
 	Stack,
 	Group,
-	Select,
-	Paper,
-	List,
-	Pill,
+	Badge,
 	Title,
+	Paper,
+	Button,
+	TextInput,
+	//Select,
 } from "@mantine/core";
 
 const Exercise = () => {
+	const [, setLoading] = useState(true);
 	const [search, setSearch] = useState("");
-	const [selectedMuscle, setSelectedMuscle] = useState<string | null>(null);
-	const [selectedEquipment, setSelectedEquipment] = useState<string | null>(
-		null
-	);
+	const { FBExercises, fetchFBExercises } = useExercisesHook();
+	const [
+		selectedMuscle,
+		//setSelectedMuscle
+	] = useState<string | null>(null);
+	const [
+		selectedEquipment,
+		//setSelectedEquipment
+	] = useState<string | null>(null);
 
-	const filtered = localExerciseInfo.filter((exercise) => {
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		const fetchData = async () => {
+			setLoading(true);
+			await fetchFBExercises();
+		};
+
+		fetchData();
+		// eslint-disable-next-line
+	}, []);
+
+	const filteredExercises = FBExercises.filter((exercise) => {
 		const matchesSearch = exercise.name
 			.toLowerCase()
 			.includes(search.toLowerCase());
+
 		const matchesMuscle = selectedMuscle
 			? exercise.muscleGroup === selectedMuscle
 			: true;
+
 		const matchesEquipment = selectedEquipment
 			? exercise.equipment === selectedEquipment
 			: true;
 
-		const showAllMuscles = selectedMuscle === "All Muscles";
-		const showAllEquipment = selectedEquipment === "All Equipment";
-
-		return (
-			(matchesSearch && matchesMuscle && matchesEquipment) ||
-			showAllMuscles ||
-			showAllEquipment
-		);
+		return matchesSearch && matchesMuscle && matchesEquipment;
 	});
 
 	return (
 		<Container
-			size="sm"
+			size="xs"
 			p="sm"
 			py="md"
 		>
-			<Stack gap="sm">
-				<Group>
-					<Input
-						w="100%"
-						leftSection={<Search size={16} />}
-						placeholder="Search exercise"
-						value={search}
-						onChange={(e) => setSearch(e.target.value)}
-					/>
-				</Group>
-
-				<Group grow>
-					<Select
-						placeholder="All Equipment"
-						data={equipment}
-						clearable
-						searchable
-						nothingFoundMessage="Nothing found..."
-						checkIconPosition="right"
-						comboboxProps={{
-							transitionProps: { transition: "fade-down", duration: 200 },
-						}}
-						onChange={setSelectedEquipment}
-					/>
-					<Select
-						placeholder="All Muscles"
-						data={primaryMuscleGroups}
-						clearable
-						searchable
-						nothingFoundMessage="Nothing found..."
-						checkIconPosition="right"
-						comboboxProps={{
-							transitionProps: { transition: "fade-down", duration: 200 },
-						}}
-						onChange={setSelectedMuscle}
-					/>
-				</Group>
-
+			<Stack
+				gap="md"
+				mb="lg"
+			>
+				<Title order={1}>Exercises</Title>{" "}
 				<Stack>
-					{filtered.map((exercise, index) => (
-						<Paper
-							key={index}
-							p="md"
-							withBorder
-							shadow="md"
+					<Group>
+						<TextInput
+							c="white"
+							leftSection={<Search size={20} />}
+							placeholder="Search exercise"
+							value={search}
+							onChange={(e) => setSearch(e.target.value)}
+							style={{ flex: 1 }}
+						/>
+
+						<Button
+							variant="filled"
+							leftSection={<Plus size={20} />}
+							onClick={() => navigate("/new-exercise")}
+							color="teal"
 						>
-							<Stack
-								gap="xs"
-								mb="md"
+							Create Exercise
+						</Button>
+					</Group>
+
+					{/* <div className="flex flex-col sm:flex-row gap-2">
+						<Select
+							defaultValue="All Equipment"
+							data={FBExercises.map((exercise) => exercise.equipment).filter(
+								(value, index, self) => self.indexOf(value) === index
+							)}
+							placeholder="Select equipment"
+							nothingFoundMessage="Nothing found..."
+							checkIconPosition="right"
+							onChange={setSelectedEquipment}
+						/>
+						<Select
+							data={FBExercises.map((exercise) => exercise.muscleGroup).filter(
+								(value, index, self) => self.indexOf(value) === index
+							)}
+							placeholder="Select muscle"
+							nothingFoundMessage="Nothing found..."
+							checkIconPosition="right"
+							onChange={setSelectedMuscle}
+						/>
+					</div> */}
+				</Stack>
+			</Stack>
+
+			<Stack mt="lg">
+				{filteredExercises.map((exercise, id) => (
+					<Paper
+						key={id}
+						p="sm"
+						withBorder
+						shadow="md"
+						className={classes.item}
+						onClick={() => navigate(`/exercise-about/${exercise.id}`)}
+						style={{
+							cursor: "pointer",
+						}}
+					>
+						<Stack gap="8">
+							<Title
+								order={5}
+								fw={500}
+								c="white"
 							>
-								<Title order={3}>{exercise.name}</Title>
-								<Group gap={5}>
-									<Pill
-										bg="teal"
-										c="white"
+								{exercise.name}
+							</Title>
+							<Group gap={5}>
+								{exercise.muscleGroup && (
+									<Badge
+										variant="dot"
+										color="teal"
+										fw={500}
+										size="sm"
+										className="border-man"
 									>
 										{exercise.muscleGroup}
-									</Pill>
-									<Pill
-										bg="dark.9"
-										c="white"
+									</Badge>
+								)}
+								{exercise.secondaryMuscleGroup && (
+									<Badge
+										variant="dot"
+										color="blue"
+										fw={500}
+										size="sm"
+										className="border-man"
 									>
 										{exercise.secondaryMuscleGroup}
-									</Pill>
-									<Pill
-										bg="blue.9"
-										c="white"
+									</Badge>
+								)}
+								{exercise.equipment && (
+									<Badge
+										variant="dot"
+										color="orange"
+										fw={500}
+										size="sm"
+										className="border-man"
 									>
 										{exercise.equipment}
-									</Pill>
-								</Group>
-							</Stack>
-							<Stack>
-								<List
-									className="list-decimal list-inside"
-									spacing={7}
-									size="sm"
-								>
-									{exercise.instructions.map((instruction, index) => (
-										<List.Item key={index}>{instruction}</List.Item>
-									))}
-								</List>
-							</Stack>
-						</Paper>
-					))}
-				</Stack>
+									</Badge>
+								)}
+							</Group>
+						</Stack>
+					</Paper>
+				))}
 			</Stack>
 		</Container>
 	);

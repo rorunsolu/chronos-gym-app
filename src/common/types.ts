@@ -19,7 +19,7 @@ export type FBExerciseData = {
 	muscleGroup: string;
 	equipment: string;
 	secondaryMuscleGroup?: string;
-	instructions?: string;
+	instructions?: string[];
 };
 
 export type SessionData = {

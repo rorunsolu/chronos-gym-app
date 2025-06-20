@@ -1,7 +1,7 @@
 import { UserAuth } from "@/auth/AuthContext";
 import ChronosLogo from "@/components/Branding/ChronosLogo";
 import GoogleLogo from "@/components/Branding/GoogleLogo";
-import styles from "@/pages/Portal/tabs.module.css";
+import styles from "@/tabs.module.css";
 import { isEmail, useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -157,6 +157,7 @@ const Portal = () => {
 								)}
 							>
 								<TextInput
+									c="white"
 									{...form.getInputProps("email")}
 									label="Email"
 									placeholder="Enter your email"
@@ -254,6 +255,7 @@ const Portal = () => {
 								)}
 							>
 								<TextInput
+									c="white"
 									{...form.getInputProps("email")}
 									label="Email"
 									placeholder="Enter your email"

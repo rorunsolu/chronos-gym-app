@@ -84,7 +84,7 @@ const RoutineAbout = () => {
 	return (
 		<Container
 			size="xs"
-			py="lg"
+			p="md"
 		>
 			<Stack gap="md">
 				{errorMessage && (
@@ -217,7 +217,15 @@ const RoutineAbout = () => {
 						>
 							<Stack gap="md">
 								<Stack gap={3}>
-									<Text fw={500}>{exercise.name}</Text>
+									<Text
+										fw={500}
+										onClick={() => {
+											navigate(`/exercise-about/${exercise.mappedId}`);
+										}}
+										style={{ cursor: "pointer" }}
+									>
+										{exercise.name}
+									</Text>
 									{exercise.notes && (
 										<Group gap={5}>
 											<Text

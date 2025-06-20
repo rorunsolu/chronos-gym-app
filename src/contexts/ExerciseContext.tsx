@@ -24,7 +24,7 @@ export interface ExerciseContextType {
 		muscleGroup: string,
 		equipment: string,
 		secondaryMuscleGroup?: string,
-		instructions?: string
+		instructions?: string[]
 	) => Promise<string>;
 	deleteExercise: (id: string) => Promise<void>;
 }
@@ -53,7 +53,7 @@ export const ExerciseProvider = ({ children }: { children: ReactNode }) => {
 		muscleGroup: string,
 		equipment: string,
 		secondaryMuscleGroup?: string,
-		instructions?: string
+		instructions?: string[]
 	) => {
 		//const user = getAuthenticatedUser();
 		const data = {
@@ -61,7 +61,7 @@ export const ExerciseProvider = ({ children }: { children: ReactNode }) => {
 			muscleGroup,
 			secondaryMuscleGroup,
 			equipment,
-			instructions: instructions || "",
+			instructions: instructions || [],
 			// userId: user.uid,
 		};
 		try {
