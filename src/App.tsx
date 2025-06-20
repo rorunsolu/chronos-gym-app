@@ -250,15 +250,6 @@ function App() {
 							/>
 
 							<Route
-								path="/profile-page"
-								element={
-									<Protected>
-										<ProfilePage />
-									</Protected>
-								}
-							/>
-
-							<Route
 								path="/home"
 								element={
 									<Protected>
@@ -266,6 +257,14 @@ function App() {
 									</Protected>
 								}
 							/>
+								path="/profile-page"
+								element={
+									<Protected>
+										<ProfilePage />
+									</Protected>
+								}
+							/>
+              
 							<Route
 								path="/new-workout"
 								element={

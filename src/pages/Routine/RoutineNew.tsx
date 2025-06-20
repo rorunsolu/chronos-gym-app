@@ -30,43 +30,26 @@ import {
 	Textarea,
 	NumberInput,
 } from "@mantine/core";
-
 import { type ExerciseData } from "@/common/types";
 
 const Routine = () => {
-	const [opened, { open, close }] = useDisclosure(false);
+	const [error, setError] = useState("");
 	const [search, setSearch] = useState("");
-
-	const navigate = useNavigate();
-	const [name, setName] = useState("");
-	const [notes, setNotes] = useState("");
-	const [exercises, setExercises] = useState<ExerciseData[]>([]);
+	const [opened, { open, close }] = useDisclosure(false);
 	const [finishOpen, finishHandler] = useDisclosure(false);
 
+	const [name, setName] = useState("");
+	const [notes, setNotes] = useState("");
+	const [duration, setDuration] = useState(0);
+	const [exercises, setExercises] = useState<ExerciseData[]>([]);
+
+	const navigate = useNavigate();
 	const { createRoutine } = useRoutinesHook();
+	const { FBExercises, fetchFBExercises } = useExercisesHook();
 	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({
 		autoStart: true,
 		interval: 20,
 	});
-
-	const handleDeleteSet = (exerciseId: string, setId: string) => {
-		setExercises((prevExercises) =>
-			prevExercises.map((exercise) =>
-				exercise.id === exerciseId
-					? {
-							...exercise,
-							sets: exercise.sets.filter((set) => set.id !== setId),
-						}
-					: exercise
-			)
-		);
-	};
-
-	const handeleDeleteExercise = (exerciseid: string) => {
-		setExercises((prevExercises) =>
-			prevExercises.filter((exercise) => exercise.id !== exerciseid)
-		);
-	};
 
 	const handleExerciseRender = (
 		exercise: { name: string },
@@ -131,6 +114,14 @@ const Routine = () => {
 		);
 	};
 
+	const handleExerciseNotesChange = (exerciseId: string, notes: string) => {
+		setExercises((prev) =>
+			prev.map((exercise) =>
+				exercise.id === exerciseId ? { ...exercise, notes } : exercise
+			)
+		);
+	};
+
 	const handleSetCompletion = (
 		exerciseId: string,
 		setId: string,
@@ -150,15 +141,29 @@ const Routine = () => {
 		);
 	};
 
-	const handleExerciseNotesChange = (exerciseId: string, notes: string) => {
-		setExercises((prev) =>
-			prev.map((exercise) =>
-				exercise.id === exerciseId ? { ...exercise, notes } : exercise
+	const handeleDeleteExercise = (exerciseid: string) => {
+		setExercises((prevExercises) =>
+			prevExercises.filter((exercise) => exercise.id !== exerciseid)
+		);
+	};
+
+	const handleDeleteSet = (exerciseId: string, setId: string) => {
+		setExercises((prevExercises) =>
+			prevExercises.map((exercise) =>
+				exercise.id === exerciseId
+					? {
+							...exercise,
+							sets: exercise.sets.filter((set) => set.id !== setId),
+						}
+					: exercise
 			)
 		);
 	};
 
-	const [error, setError] = useState("");
+	const handlePreConfirmation = () => {
+		pause();
+		finishHandler.open();
+	};
 
 	const handleRoutineUpload = async () => {
 		const hasEmptySets = exercises.some((exercise) =>
@@ -177,18 +182,9 @@ const Routine = () => {
 		navigate("/home");
 	};
 
-	const handlePreConfirmation = () => {
-		pause();
-		finishHandler.open();
-	};
-
-	const [duration, setDuration] = useState(0);
-
 	useEffect(() => {
 		setDuration(totalSeconds);
 	}, [totalSeconds]);
-
-	const { FBExercises, fetchFBExercises } = useExercisesHook();
 
 	useEffect(() => {
 		const fetchData = async () => {

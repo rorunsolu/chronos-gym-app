@@ -27,28 +27,23 @@ import {
 import type { ExerciseData } from "@/common/types";
 
 const WorkoutNew = () => {
-	const navigate = useNavigate();
-	const { createWorkout } = useWorkOutHook();
-	const { FBExercises, fetchFBExercises } = useExercisesHook();
-
-	useEffect(() => {
-		const fetchData = async () => {
-			await fetchFBExercises();
-		};
-
-		fetchData();
-		// eslint-disable-next-line
-	}, []);
-
+	const [error, setError] = useState("");
 	const [opened, { open, close }] = useDisclosure(false);
 	const [finishOpen, finishHandler] = useDisclosure(false);
 
-	// For createWorkout functionality
 	const [name, setName] = useState("");
 	const [notes, setNotes] = useState("");
 	const [duration, setDuration] = useState(0);
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
-	const [, setExerciseSetCompleted] = useState(false);
+
+	const navigate = useNavigate();
+	const { createWorkout } = useWorkOutHook();
+	const { FBExercises, fetchFBExercises } = useExercisesHook();
+	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({
+		autoStart: true,
+		interval: 20,
+	});
+
 
 	const handleExerciseRender = (
 		exercise: { name: string },
@@ -93,22 +88,36 @@ const WorkoutNew = () => {
 		);
 	};
 
-	const handleDeleteSet = (exerciseId: string, setId: string) => {
-		setExercises((prevExercises) =>
-			prevExercises.map((exercise) =>
+	const handleInputChange = (
+		exerciseId: string,
+		setId: string,
+		field: "reps" | "weight",
+		value: string | number
+	) => {
+		setExercises((prev) =>
+			prev.map((exercise) =>
 				exercise.id === exerciseId
 					? {
 							...exercise,
-							sets: exercise.sets.filter((set) => set.id !== setId),
+							sets: exercise.sets.map((set) =>
+								set.id === setId ? { ...set, [field]: value } : set
+							),
 						}
 					: exercise
 			)
 		);
 	};
 
-	const handleDeleteExercise = (exerciseId: string) => {
-		setExercises((prevExercises) =>
-			prevExercises.filter((exercise) => exercise.id !== exerciseId)
+	const handleExerciseNotesChange = (exerciseId: string, notes: string) => {
+		setExercises((prev) =>
+			prev.map((exercise) =>
+				exercise.id === exerciseId
+					? {
+							...exercise,
+							notes,
+						}
+					: exercise
+			)
 		);
 	};
 
@@ -131,20 +140,19 @@ const WorkoutNew = () => {
 		);
 	};
 
-	const handleInputChange = (
-		exerciseId: string,
-		setId: string,
-		field: "reps" | "weight",
-		value: string | number
-	) => {
-		setExercises((prev) =>
-			prev.map((exercise) =>
+	const handleDeleteExercise = (exerciseId: string) => {
+		setExercises((prevExercises) =>
+			prevExercises.filter((exercise) => exercise.id !== exerciseId)
+		);
+	};
+
+	const handleDeleteSet = (exerciseId: string, setId: string) => {
+		setExercises((prevExercises) =>
+			prevExercises.map((exercise) =>
 				exercise.id === exerciseId
 					? {
 							...exercise,
-							sets: exercise.sets.map((set) =>
-								set.id === setId ? { ...set, [field]: value } : set
-							),
+							sets: exercise.sets.filter((set) => set.id !== setId),
 						}
 					: exercise
 			)
@@ -156,8 +164,6 @@ const WorkoutNew = () => {
 		setDuration(totalSeconds);
 		finishHandler.open();
 	};
-
-	const [error, setError] = useState("");
 
 	const handleSessionUpload = async () => {
 		const hasEmptySets = exercises.some((exercise) =>
@@ -176,27 +182,18 @@ const WorkoutNew = () => {
 		navigate("/home");
 	};
 
-	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({
-		autoStart: true,
-		interval: 20,
-	});
-
 	useEffect(() => {
 		setDuration(totalSeconds);
 	}, [totalSeconds]);
 
-	const handleExerciseNotesChange = (exerciseId: string, notes: string) => {
-		setExercises((prev) =>
-			prev.map((exercise) =>
-				exercise.id === exerciseId
-					? {
-							...exercise,
-							notes,
-						}
-					: exercise
-			)
-		);
-	};
+	useEffect(() => {
+		const fetchData = async () => {
+			await fetchFBExercises();
+		};
+
+		fetchData();
+		// eslint-disable-next-line
+	}, []);
 
 	return (
 		<>
@@ -379,9 +376,6 @@ const WorkoutNew = () => {
 																		set.id,
 																		e.currentTarget.checked
 																	);
-																	setExerciseSetCompleted(
-																		e.currentTarget.checked
-																	);
 																}}
 															/>
 														</Table.Td>
@@ -395,7 +389,6 @@ const WorkoutNew = () => {
 												variant="light"
 												color="teal"
 												leftSection={<Plus size={20} />}
-												// pass the exercise.id taken from the id property of an exercise
 												onClick={() => handleRowRender(exercise.id)}
 											>
 												Add Set
@@ -433,6 +426,46 @@ const WorkoutNew = () => {
 					</Stack>
 				</Stack>
 			</Container>
+
+			<Modal
+				opened={opened}
+				onClose={close}
+				title="Add Exercise"
+				fullScreen
+				transitionProps={{ transition: "fade", duration: 200 }}
+			>
+				<Stack gap="sm">
+					<Stack
+						gap="5"
+						mt="xs"
+					>
+						{FBExercises.map((exercise, id) => (
+							<Card
+								className={styles.hover}
+								key={id}
+								withBorder
+								radius="md"
+								p="sm"
+								style={{ cursor: "pointer" }}
+								onClick={() => {
+									handleExerciseRender(exercise, exercise.id);
+									close();
+								}}
+							>
+								<Group>
+									<Text fw={500}>{exercise.name}</Text>
+									<Text
+										size="xs"
+										c="dimmed"
+									>
+										{exercise.muscleGroup}
+									</Text>
+								</Group>
+							</Card>
+						))}
+					</Stack>
+				</Stack>
+			</Modal>
 
 			<Modal
 				opened={finishOpen}

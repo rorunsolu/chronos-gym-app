@@ -12,11 +12,9 @@ import {
 	Check,
 	CheckCircle,
 	EllipsisVertical,
-	Hash,
 	Plus,
 	Search,
 	Trash,
-	Weight,
 	X,
 } from "lucide-react";
 import {
@@ -27,7 +25,6 @@ import {
 	Button,
 	Table,
 	TextInput,
-	LoadingOverlay,
 	Modal,
 	Card,
 	Divider,
@@ -42,15 +39,23 @@ import { type ExerciseData } from "@/common/types";
 
 const RoutineSession = () => {
 	const { id } = useParams<{ id: string }>();
-	const [visible] = useDisclosure(false);
 	const [search, setSearch] = useState("");
-	const [isLoading, setIsLoading] = useState(true);
+	const [, setIsLoading] = useState(true);
 	const [rountineName, setRoutineName] = useState("");
 	const [opened, { open, close }] = useDisclosure(false);
 	const [isInitialLoad, setIsInitialLoad] = useState(true);
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 	const [error, setError] = useState("");
+
 	const { FBExercises, fetchFBExercises } = useExercisesHook();
+	const [finishOpen, finishHandler] = useDisclosure(false);
+	const [checked, setChecked] = useState(false);
+	const [duration, setDuration] = useState(0);
+
+	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({
+		autoStart: true,
+		interval: 20,
+	});
 
 	const navigate = useNavigate();
 	const { createWorkout } = useWorkOutHook();
@@ -65,20 +70,21 @@ const RoutineSession = () => {
 	}, []);
 
 	const handleExerciseRender = (
-		exerciseFromModal: { name: string },
+		exercise: { name: string },
 		mappedId: string
 	) => {
 		setExercises((prev) => [
 			...prev,
 			{
 				id: uuidv4(),
-				name: exerciseFromModal.name,
+				name: exercise.name,
 				mappedId,
 				sets: [
 					{
 						id: uuidv4(),
 						weight: "",
 						reps: "",
+						weight: "",
 						isCompleted: false,
 					},
 				],
@@ -149,15 +155,6 @@ const RoutineSession = () => {
 		);
 	};
 
-	const [finishOpen, finishHandler] = useDisclosure(false);
-	const [checked, setChecked] = useState(false);
-	const [duration, setDuration] = useState(0);
-
-	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({
-		autoStart: true,
-		interval: 20,
-	});
-
 	const handleUpdatePreConfirmation = async () => {
 		const hasEmptySets = exercises.some((exercise) =>
 			exercise.sets.some((set) => !set.weight || !set.reps || !set.isCompleted)
@@ -208,7 +205,7 @@ const RoutineSession = () => {
 			return;
 		}
 
-		createWorkout(rountineName, exercises, duration);
+		await createWorkout(rountineName, exercises, duration);
 		handleUpdatePreConfirmation();
 	};
 
@@ -258,8 +255,6 @@ const RoutineSession = () => {
 		);
 	};
 
-	//TODO: need to genrate a list of all of the features etc that each page has an compare them to see if stuff is missing or not
-
 	useEffect(() => {
 		if (isInitialLoad) {
 			setIsInitialLoad(false);
@@ -300,7 +295,6 @@ const RoutineSession = () => {
 
 				setRoutineName(objectData.name || "");
 				setExercises(validatedExercises);
-				//setExerciseSetCompleted(false);
 			} catch (error) {
 				new Error("Error fetching routine data");
 				setIsLoading(false);
@@ -311,6 +305,15 @@ const RoutineSession = () => {
 
 		fetchData();
 	}, [id, isInitialLoad]);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			await fetchFBExercises();
+		};
+
+		fetchData();
+		// eslint-disable-next-line
+	}, []);
 
 	useEffect(() => {
 		setDuration(totalSeconds);
@@ -324,14 +327,6 @@ const RoutineSession = () => {
 				py="md"
 				pos="relative"
 			>
-				{isLoading && (
-					<LoadingOverlay
-						visible={visible}
-						zIndex={1000}
-						overlayProps={{ radius: "sm", blur: 2 }}
-					/>
-				)}
-
 				<Stack gap="xs">
 					<Group justify="space-between">
 						<TextInput
@@ -422,16 +417,10 @@ const RoutineSession = () => {
 										<Table.Tr>
 											<Table.Th>Set</Table.Th>
 											<Table.Th>
-												<Group gap="5">
-													<Weight size={16} />
-													Weight
-												</Group>
+												<Group gap="5">Weight</Group>
 											</Table.Th>
 											<Table.Th>
-												<Group gap="5">
-													<Hash size={16} />
-													Reps
-												</Group>
+												<Group gap="5">Reps</Group>
 											</Table.Th>
 											<Table.Th>
 												<Group justify="center">
