@@ -1,7 +1,7 @@
 import { UserAuth } from "@/auth/AuthContext";
 import ChronosLogo from "@/components/Branding/ChronosLogo";
 import GoogleLogo from "@/components/Branding/GoogleLogo";
-import styles from "@/tabs.module.css";
+import styles from "@/style.module.css";
 import { isEmail, useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";

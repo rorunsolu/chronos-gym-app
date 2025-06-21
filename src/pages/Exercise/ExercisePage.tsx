@@ -1,4 +1,3 @@
-import classes from "@/accordion.module.css";
 import { useExercisesHook } from "@/hooks/useExercisesHook";
 import { Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -41,7 +40,7 @@ const Exercise = () => {
 	return (
 		<Container
 			size="xs"
-			p="sm"
+			px="sm"
 			py="md"
 		>
 			<Stack
@@ -50,14 +49,14 @@ const Exercise = () => {
 			>
 				<Title order={1}>Exercises</Title>{" "}
 				<Stack>
-					<Group>
+					<div className="flex flex-col md:flex-row items-center justify-between flex-grow-0 gap-3">
 						<TextInput
 							c="white"
 							leftSection={<Search size={20} />}
 							placeholder="Search exercise"
 							value={search}
 							onChange={(e) => setSearch(e.target.value)}
-							style={{ flex: 1 }}
+							w="100%"
 						/>
 
 						<Button
@@ -65,21 +64,25 @@ const Exercise = () => {
 							leftSection={<Plus size={20} />}
 							onClick={() => navigate("/new-exercise")}
 							color="teal"
+							fullWidth
 						>
 							Create Exercise
 						</Button>
-					</Group>
+					</div>
 				</Stack>
 			</Stack>
 
-			<Stack mt="lg">
+			<Stack
+				mt="lg"
+				gap="xs"
+			>
 				{filteredExercises.map((exercise, id) => (
 					<Paper
 						key={id}
 						p="sm"
 						withBorder
 						shadow="md"
-						className={classes.item}
+						bg="dark.7"
 						onClick={() => navigate(`/exercise-about/${exercise.id}`)}
 						style={{
 							cursor: "pointer",

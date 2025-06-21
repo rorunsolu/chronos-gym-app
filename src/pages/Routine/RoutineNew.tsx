@@ -1,7 +1,6 @@
-import classes from "@/accordion.module.css";
 import { useExercisesHook } from "@/hooks/useExercisesHook";
 import { useRoutinesHook } from "@/hooks/useRoutinesHook";
-import styles from "@/hover.module.css";
+import styles from "@/style.module.css";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -162,6 +161,7 @@ const Routine = () => {
 
 	const handlePreConfirmation = () => {
 		pause();
+		setDuration(totalSeconds);
 		finishHandler.open();
 	};
 
@@ -183,10 +183,6 @@ const Routine = () => {
 	};
 
 	useEffect(() => {
-		setDuration(totalSeconds);
-	}, [totalSeconds]);
-
-	useEffect(() => {
 		const fetchData = async () => {
 			await fetchFBExercises();
 		};
@@ -203,22 +199,9 @@ const Routine = () => {
 				py="md"
 			>
 				<Stack gap="md">
-					<Group
-						px="sm"
-						py="4"
-						justify="space-between"
-						className={classes.item}
-						bg="dark.9"
-					>
-						<TextInput
-							c="white"
-							size="lg"
-							variant="unstyled"
-							placeholder="Name your routine"
-							onChange={(e) => setName(e.target.value)}
-						/>
+					<Group>
 						<Card
-							className={classes.item}
+							className={styles.item}
 							py="5"
 							px="10"
 							withBorder
@@ -244,7 +227,7 @@ const Routine = () => {
 										>
 											<Text
 												fw={500}
-												size="lg"
+												size="md"
 											>
 												{exercise.name}
 											</Text>
@@ -288,6 +271,7 @@ const Routine = () => {
 										<Textarea
 											c="white"
 											key={index}
+											size="sm"
 											autosize
 											minRows={1}
 											maxRows={4}
@@ -313,10 +297,16 @@ const Routine = () => {
 												</Table.Tr>
 											</Table.Thead>
 											<Table.Tbody>
-												{/* Accessing the exercises from the instanceOfexercises STATE and then rendering rows for each set */}
 												{/* The set in this case is coming from the array of sets INSIDE the instanceOfexercises STATE */}
 												{exercise.sets.map((set, index) => (
-													<Table.Tr key={index}>
+													<Table.Tr
+														key={index}
+														bg={
+															set.isCompleted
+																? "var(--mantine-color-teal-light)"
+																: undefined
+														}
+													>
 														<Table.Td>
 															<Menu
 																shadow="md"
@@ -404,7 +394,6 @@ const Routine = () => {
 											variant="light"
 											color="teal"
 											leftSection={<Plus size={20} />}
-											// pass the exercise.id taken from the id property of an exercise
 											onClick={() => handleRowRender(exercise.id)}
 										>
 											Add Set
@@ -433,11 +422,10 @@ const Routine = () => {
 							</Button>
 							<Button
 								leftSection={<CheckCircle size={20} />}
-								color="green"
+								color="teal"
 								onClick={() => {
 									handlePreConfirmation();
 								}}
-								disabled={!name || exercises.length === 0}
 							>
 								Finish
 							</Button>
@@ -500,6 +488,7 @@ const Routine = () => {
 					finishHandler.close();
 					start();
 					setError("");
+					setNotes("");
 				}}
 				title="Are you sure you want to finish?"
 				size="lg"
@@ -525,6 +514,16 @@ const Routine = () => {
 						<TextInput
 							c="white"
 							size="md"
+							variant="unstyled"
+							placeholder="Name your routine"
+							onChange={(e) => setName(e.target.value)}
+						/>
+						<Textarea
+							autosize
+							minRows={1}
+							maxRows={4}
+							mt="-7"
+							size="sm"
 							value={notes}
 							variant="unstyled"
 							placeholder="How was your workout..."
@@ -554,6 +553,7 @@ const Routine = () => {
 								finishHandler.close();
 								start();
 								setError("");
+								setNotes("");
 							}}
 						>
 							Cancel

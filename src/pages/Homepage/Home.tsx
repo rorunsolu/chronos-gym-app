@@ -1,7 +1,7 @@
 import { UserAuth } from "@/auth/AuthContext";
 import { useRoutinesHook } from "@/hooks/useRoutinesHook";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
-import styles from "@/hover.module.css";
+import styles from "@/style.module.css";
 import { useDisclosure } from "@mantine/hooks";
 import { formatDistanceToNow } from "date-fns";
 import { useEffect, useState } from "react";
@@ -53,7 +53,7 @@ const WorkoutPage = () => {
 	return (
 		<Container
 			size="xs"
-			p="md"
+			px="sm"
 			py="md"
 		>
 			<Stack gap="0">
@@ -64,23 +64,26 @@ const WorkoutPage = () => {
 					<Stack gap={0}>
 						<Title order={1}>Home</Title>
 					</Stack>
-					<Group grow>
+
+					<div className="flex flex-col md:flex-row items-center justify-between flex-grow-0 gap-3">
 						<Button
 							color="teal"
 							variant="filled"
+							fullWidth
 							leftSection={<Plus size={20} />}
 							onClick={() => {
 								navigate("/new-workout");
 							}}
 							style={{ boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
 						>
-							Create Workout
+							Start a Workout
 						</Button>
 
 						<Button
-							color="teal"
-							variant="outline"
-							leftSection={<Plus size={20} />}
+							color="grey"
+							variant="default"
+							fullWidth
+							//leftSection={<Plus size={20} />}
 							onClick={() => {
 								navigate("/new-routine");
 							}}
@@ -88,7 +91,7 @@ const WorkoutPage = () => {
 						>
 							Create Routine
 						</Button>
-					</Group>
+					</div>
 				</Stack>
 
 				<Stack mb="-10">
@@ -96,6 +99,7 @@ const WorkoutPage = () => {
 						<Group
 							mb="0"
 							mt="0"
+							gap="xs"
 						>
 							<Title
 								order={3}
@@ -103,17 +107,17 @@ const WorkoutPage = () => {
 							>
 								My Routines
 							</Title>
-							<Card
-								radius="md"
-								shadow="md"
-								bg="none"
-								withBorder
+							<div
 								style={{
+									border:
+										"calc(0.0625rem * var(--mantine-scale)) solid var(--mantine-color-dark-4)",
+									borderRadius: "6px",
+
 									display: "flex",
 									alignItems: "center",
 									justifyContent: "center",
-									width: "25px",
-									height: "25px",
+									width: "30px",
+									height: "30px",
 								}}
 							>
 								<Text
@@ -122,7 +126,7 @@ const WorkoutPage = () => {
 								>
 									{routines.length}
 								</Text>
-							</Card>
+							</div>
 						</Group>
 						<Button
 							variant="subtle"
@@ -197,6 +201,7 @@ const WorkoutPage = () => {
 					<Group
 						mt="md"
 						mb="5"
+						gap="xs"
 					>
 						<Title
 							order={3}
@@ -204,12 +209,12 @@ const WorkoutPage = () => {
 						>
 							My Workouts
 						</Title>
-						<Card
-							radius="md"
-							shadow="md"
-							bg="none"
-							withBorder
+						<div
 							style={{
+								border:
+									"calc(0.0625rem * var(--mantine-scale)) solid var(--mantine-color-dark-4)",
+								borderRadius: "6px",
+
 								display: "flex",
 								alignItems: "center",
 								justifyContent: "center",
@@ -217,8 +222,13 @@ const WorkoutPage = () => {
 								height: "30px",
 							}}
 						>
-							{workouts.length}
-						</Card>
+							<Text
+								fw={500}
+								size="sm"
+							>
+								{workouts.length}
+							</Text>
+						</div>
 					</Group>
 
 					<SimpleGrid

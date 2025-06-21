@@ -1,6 +1,6 @@
 import { useExercisesHook } from "../../hooks/useExercisesHook";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
-import styles from "@/hover.module.css";
+import styles from "@/style.module.css";
 import { useDisclosure } from "@mantine/hooks";
 import { CheckCircle, EllipsisVertical, Plus, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -43,7 +43,6 @@ const WorkoutNew = () => {
 		autoStart: true,
 		interval: 20,
 	});
-
 
 	const handleExerciseRender = (
 		exercise: { name: string },
@@ -239,7 +238,7 @@ const WorkoutNew = () => {
 										>
 											<Text
 												fw={500}
-												size="lg"
+												size="md"
 											>
 												{exercise.name}
 											</Text>
@@ -277,6 +276,7 @@ const WorkoutNew = () => {
 										<Textarea
 											c="white"
 											autosize
+											size="sm"
 											minRows={1}
 											maxRows={4}
 											variant="unstyled"
@@ -302,7 +302,14 @@ const WorkoutNew = () => {
 												{/* Accessing the exercises from the instanceOfexercises STATE and then rendering rows for each set */}
 												{/* The set in this case is coming from the array of sets INSIDE the instanceOfexercises STATE */}
 												{exercise.sets.map((set, index) => (
-													<Table.Tr key={index}>
+													<Table.Tr
+														key={index}
+														bg={
+															set.isCompleted
+																? "var(--mantine-color-teal-light)"
+																: undefined
+														}
+													>
 														<Table.Td>
 															<Menu
 																shadow="md"
@@ -414,11 +421,10 @@ const WorkoutNew = () => {
 							</Button>
 							<Button
 								leftSection={<CheckCircle size={20} />}
-								color="green"
+								color="teal"
 								onClick={() => {
 									handlePreConfirmation();
 								}}
-								disabled={!name || exercises.length === 0}
 							>
 								Finish
 							</Button>
@@ -473,6 +479,7 @@ const WorkoutNew = () => {
 					finishHandler.close();
 					start();
 					setError("");
+					setNotes("");
 				}}
 				title="Are you sure?"
 				centered
@@ -522,6 +529,7 @@ const WorkoutNew = () => {
 								finishHandler.close();
 								start();
 								setError("");
+								setNotes("");
 							}}
 						>
 							Cancel

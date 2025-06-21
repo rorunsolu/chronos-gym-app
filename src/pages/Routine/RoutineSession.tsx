@@ -1,7 +1,7 @@
 import { db } from "@/auth/Firebase";
 import { useExercisesHook } from "@/hooks/useExercisesHook";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
-import styles from "@/hover.module.css";
+import styles from "@/style.module.css";
 import { useDisclosure } from "@mantine/hooks";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -27,7 +27,6 @@ import {
 	TextInput,
 	Modal,
 	Card,
-	Divider,
 	Input,
 	Switch,
 	Checkbox,
@@ -42,6 +41,7 @@ const RoutineSession = () => {
 	const [search, setSearch] = useState("");
 	const [, setIsLoading] = useState(true);
 	const [rountineName, setRoutineName] = useState("");
+	const [notes, setNotes] = useState("");
 	const [opened, { open, close }] = useDisclosure(false);
 	const [isInitialLoad, setIsInitialLoad] = useState(true);
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
@@ -172,21 +172,9 @@ const RoutineSession = () => {
 
 		setError("");
 		navigate("/home");
-		// Since routines don't have to have thir changes saved/updated , if the user opts to not update the routine, we can just navigate back to the routine page.
 	};
 
 	const handlePreConfirmation = () => {
-		const hasEmptySets = exercises.some((exercise) =>
-			exercise.sets.some((set) => !set.weight || !set.reps || !set.isCompleted)
-		);
-
-		if (hasEmptySets) {
-			setError(
-				"Some sets are empty. Please complete them before saving the routine."
-			);
-			return;
-		}
-
 		pause();
 		setDuration(totalSeconds);
 		finishHandler.open();
@@ -314,40 +302,36 @@ const RoutineSession = () => {
 		// eslint-disable-next-line
 	}, []);
 
-	useEffect(() => {
-		setDuration(totalSeconds);
-	}, [totalSeconds]);
-
 	return (
 		<>
 			<Container
 				size="xs"
-				p="md"
+				px="sm"
 				py="md"
-				pos="relative"
 			>
 				<Stack gap="xs">
 					<Group justify="space-between">
-						<TextInput
-							c="white"
-							size="lg"
-							variant="unstyled"
-							value={rountineName}
-							onChange={(e) => setRoutineName(e.target.value)}
-						/>
 						<Text
-							c="teal.4"
 							fw={500}
-							size="lg"
+							size="xl"
 						>
-							Duration: {hours}:{minutes}:{seconds}
+							{rountineName}
 						</Text>
+						<Card
+							className={styles.item}
+							py="5"
+							px="10"
+							withBorder
+						>
+							<Text
+								fw={500}
+								size="sm"
+							>
+								Duration: {hours > 0 ? `${hours}s:` : ""}
+								{minutes}min {seconds}s
+							</Text>
+						</Card>
 					</Group>
-
-					<Divider
-						label="Exercises"
-						labelPosition="center"
-					/>
 
 					<Stack gap="xl">
 						{exercises.map((exercise, index) => (
@@ -395,6 +379,7 @@ const RoutineSession = () => {
 
 									<Textarea
 										c="white"
+										size="sm"
 										key={index}
 										autosize
 										minRows={1}
@@ -546,15 +531,13 @@ const RoutineSession = () => {
 						</Button>
 						<Button
 							leftSection={<CheckCircle size={20} />}
-							color="green"
+							color="teal"
 							onClick={() => {
 								handlePreConfirmation();
 							}}
-							disabled={!rountineName || exercises.length === 0}
 						>
 							Finish
 						</Button>
-						{error && <Text c="red">{error}</Text>}
 					</Group>
 				</Stack>
 			</Container>
@@ -564,6 +547,8 @@ const RoutineSession = () => {
 				onClose={() => {
 					finishHandler.close();
 					start();
+					setError("");
+					setNotes("");
 				}}
 				title="Are you sure?"
 				centered
@@ -577,9 +562,9 @@ const RoutineSession = () => {
 					{minutes >= 0.1 && <>{minutes} minutes,</>} {seconds} seconds
 				</Text>
 
-				<Stack>
+				<Stack gap="xs">
 					<Switch
-						size="md"
+						size="sm"
 						color="teal"
 						label="Update routine with current session?"
 						checked={checked}
@@ -599,13 +584,51 @@ const RoutineSession = () => {
 						}
 					/>
 
-					<Group justify="flex-end">
+					{checked && (
+						<Stack gap={0}>
+							<TextInput
+								c="white"
+								size="md"
+								variant="unstyled"
+								placeholder="Name your routine"
+								value={rountineName}
+								onChange={(e) => setRoutineName(e.target.value)}
+							/>
+							<Textarea
+								autosize
+								minRows={1}
+								maxRows={4}
+								mt="-7"
+								size="sm"
+								value={notes}
+								variant="unstyled"
+								placeholder="How was your workout..."
+								onChange={(event) => setNotes(event.currentTarget.value)}
+							/>
+						</Stack>
+					)}
+
+					{error && (
+						<Text
+							size="sm"
+							c="red.7"
+						>
+							{error}
+						</Text>
+					)}
+
+					<Group
+						justify="flex-end"
+						{...(!checked ? { mt: "md" } : {})}
+					>
 						<Button
 							variant="light"
 							color="red"
 							onClick={() => {
 								finishHandler.close();
 								start();
+								setError("");
+								setNotes("");
 							}}
 						>
 							Cancel

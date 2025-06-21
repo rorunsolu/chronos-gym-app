@@ -1,8 +1,8 @@
-import styles from "@/accordion.module.css";
 import { UserAuth } from "@/auth/AuthContext";
 import { getUserWorkoutStats } from "@/common/calculateStats";
 import { useMeasurementsHook } from "@/hooks/useMeasurementsHook";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
+import styles from "@/style.module.css";
 import { useDisclosure } from "@mantine/hooks";
 import { format } from "date-fns";
 import { Clock, Dumbbell, Plus, Tally5, Trash, Weight } from "lucide-react";
@@ -127,7 +127,7 @@ const Profile = () => {
 	return (
 		<Container
 			size="xs"
-			p="sm"
+			px="sm"
 			py="md"
 		>
 			<Title order={1}>My Profile</Title>

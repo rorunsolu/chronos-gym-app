@@ -1,8 +1,7 @@
-import styles from "@/accordion.module.css";
 import { useExercisesHook } from "@/hooks/useExercisesHook";
 import { useRoutinesHook } from "@/hooks/useRoutinesHook";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
-import classes from "@/hover.module.css";
+import styles from "@/style.module.css";
 import { format } from "date-fns";
 import { ChevronRight, Info } from "lucide-react";
 import { useEffect } from "react";
@@ -72,7 +71,7 @@ const ExerciseAbout = () => {
 			p="md"
 			py="md"
 		>
-			<Stack>
+			<Stack gap="10">
 				<Stack
 					gap="5"
 					mb="xs"
@@ -85,7 +84,7 @@ const ExerciseAbout = () => {
 					</Title>
 
 					<Stack
-						gap="3"
+						gap="1"
 						mb="xs"
 					>
 						{muscle && (
@@ -134,7 +133,10 @@ const ExerciseAbout = () => {
 										type="ordered"
 									>
 										{instructions.map((instruction, index) => (
-											<List.Item key={index}>
+											<List.Item
+												key={index}
+												c="white"
+											>
 												{index + 1}. {instruction}
 											</List.Item>
 										))}
@@ -190,7 +192,7 @@ const ExerciseAbout = () => {
 													e.stopPropagation();
 													navigate(`/workout-about/${session.sessionId}`);
 												}}
-												className={classes.hover}
+												className={styles.hover}
 												style={{
 													border:
 														"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color)",
@@ -247,16 +249,14 @@ const ExerciseAbout = () => {
 												<Table.Td>
 													<Group gap="5">
 														<Text
-															size="md"
+															size="sm"
 															c="white"
-															fw={500}
 														>
 															{set.weight}kg
 														</Text>
 														<Text
-															size="md"
+															size="sm"
 															c="white"
-															fw={500}
 														>
 															x {set.reps}
 														</Text>
