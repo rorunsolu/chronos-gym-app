@@ -1,4 +1,4 @@
-import { Group, Title } from "@mantine/core";
+import { Group } from "@mantine/core";
 
 const GoogleLogo = () => {
 	return (
