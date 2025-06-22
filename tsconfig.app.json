@@ -31,7 +31,7 @@
 
 		// === Path Aliases ===
 		//"baseUrl": ".", // Base for module resolution
-		"baseUrl": "./", // Base for module resolution
+		"baseUrl": "/", // Base for module resolution
 		"paths": {
 			"@/*": ["./src/*"] // Alias: import from "@/..." maps to "src/..."
 		},
