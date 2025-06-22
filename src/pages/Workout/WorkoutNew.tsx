@@ -12,7 +12,6 @@ import {
 	Card,
 	Checkbox,
 	Container,
-	Divider,
 	Group,
 	Menu,
 	Modal,
@@ -222,11 +221,6 @@ const WorkoutNew = () => {
 							</Text>
 						</Group>
 
-						<Divider
-							label="Exercises"
-							labelPosition="center"
-						/>
-
 						<Stack gap="xl">
 							{exercises.map((exercise) => {
 								return (
@@ -413,9 +407,16 @@ const WorkoutNew = () => {
 							mt="md"
 						>
 							<Button
+								color="white"
 								leftSection={<Plus size={20} />}
-								variant="default"
+								variant="outline"
 								onClick={open}
+								className={styles.hover}
+								style={{
+									border:
+										"calc(0.0625rem * var(--mantine-scale)) solid var(--mantine-color-dark-4)",
+									boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
+								}}
 							>
 								Add Exercise
 							</Button>

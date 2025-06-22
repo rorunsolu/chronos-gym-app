@@ -32,7 +32,8 @@
 	border-radius: var(--mantine-radius-sm);
 
 	&:hover {
-		background-color: var(--mantine-color-body);
+		//background-color: var(--mantine-color-body) !important;
+		background-color: var(--mantine-color-dark-6) !important;
 	}
 }
 

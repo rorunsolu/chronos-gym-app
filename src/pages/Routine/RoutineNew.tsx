@@ -209,6 +209,7 @@ const Routine = () => {
 							<Text
 								fw={500}
 								size="sm"
+								c="white"
 							>
 								Duration: {hours > 0 ? `${hours}s:` : ""}
 								{minutes}min {seconds}s
@@ -410,12 +411,15 @@ const Routine = () => {
 							mt="md"
 						>
 							<Button
+								color="white"
 								leftSection={<Plus size={20} />}
+								variant="outline"
 								onClick={open}
 								className={styles.hover}
 								style={{
 									border:
-										"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color) !important",
+										"calc(0.0625rem * var(--mantine-scale)) solid var(--mantine-color-dark-4)",
+									boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
 								}}
 							>
 								Add Exercise

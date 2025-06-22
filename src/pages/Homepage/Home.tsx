@@ -12,7 +12,6 @@ import {
 	EllipsisVertical,
 	Plus,
 	Trash,
-	ChevronRight,
 } from "lucide-react";
 import {
 	Avatar,
@@ -59,7 +58,7 @@ const WorkoutPage = () => {
 			<Stack gap="0">
 				<Stack
 					gap="md"
-					mb="xl"
+					mb="lg"
 				>
 					<Stack gap={0}>
 						<Title order={1}>Home</Title>
@@ -74,20 +73,23 @@ const WorkoutPage = () => {
 							onClick={() => {
 								navigate("/new-workout");
 							}}
-							style={{ boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
 						>
 							Start a Workout
 						</Button>
 
 						<Button
-							color="grey"
-							variant="default"
+							color="white"
+							variant="outline"
 							fullWidth
-							//leftSection={<Plus size={20} />}
 							onClick={() => {
 								navigate("/new-routine");
 							}}
-							style={{ boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" }}
+							className={styles.hover}
+							style={{
+								border:
+									"calc(0.0625rem * var(--mantine-scale)) solid var(--mantine-color-dark-4)",
+								boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
+							}}
 						>
 							Create Routine
 						</Button>
@@ -102,7 +104,7 @@ const WorkoutPage = () => {
 							gap="xs"
 						>
 							<Title
-								order={3}
+								order={4}
 								fw={500}
 							>
 								My Routines
@@ -111,13 +113,12 @@ const WorkoutPage = () => {
 								style={{
 									border:
 										"calc(0.0625rem * var(--mantine-scale)) solid var(--mantine-color-dark-4)",
-									borderRadius: "6px",
-
+									borderRadius: "4px",
 									display: "flex",
 									alignItems: "center",
 									justifyContent: "center",
-									width: "30px",
-									height: "30px",
+									width: "25px",
+									height: "25px",
 								}}
 							>
 								<Text
@@ -135,15 +136,17 @@ const WorkoutPage = () => {
 							px="xs"
 							py="xs"
 							style={{
+								border:
+									"calc(0.0625rem * var(--mantine-scale)) solid var(--mantine-color-dark-4)",
 								minWidth: 0,
-								width: 36,
-								height: 36,
+								width: 30,
+								height: 30,
 								display: "flex",
 								alignItems: "center",
 								justifyContent: "center",
 							}}
 						>
-							{opened ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+							{opened ? <ChevronUp size={17} /> : <ChevronDown size={17} />}
 						</Button>
 					</Group>
 
@@ -161,6 +164,14 @@ const WorkoutPage = () => {
 									radius="md"
 									shadow="md"
 									bg="dark.9"
+									style={{
+										cursor: "pointer",
+									}}
+									className={styles.hover}
+									onClick={(e) => {
+										e.stopPropagation();
+										navigate(`/routine-about/${routine.id}`);
+									}}
 								>
 									<Stack gap="xs">
 										<Group
@@ -173,22 +184,6 @@ const WorkoutPage = () => {
 											>
 												{routine.name}
 											</Text>
-											<Paper
-												p={5}
-												radius="sm"
-												c="white"
-												onClick={(e) => {
-													e.stopPropagation();
-													navigate(`/routine-about/${routine.id}`);
-												}}
-												className={styles.hover}
-												style={{
-													border:
-														"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color)",
-												}}
-											>
-												<ChevronRight size={16} />
-											</Paper>
 										</Group>
 									</Stack>
 								</Paper>
@@ -204,7 +199,7 @@ const WorkoutPage = () => {
 						gap="xs"
 					>
 						<Title
-							order={3}
+							order={4}
 							fw={500}
 						>
 							My Workouts
@@ -213,18 +208,18 @@ const WorkoutPage = () => {
 							style={{
 								border:
 									"calc(0.0625rem * var(--mantine-scale)) solid var(--mantine-color-dark-4)",
-								borderRadius: "6px",
-
+								borderRadius: "4px",
 								display: "flex",
 								alignItems: "center",
 								justifyContent: "center",
-								width: "30px",
-								height: "30px",
+								width: "25px",
+								height: "25px",
 							}}
 						>
 							<Text
 								fw={500}
 								size="sm"
+								c="white"
 							>
 								{workouts.length}
 							</Text>

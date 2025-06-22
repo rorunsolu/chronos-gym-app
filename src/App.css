@@ -26,19 +26,18 @@ body {
 	}
 }
 
-/* .mantine-ScrollArea-content {
-	border-radius: var(--mantine-radius-md);
-	border: 1px solid transparent;
-	border-color: light-dark(
-		var(--mantine-color-gray-2),
-		var(--mantine-color-dark-4)
-	);
-} */
-
 .border-man {
 	border: 2px solid transparent;
 	border-color: light-dark(
 		var(--mantine-color-gray-2),
 		var(--mantine-color-dark-4)
 	);
+}
+
+[data-mantine-color-scheme="dark"] .m_6c018570[data-variant="default"] {
+	--input-bd: var(--mantine-color-dark-4) !important;
+	--input-bg: var(--mantine-color-dark-9) !important;
+	/* the above is for the input field background color */
+	/* --input-bd-focus: var(--mantine-primary-color-filled); */
+	--input-bd-focus: var(--mantine-color-dark-2) !important;
 }

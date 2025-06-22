@@ -1,4 +1,5 @@
 import { useExercisesHook } from "@/hooks/useExercisesHook";
+import styles from "@/style.module.css";
 import { Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +9,7 @@ import {
 	Group,
 	Badge,
 	Title,
-	Paper,
+	Card,
 	Button,
 	TextInput,
 } from "@mantine/core";
@@ -77,16 +78,17 @@ const Exercise = () => {
 				gap="xs"
 			>
 				{filteredExercises.map((exercise, id) => (
-					<Paper
+					<Card
 						key={id}
 						p="sm"
 						withBorder
 						shadow="md"
-						bg="dark.7"
+						bg="dark.9"
 						onClick={() => navigate(`/exercise-about/${exercise.id}`)}
 						style={{
 							cursor: "pointer",
 						}}
+						className={styles.hover}
 					>
 						<Stack gap="8">
 							<Title
@@ -132,7 +134,7 @@ const Exercise = () => {
 								)}
 							</Group>
 						</Stack>
-					</Paper>
+					</Card>
 				))}
 			</Stack>
 		</Container>

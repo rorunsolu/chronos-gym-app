@@ -237,10 +237,7 @@ const RoutineAbout = () => {
 										</Group>
 									)}
 								</Stack>
-								<Table
-									withTableBorder
-									withColumnBorders
-								>
+								<Table striped>
 									<Table.Thead>
 										<Table.Tr>
 											<Table.Th>Set</Table.Th>

@@ -181,29 +181,6 @@ const WorkoutAbout = () => {
 									</Stack>
 								</Group>
 							)}
-							{/* 
-							{totalElapsedTime > 0 && (
-								<Group gap="sm">
-									<Clock size={30} />
-									<Stack
-										gap={0}
-										align="flex-start"
-									>
-										<Text
-											size="sm"
-											fw={500}
-											c="dimmed"
-										>
-											Total Time
-										</Text>
-										<Text size="sm">
-											{totalElapsedTime > 60
-												? `${Math.floor(totalElapsedTime / 60)} mins`
-												: `${totalElapsedTime} secs`}
-										</Text>
-									</Stack>
-								</Group>
-							)} */}
 						</Group>
 					</Stack>
 
@@ -264,7 +241,6 @@ const WorkoutAbout = () => {
 										</Group> */}
 									{exercise.notes && (
 										<Group gap={5}>
-											{/* <Text size="sm">Notes:</Text> */}
 											<Text
 												size="sm"
 												c="dimmed"
@@ -275,12 +251,7 @@ const WorkoutAbout = () => {
 									)}
 								</Stack>
 
-								<Table
-									striped
-									//withRowBorders={false}
-									withTableBorder
-									withColumnBorders
-								>
+								<Table striped>
 									<Table.Thead>
 										<Table.Tr>
 											<Table.Th>Set</Table.Th>

@@ -107,7 +107,7 @@ const ExerciseAbout = () => {
 					</Stack>
 
 					{instructions && instructions.length > 0 && (
-						<Accordion>
+						<Accordion chevronSize={24}>
 							<Accordion.Item
 								value="instructions"
 								className={styles.item}
