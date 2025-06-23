@@ -30,6 +30,7 @@ const Portal = () => {
 		try {
 			await googleSignIn();
 		} catch (error) {
+			console.error("Google sign-in failed:", error);
 			throw new Error("Failed to create an account");
 		}
 	};
