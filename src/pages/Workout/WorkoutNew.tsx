@@ -1,5 +1,6 @@
 import { useExercisesHook } from "../../hooks/useExercisesHook";
 import { getSessionStats } from "@/common/singleSessionStats";
+import ExerciseCardList from "@/components/Exercises/ExerciseCardList";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
 import styles from "@/style.module.css";
 import { useDisclosure } from "@mantine/hooks";
@@ -12,6 +13,7 @@ import {
 	CheckCircle,
 	EllipsisVertical,
 	Plus,
+	Search,
 	Trash,
 } from "lucide-react";
 import {
@@ -39,10 +41,11 @@ const WorkoutNew = () => {
 
 	const [name, setName] = useState("");
 	const [notes, setNotes] = useState("");
+	const [search, setSearch] = useState("");
 	const [duration, setDuration] = useState(0);
-	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 	const [totalVol, setTotalVol] = useState<number>(0);
 	const [totalSets, setTotalSets] = useState<number>(0);
+	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 
 	const navigate = useNavigate();
 	const { createWorkout } = useWorkOutHook();
@@ -661,38 +664,25 @@ const WorkoutNew = () => {
 				opened={opened}
 				onClose={close}
 				title="Add Exercise"
+				bg="dark.9"
 				fullScreen
 				transitionProps={{ transition: "fade", duration: 200 }}
 			>
-				<Stack gap="sm">
-					<Stack
-						gap="5"
-						mt="xs"
-					>
-						{FBExercises.map((exercise, id) => (
-							<Card
-								className={styles.hover}
-								key={id}
-								withBorder
-								radius="md"
-								p="sm"
-								onClick={() => {
-									handleExerciseRender(exercise, exercise.id);
-									close();
-								}}
-							>
-								<Group>
-									<Text fw={500}>{exercise.name}</Text>
-									<Text
-										size="xs"
-										c="dimmed"
-									>
-										{exercise.muscleGroup}
-									</Text>
-								</Group>
-							</Card>
-						))}
-					</Stack>
+				<Stack gap="xs">
+					<TextInput
+						leftSection={<Search size={16} />}
+						placeholder="Search exercise"
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+					/>
+					<ExerciseCardList
+						exercises={FBExercises}
+						onSelect={(exercise) => {
+							handleExerciseRender(exercise, exercise.id);
+							close();
+						}}
+						search={search}
+					/>
 				</Stack>
 			</Modal>
 		</>

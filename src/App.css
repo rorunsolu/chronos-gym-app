@@ -41,3 +41,8 @@ body {
 	/* --input-bd-focus: var(--mantine-primary-color-filled); */
 	--input-bd-focus: var(--mantine-color-dark-2) !important;
 }
+
+.m_5df29311 {
+	height: 100%;
+	// mantine modal full height
+}

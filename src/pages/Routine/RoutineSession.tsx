@@ -1,5 +1,6 @@
 import { db } from "@/auth/Firebase";
 import { getSessionStats } from "@/common/singleSessionStats";
+import ExerciseCardList from "@/components/Exercises/ExerciseCardList";
 import { useExercisesHook } from "@/hooks/useExercisesHook";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
 import styles from "@/style.module.css";
@@ -28,7 +29,6 @@ import {
 	TextInput,
 	Modal,
 	Card,
-	Input,
 	Switch,
 	Checkbox,
 	Menu,
@@ -732,47 +732,27 @@ const RoutineSession = () => {
 				opened={opened}
 				onClose={close}
 				title="Add Exercise"
+				bg="dark.9"
 				fullScreen
-				radius={0}
+				h="100%"
 				transitionProps={{ transition: "fade", duration: 200 }}
 			>
-				<Stack gap="sm">
-					<Input
+				<Stack gap="xs">
+					<TextInput
 						leftSection={<Search size={16} />}
 						placeholder="Search exercise"
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
 					/>
 
-					<Stack
-						gap="5"
-						mt="xs"
-					>
-						{FBExercises.map((exercise, id) => (
-							<Card
-								className={styles.hover}
-								key={id}
-								withBorder
-								radius="md"
-								p="sm"
-								style={{ cursor: "pointer" }}
-								onClick={() => {
-									handleExerciseRender(exercise, exercise.id);
-									close();
-								}}
-							>
-								<Group>
-									<Text fw={500}>{exercise.name}</Text>
-									<Text
-										size="xs"
-										c="dimmed"
-									>
-										{exercise.muscleGroup}
-									</Text>
-								</Group>
-							</Card>
-						))}
-					</Stack>
+					<ExerciseCardList
+						exercises={FBExercises}
+						onSelect={(exercise) => {
+							handleExerciseRender(exercise, exercise.id);
+							close();
+						}}
+						search={search}
+					/>
 				</Stack>
 			</Modal>
 		</>

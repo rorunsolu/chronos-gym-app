@@ -1,3 +1,5 @@
+import { getSessionStats } from "@/common/singleSessionStats";
+import ExerciseCardList from "@/components/Exercises/ExerciseCardList";
 import { useExercisesHook } from "@/hooks/useExercisesHook";
 import { useRoutinesHook } from "@/hooks/useRoutinesHook";
 import styles from "@/style.module.css";
@@ -11,6 +13,7 @@ import {
 	Plus,
 	Search,
 	Trash,
+	Check,
 	EllipsisVertical,
 } from "lucide-react";
 import {
@@ -19,7 +22,6 @@ import {
 	Checkbox,
 	Container,
 	Group,
-	Input,
 	Menu,
 	Modal,
 	Stack,
@@ -40,6 +42,8 @@ const Routine = () => {
 	const [name, setName] = useState("");
 	const [notes, setNotes] = useState("");
 	const [duration, setDuration] = useState(0);
+	const [totalVol, setTotalVol] = useState<number>(0);
+	const [totalSets, setTotalSets] = useState<number>(0);
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 
 	const navigate = useNavigate();
@@ -182,6 +186,16 @@ const Routine = () => {
 		navigate("/home");
 	};
 
+	const handleVolumeChange = () => {
+		const totalVolume = getSessionStats(exercises).totalVolume;
+		setTotalVol(totalVolume);
+	};
+
+	const handleSetChange = () => {
+		const totalSets = getSessionStats(exercises).totalSets;
+		setTotalSets(totalSets);
+	};
+
 	useEffect(() => {
 		const fetchData = async () => {
 			await fetchFBExercises();
@@ -199,23 +213,89 @@ const Routine = () => {
 				py="md"
 			>
 				<Stack gap="md">
-					<Group>
-						<Card
-							className={styles.item}
-							py="5"
-							px="10"
-							withBorder
+					{exercises.length > 0 && (
+						<Group
+							mb="sm"
+							w="100%"
 						>
-							<Text
-								fw={500}
-								size="sm"
-								c="white"
+							<Card
+								className={styles.item}
+								py="5"
+								px="10"
+								withBorder
+								w="100%"
 							>
-								Duration: {hours > 0 ? `${hours}s:` : ""}
-								{minutes}min {seconds}s
-							</Text>
-						</Card>
-					</Group>
+								<Group>
+									<Stack
+										gap="0"
+										align="start"
+									>
+										<Text
+											size="xs"
+											c="dimmed"
+										>
+											Sets
+										</Text>
+										<Text
+											fw={400}
+											size="sm"
+											c="white"
+										>
+											{totalSets}
+										</Text>
+									</Stack>
+									<Stack
+										gap="0"
+										align="start"
+									>
+										<Text
+											size="xs"
+											c="dimmed"
+										>
+											Volume
+										</Text>
+										<Text
+											fw={400}
+											size="sm"
+											c="white"
+										>
+											{totalVol}kg
+										</Text>
+									</Stack>
+									<Stack
+										gap="0"
+										align="start"
+									>
+										<Text
+											size="xs"
+											c="dimmed"
+										>
+											Duration
+										</Text>
+										<Text
+											fw={400}
+											size="sm"
+											c="white"
+										>
+											{hours > 0 ? `${hours}s:` : ""}
+											{minutes}min {seconds}s
+										</Text>
+									</Stack>
+								</Group>
+							</Card>
+						</Group>
+					)}
+
+					{exercises.length === 0 && (
+						<Text
+							mb="-5"
+							mt="md"
+							size="sm"
+							c="dimmed"
+						>
+							No exercises added yet. Click "Add Exercise" to start.
+						</Text>
+					)}
 
 					<Stack gap="xl">
 						{exercises.map((exercise, index) => {
@@ -293,8 +373,17 @@ const Routine = () => {
 											<Table.Thead>
 												<Table.Tr>
 													<Table.Th>Set</Table.Th>
-													<Table.Th>Weight</Table.Th>
-													<Table.Th>Reps</Table.Th>
+													<Table.Th>
+														<Group gap="5">Weight</Group>
+													</Table.Th>
+													<Table.Th>
+														<Group gap="5">Reps</Group>
+													</Table.Th>
+													<Table.Th>
+														<Group justify="center">
+															<Check size={16} />
+														</Group>
+													</Table.Th>
 												</Table.Tr>
 											</Table.Thead>
 											<Table.Tbody>
@@ -381,6 +470,8 @@ const Routine = () => {
 																		set.id,
 																		e.currentTarget.checked
 																	);
+																	handleVolumeChange();
+																	handleSetChange();
 																}}
 															/>
 														</Table.Td>
@@ -442,47 +533,26 @@ const Routine = () => {
 				opened={opened}
 				onClose={close}
 				title="Add Exercise"
-				radius={0}
+				fullScreen
 				transitionProps={{ transition: "fade", duration: 200 }}
 				bg="dark.9"
 			>
-				<Stack gap="sm">
-					<Input
+				<Stack gap="xs">
+					<TextInput
 						leftSection={<Search size={16} />}
 						placeholder="Search exercise"
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
 					/>
 
-					<Stack
-						gap="5"
-						mt="xs"
-					>
-						{FBExercises.map((exercise, id) => (
-							<Card
-								className={styles.hover}
-								key={id}
-								withBorder
-								radius="md"
-								p="sm"
-								style={{ cursor: "pointer" }}
-								onClick={() => {
-									handleExerciseRender(exercise, exercise.id);
-									close();
-								}}
-							>
-								<Group>
-									<Text fw={500}>{exercise.name}</Text>
-									<Text
-										size="xs"
-										c="dimmed"
-									>
-										{exercise.muscleGroup}
-									</Text>
-								</Group>
-							</Card>
-						))}
-					</Stack>
+					<ExerciseCardList
+						exercises={FBExercises}
+						onSelect={(exercise) => {
+							handleExerciseRender(exercise, exercise.id);
+							close();
+						}}
+						search={search}
+					/>
 				</Stack>
 			</Modal>
 

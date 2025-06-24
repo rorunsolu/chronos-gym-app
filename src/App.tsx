@@ -98,7 +98,7 @@ function App() {
 							align="center"
 							h="100%"
 						>
-							<Group>
+							<Group gap="xs">
 								{user || isGuest ? (
 									<>
 										<Burger
@@ -144,7 +144,11 @@ function App() {
 											label={link.label}
 											className={styles.navlink}
 											active={index === activeNav}
-											onClick={() => setActiveNav(index)}
+											onClick={() => {
+												setActiveNav(index);
+												toggleMobile();
+												toggleDesktop();
+											}}
 											leftSection={
 												<link.icon
 													size={20}

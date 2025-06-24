@@ -1,13 +1,23 @@
 import { Group, Title } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
 const ChronosLogoSmall = () => {
+	const navigate = useNavigate();
+
 	return (
-		<Group gap={10}>
+		<Group
+			gap={6}
+			align="center"
+			onClick={() => {
+				navigate("/home");
+			}}
+			style={{ cursor: "pointer" }}
+		>
 			<img
-				src="chronos-logo.svg"
+				src="./chronos-logo.svg"
 				alt="Chronos Logo"
-				className="h-7 w-7"
+				className="h-6 w-6"
 			/>
-			<Title order={4}>Chronos</Title>
+			<Title order={5}>Chronos</Title>
 		</Group>
 	);
 };

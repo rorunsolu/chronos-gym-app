@@ -182,16 +182,33 @@ const ExerciseAbout = () => {
 					)}
 				</Stack>
 
-				<Stack mb="md">
-					<Sparkline
-						h={100}
-						data={sparklineData}
-						curveType="linear"
-						color="teal"
-						fillOpacity={0.6}
-						strokeWidth={2}
-					/>
-				</Stack>
+				{history.length > 1 ? (
+					<Stack mb="md">
+						<Text
+							size="sm"
+							c="dimmed"
+						>
+							Volume History
+						</Text>
+						<Sparkline
+							h={100}
+							data={sparklineData}
+							curveType="linear"
+							color="teal"
+							fillOpacity={0.6}
+							strokeWidth={2}
+						/>
+					</Stack>
+				) : (
+					<Text
+						size="sm"
+						c="dimmed"
+						mb="md"
+					>
+						You need to have performed this exercise at least 2 times before the
+						progression graph will appear.
+					</Text>
+				)}
 
 				{history.length > 0 ? (
 					<Stack gap="md">
