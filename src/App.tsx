@@ -15,6 +15,7 @@ import RoutineSession from "@/pages/Routine/RoutineSession";
 import WorkoutAbout from "@/pages/Workout/WorkoutAbout";
 import WorkoutNew from "@/pages/Workout/WorkoutNew";
 import styles from "@/style.module.css";
+import "@mantine/charts/styles.css";
 import "@mantine/core/styles.css";
 import "@mantine/core/styles.layer.css";
 import { useDisclosure } from "@mantine/hooks";

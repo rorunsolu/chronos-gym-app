@@ -42,7 +42,7 @@ export const ExerciseProvider = ({ children }: { children: ReactNode }) => {
 			equipment: doc.data().equipment,
 			instructions: doc.data().instructions,
 		}));
-		setFBExercises(exerciseList.sort((a, b) => b.name.localeCompare(a.name)));
+		setFBExercises(exerciseList.sort((a, b) => a.name.localeCompare(b.name)));
 	};
 
 	const createExercise = async (

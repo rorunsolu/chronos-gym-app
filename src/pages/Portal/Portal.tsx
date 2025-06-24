@@ -30,8 +30,8 @@ const Portal = () => {
 		try {
 			await googleSignIn();
 		} catch (error) {
+			// eslint-disable-next-line no-console
 			console.error("Google sign-in failed:", error);
-			throw new Error("Failed to create an account");
 		}
 	};
 

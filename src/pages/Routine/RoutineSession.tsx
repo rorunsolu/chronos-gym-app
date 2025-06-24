@@ -1,4 +1,5 @@
 import { db } from "@/auth/Firebase";
+import { getSessionStats } from "@/common/singleSessionStats";
 import { useExercisesHook } from "@/hooks/useExercisesHook";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
 import styles from "@/style.module.css";
@@ -46,6 +47,8 @@ const RoutineSession = () => {
 	const [isInitialLoad, setIsInitialLoad] = useState(true);
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
 	const [error, setError] = useState("");
+	const [totalVol, setTotalVol] = useState<number>(0);
+	const [totalSets, setTotalSets] = useState<number>(0);
 
 	const { FBExercises, fetchFBExercises } = useExercisesHook();
 	const [finishOpen, finishHandler] = useDisclosure(false);
@@ -242,6 +245,16 @@ const RoutineSession = () => {
 		);
 	};
 
+	const handleVolumeChange = () => {
+		const totalVolume = getSessionStats(exercises).totalVolume;
+		setTotalVol(totalVolume);
+	};
+
+	const handleSetChange = () => {
+		const totalSets = getSessionStats(exercises).totalSets;
+		setTotalSets(totalSets);
+	};
+
 	useEffect(() => {
 		if (isInitialLoad) {
 			setIsInitialLoad(false);
@@ -309,28 +322,86 @@ const RoutineSession = () => {
 				px="sm"
 				py="md"
 			>
-				<Stack gap="xs">
-					<Group justify="space-between">
+				<Stack
+					gap="xs"
+					w="100%"
+				>
+					<Stack>
 						<Text
 							fw={500}
 							size="xl"
 						>
 							{rountineName}
 						</Text>
+					</Stack>
+					<Group
+						mb="sm"
+						w="100%"
+					>
 						<Card
 							className={styles.item}
 							py="5"
 							px="10"
 							withBorder
+							w="100%"
 						>
-							<Text
-								fw={500}
-								size="sm"
-								c="white"
-							>
-								Duration: {hours > 0 ? `${hours}s:` : ""}
-								{minutes}min {seconds}s
-							</Text>
+							<Group>
+								<Stack
+									gap="0"
+									align="start"
+								>
+									<Text
+										size="xs"
+										c="dimmed"
+									>
+										Sets
+									</Text>
+									<Text
+										fw={400}
+										size="sm"
+										c="white"
+									>
+										{totalSets}
+									</Text>
+								</Stack>
+								<Stack
+									gap="0"
+									align="start"
+								>
+									<Text
+										size="xs"
+										c="dimmed"
+									>
+										Volume
+									</Text>
+									<Text
+										fw={400}
+										size="sm"
+										c="white"
+									>
+										{totalVol}kg
+									</Text>
+								</Stack>
+								<Stack
+									gap="0"
+									align="start"
+								>
+									<Text
+										size="xs"
+										c="dimmed"
+									>
+										Duration
+									</Text>
+									<Text
+										fw={400}
+										size="sm"
+										c="white"
+									>
+										{hours > 0 ? `${hours}s:` : ""}
+										{minutes}min {seconds}s
+									</Text>
+								</Stack>
+							</Group>
 						</Card>
 					</Group>
 
@@ -498,6 +569,8 @@ const RoutineSession = () => {
 																set.id,
 																e.currentTarget.checked
 															);
+															handleVolumeChange();
+															handleSetChange();
 														}}
 													/>
 												</Table.Td>

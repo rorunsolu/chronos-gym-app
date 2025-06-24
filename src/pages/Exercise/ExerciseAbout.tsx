@@ -1,7 +1,9 @@
+import { getSingleExerciseStats } from "@/common/singleExerciseStats";
 import { useExercisesHook } from "@/hooks/useExercisesHook";
 import { useRoutinesHook } from "@/hooks/useRoutinesHook";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
 import styles from "@/style.module.css";
+import { Sparkline } from "@mantine/charts";
 import { format } from "date-fns";
 import { ChevronRight, Info } from "lucide-react";
 import { useEffect } from "react";
@@ -64,6 +66,39 @@ const ExerciseAbout = () => {
 	const muscle = exercise?.muscleGroup;
 	const secondaryMuscle = exercise?.secondaryMuscleGroup;
 	const instructions = exercise?.instructions;
+
+	// Testing graph data
+
+	// const todaysDate = new Date();
+	// const fiveDaysAgo = new Date(todaysDate);
+	// fiveDaysAgo.setDate(todaysDate.getDate() - 5);
+
+	// const oldDataForGraph = history.filter((session) => {
+	// 	const sessionDate = session.sessionDate.toDate();
+	// 	return sessionDate >= fiveDaysAgo && sessionDate <= todaysDate;
+	// });
+
+	// const dataForGraph = history.map((session) => {
+	// 	const { totalVolume } = getSingleExerciseStats(
+	// 		id,
+	// 		session.sessionExercises
+	// 	);
+	// 	const sessionDate = session.sessionDate.toDate();
+	// 	const formatted = dayjs(sessionDate).format("MMMM D");
+
+	// 	return {
+	// 		date: formatted,
+	// 		totalVolume,
+	// 	};
+	// });
+
+	const sparklineData = history.map((session) => {
+		const { totalVolume } = getSingleExerciseStats(
+			id,
+			session.sessionExercises
+		);
+		return totalVolume;
+	});
 
 	return (
 		<Container
@@ -145,6 +180,17 @@ const ExerciseAbout = () => {
 							</Accordion.Item>
 						</Accordion>
 					)}
+				</Stack>
+
+				<Stack mb="md">
+					<Sparkline
+						h={100}
+						data={sparklineData}
+						curveType="linear"
+						color="teal"
+						fillOpacity={0.6}
+						strokeWidth={2}
+					/>
 				</Stack>
 
 				{history.length > 0 ? (
