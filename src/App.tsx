@@ -20,6 +20,7 @@ import "@mantine/core/styles.css";
 import "@mantine/core/styles.layer.css";
 import { useDisclosure } from "@mantine/hooks";
 import { BicepsFlexed, ChevronsUpDown, Home, LogOut, User } from "lucide-react";
+import { useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import {
 	ActionIcon,
@@ -43,7 +44,8 @@ const theme = createTheme({
 
 function App() {
 	const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
-	const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+	const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(false);
+	const [activeNav, setActiveNav] = useState(0);
 	const { user, isGuest, logOut } = UserAuth();
 
 	const handleSignOut = async () => {
@@ -55,6 +57,20 @@ function App() {
 		}
 	};
 
+	const navbardata = [
+		{
+			icon: Home,
+			label: "Home",
+			to: "/home",
+		},
+		{
+			icon: BicepsFlexed,
+			label: "Exercises",
+			to: "/exercise-page",
+		},
+		{ icon: User, label: "Profile", to: "/profile-page" },
+	];
+
 	return (
 		<>
 			<MantineProvider
@@ -63,12 +79,12 @@ function App() {
 			>
 				<AppShell
 					bg="dark.9"
-					header={{ height: 60 }}
+					header={{ height: 50 }}
 					padding="0"
 					navbar={
 						user
 							? {
-									width: 300,
+									width: 250,
 									breakpoint: "sm",
 									collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
 								}
@@ -90,6 +106,7 @@ function App() {
 											onClick={toggleDesktop}
 											visibleFrom="sm"
 											size="md"
+											lineSize={2}
 										/>
 
 										<Burger
@@ -97,149 +114,124 @@ function App() {
 											onClick={toggleMobile}
 											hiddenFrom="sm"
 											size="md"
+											lineSize={2}
 										/>
 									</>
 								) : null}
-								{desktopOpened && <ChronosLogoSmall />}
+
+								<ChronosLogoSmall />
 							</Group>
 						</Group>
 					</AppShell.Header>
 
 					{user || isGuest ? (
 						<AppShell.Navbar bg="dark.9">
-							<Stack
-								align="stretch"
-								gap={0}
-								h="100%"
-							>
-								<NavLink
-									c="white"
-									label="Home"
-									leftSection={
-										<Home
-											size={20}
-											stroke="#fff"
-											strokeWidth={1.5}
-										/>
-									}
-									component={Link}
-									to="/home"
-									variant="subtle"
-									color="white"
-									p="md"
-									className={styles.hover}
-								/>
-
-								<NavLink
-									c="white"
-									label="Exercises"
-									leftSection={
-										<BicepsFlexed
-											size={20}
-											stroke="#fff"
-											strokeWidth={1.5}
-										/>
-									}
-									component={Link}
-									to="/exercise-page"
-									variant="subtle"
-									color="white"
-									p="md"
-									className={styles.hover}
-								/>
-
-								<NavLink
-									c="white"
-									label="Profile"
-									leftSection={
-										<User
-											size={20}
-											stroke="#fff"
-											strokeWidth={1.5}
-										/>
-									}
-									component={Link}
-									to="/profile-page"
-									variant="subtle"
-									color="white"
-									p="md"
-									className={styles.hover}
-								/>
-							</Stack>
-							<Menu
-								shadow="md"
-								width="fit-content"
-								position="right-start"
-							>
-								<Paper
-									bg="dark.9"
-									radius={0}
-									p="md"
-									style={{
-										width: "100%",
-										borderTop:
-											"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color)",
-									}}
+							<>
+								<Stack
+									align="stretch"
+									gap={0}
+									h="100%"
 								>
-									<Group justify="space-between">
-										<Group>
-											<Avatar
-												size="md"
-												radius="xl"
-												src={user?.photoURL ? user.photoURL : "p.png"}
-												alt="User Avatar"
-											/>
-											<Stack gap="0">
-												{user?.displayName && (
-													<Text
-														size="xs"
-														fw={500}
-													>
-														{user.displayName}
-													</Text>
-												)}
+									{navbardata.map((link, index) => (
+										<NavLink
+											p="sm"
+											fw={500}
+											to={link.to}
+											color="white"
+											bg={activeNav === index ? "dark.8" : "dark.9"}
+											component={Link}
+											key={link.label}
+											label={link.label}
+											className={styles.navlink}
+											active={index === activeNav}
+											onClick={() => setActiveNav(index)}
+											leftSection={
+												<link.icon
+													size={20}
+													strokeWidth={2}
+												/>
+											}
+										/>
+									))}
+								</Stack>
 
-												{user?.email && (
-													<Text
-														size="xs"
-														truncate="end"
-														className="max-w-32"
-														fw={500}
-													>
-														{user.email}
-													</Text>
-												)}
-											</Stack>
-										</Group>
-
-										<Menu.Target>
-											<ActionIcon
-												m="0"
-												color="white"
-												variant="outline"
-												aria-label="User Menu"
-												style={{
-													border:
-														"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color)",
-												}}
-												className={styles.hover}
-											>
-												<ChevronsUpDown size={18} />
-											</ActionIcon>
-										</Menu.Target>
-									</Group>
-								</Paper>
-
-								<Menu.Dropdown bg="dark.9">
-									<Menu.Item
-										leftSection={<LogOut size={18} />}
-										onClick={handleSignOut}
-										className={styles.hover}
+								<Menu
+									shadow="md"
+									width="fit-content"
+									position="right-start"
+								>
+									<Paper
+										bg="dark.9"
+										radius={0}
+										p="xs"
+										style={{
+											width: "100%",
+											borderTop:
+												"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color)",
+										}}
 									>
-										Log out
-									</Menu.Item>
-								</Menu.Dropdown>
-							</Menu>
+										<Group justify="space-between">
+											<Group gap="xs">
+												<Avatar
+													size="35"
+													radius="xl"
+													src={user?.photoURL ? user.photoURL : "p.png"}
+													alt="User Avatar"
+												/>
+												<Stack gap="0">
+													{user?.displayName && (
+														<Text
+															size="xs"
+															fw={500}
+															c="white"
+														>
+															{user.displayName}
+														</Text>
+													)}
+
+													{user?.email && (
+														<Text
+															size="xs"
+															c="white"
+															truncate="end"
+															className="max-w-35"
+															fw={400}
+														>
+															{user.email}
+														</Text>
+													)}
+												</Stack>
+											</Group>
+
+											<Menu.Target>
+												<ActionIcon
+													m="0"
+													color="white"
+													variant="outline"
+													aria-label="User Menu"
+													style={{
+														border:
+															"calc(0.0625rem * var(--mantine-scale)) solid var(--paper-border-color)",
+													}}
+													className={styles.hover}
+												>
+													<ChevronsUpDown size={18} />
+												</ActionIcon>
+											</Menu.Target>
+										</Group>
+									</Paper>
+
+									<Menu.Dropdown bg="dark.9">
+										<Menu.Item
+											leftSection={<LogOut size={18} />}
+											onClick={handleSignOut}
+											className={styles.hover}
+										>
+											Log out
+										</Menu.Item>
+									</Menu.Dropdown>
+								</Menu>
+							</>
 						</AppShell.Navbar>
 					) : null}
 

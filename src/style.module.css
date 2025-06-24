@@ -52,6 +52,12 @@
 	}
 }
 
+.navlink {
+	&:hover {
+		background-color: var(--mantine-color-dark-8) !important;
+	}
+}
+
 .list {
 	position: relative;
 	margin-bottom: var(--mantine-spacing-md);
