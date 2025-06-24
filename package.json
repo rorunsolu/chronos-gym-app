@@ -10,11 +10,10 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@mantine/charts": "^8.1.1",
 		"@mantine/core": "^8.0.2",
-		"@mantine/dates": "^8.0.2",
 		"@mantine/form": "^8.0.2",
 		"@mantine/hooks": "^8.0.2",
-		"@mantine/tiptap": "^8.0.2",
 		"@tailwindcss/vite": "^4.1.6",
 		"date-fns": "^4.1.0",
 		"dayjs": "^1.11.13",
@@ -25,7 +24,7 @@
 		"react-dom": "^19.1.0",
 		"react-router-dom": "^7.6.0",
 		"react-timer-hook": "^4.0.5",
-		"recharts": "^2.15.3",
+		"recharts": "^2.15.4",
 		"sass": "^1.87.0",
 		"tailwindcss": "^4.1.6",
 		"uuid": "^11.1.0"
