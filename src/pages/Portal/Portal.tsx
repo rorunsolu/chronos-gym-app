@@ -23,7 +23,9 @@ import {
 
 const Portal = () => {
 	const navigate = useNavigate();
-	const { googleSignIn, emailSignUp, emailSignIn, user } = UserAuth();
+	const { googleSignIn, emailSignUp, emailSignIn, signInAsGuest, user } =
+		UserAuth();
+	const [error, setError] = useState<string | null>(null);
 	const icon = <GoogleLogo />;
 
 	const handleGoogleSignUp = async () => {
@@ -60,6 +62,7 @@ const Portal = () => {
 		try {
 			await emailSignUp(email, password);
 		} catch (error) {
+			setError("Failed to sign up. Please check your credentials.");
 			throw new Error("Failed to sign up. Please check your credentials.");
 		}
 	};
@@ -68,13 +71,23 @@ const Portal = () => {
 		try {
 			await emailSignIn(email, password);
 		} catch (error) {
+			setError("Failed to log in. Please check your credentials.");
 			throw new Error("Failed to log in. Please check your credentials.");
+		}
+	};
+
+	const handleGuestAccess = async () => {
+		try {
+			await signInAsGuest();
+		} catch (error) {
+			setError("Failed to sign in as guest. Please try again.");
+			throw new Error("Failed to sign in as guest. Please try again.");
 		}
 	};
 
 	useEffect(() => {
 		if (user != null) {
-			navigate("/home");
+			navigate("/home", { replace: true });
 		}
 	}, [user, navigate]);
 
@@ -93,13 +106,7 @@ const Portal = () => {
 			size="sm"
 			p="md"
 		>
-			<Center
-				style={
-					{
-						//minHeight: "100vh",
-					}
-				}
-			>
+			<Center>
 				<Stack
 					p="lg"
 					style={{
@@ -114,200 +121,261 @@ const Portal = () => {
 						<ChronosLogo />
 					</Group>
 
-					<Tabs
-						color="teal"
-						variant="none"
-						value={activeTab}
-						onChange={(value) => setActiveTab(value as "signup" | "login")}
-						mb="lg"
-					>
-						<Tabs.List
-							grow
-							ref={setRootRef}
-							className={styles.list}
-						>
-							<Tabs.Tab
-								value="signup"
-								ref={setControlRef("signup")}
-								className={styles.tab}
-								// style={{ borderRadius: "calc(0.25rem * 1)" }}
+					{user != null ? (
+						<Stack gap="xs">
+							<Button
+								fullWidth
+								color="teal"
+								onClick={() => navigate("/home")}
 							>
-								Sign up
-							</Tabs.Tab>
-							<Tabs.Tab
-								value="login"
-								ref={setControlRef("login")}
-								className={styles.tab}
-							>
-								Log in
-							</Tabs.Tab>
-
-							<FloatingIndicator
-								target={activeTab ? controlsRefs[activeTab] : null}
-								parent={rootRef}
-								className={styles.indicator}
-							/>
-						</Tabs.List>
-					</Tabs>
-
-					{activeTab === "signup" ? (
-						<>
-							<form
-								onSubmit={form.onSubmit((values) =>
-									handleEmailSignUp(values.email, values.password)
-								)}
-							>
-								<TextInput
-									c="white"
-									{...form.getInputProps("email")}
-									label="Email"
-									placeholder="Enter your email"
-									mb="md"
-									withAsterisk
-								/>
-								<PasswordInput
-									{...form.getInputProps("password")}
-									label="Password"
-									placeholder="Create a password"
-									mb={4}
-									withAsterisk
-								/>
-								<Stack
-									gap="5"
-									mb="lg"
-									mt="md"
+								Go to Home
+							</Button>
+							{error && (
+								<Text
+									c="red"
+									fz="sm"
+									ta="center"
 								>
-									<Group
-										gap={8}
-										align="center"
-									>
-										<Checkbox
-											checked={form.values.password.length >= 8}
-											readOnly
-											size="xs"
-										/>
-										<Text
-											fz="xs"
-											c="dimmed"
-										>
-											Must be at least 8 characters
-										</Text>
-									</Group>
-									<Group
-										gap={8}
-										align="center"
-									>
-										<Checkbox
-											checked={/[^A-Za-z0-9]/.test(form.values.password)}
-											readOnly
-											size="xs"
-										/>
-										<Text
-											fz="xs"
-											c="dimmed"
-										>
-											Must contain one special character
-										</Text>
-									</Group>
-								</Stack>
-								<Button
-									type="submit"
-									fullWidth
-									color="teal"
-									mb="md"
-								>
-									Sign up
-								</Button>
-								<Divider
-									label="or"
-									labelPosition="center"
-									mb="md"
-								/>
-								<Button
-									variant="default"
-									leftSection={icon}
-									fullWidth
-									mb="md"
-									onClick={handleGoogleSignUp}
-								>
-									Sign up with Google
-								</Button>
-							</form>
-							<Text
-								ta="center"
-								fz="sm"
-								mt="md"
-							>
-								Already have an account?{" "}
-								<Anchor
-									component={Link}
-									to=""
-									onClick={() => setActiveTab("login")}
-								>
-									Log in
-								</Anchor>
-							</Text>
-						</>
+									{error}
+								</Text>
+							)}
+						</Stack>
 					) : (
 						<>
-							<form
-								onSubmit={form.onSubmit((values) =>
-									handleEmailSignIn(values.email, values.password)
-								)}
+							<Tabs
+								color="teal"
+								variant="none"
+								value={activeTab}
+								onChange={(value) => setActiveTab(value as "signup" | "login")}
+								mb="lg"
 							>
-								<TextInput
-									c="white"
-									{...form.getInputProps("email")}
-									label="Email"
-									placeholder="Enter your email"
-									mb="md"
-									withAsterisk
-								/>
-								<PasswordInput
-									{...form.getInputProps("password")}
-									label="Password"
-									placeholder="Enter your password"
-									mb="md"
-									withAsterisk
-								/>
-								<Button
-									type="submit"
-									fullWidth
-									color="teal"
-									mb="md"
+								<Tabs.List
+									grow
+									ref={setRootRef}
+									className={styles.list}
 								>
-									Log in
-								</Button>
-								<Divider
-									label="or"
-									labelPosition="center"
-									mb="md"
-								/>
-								<Button
-									variant="default"
-									leftSection={icon}
-									fullWidth
-									mb="md"
-									onClick={handleGoogleSignUp}
-								>
-									Log in with Google
-								</Button>
-							</form>
+									<Tabs.Tab
+										value="signup"
+										ref={setControlRef("signup")}
+										className={styles.tab}
+									>
+										Sign up
+									</Tabs.Tab>
+									<Tabs.Tab
+										value="login"
+										ref={setControlRef("login")}
+										className={styles.tab}
+									>
+										Log in
+									</Tabs.Tab>
 
-							<Text
-								ta="center"
-								fz="sm"
-								mt="md"
-							>
-								Don''t have an account?{" "}
-								<Anchor
-									component={Link}
-									to=""
-									onClick={() => setActiveTab("signup")}
-								>
-									Sign up
-								</Anchor>
-							</Text>
+									<FloatingIndicator
+										target={activeTab ? controlsRefs[activeTab] : null}
+										parent={rootRef}
+										className={styles.indicator}
+									/>
+								</Tabs.List>
+							</Tabs>
+
+							{activeTab === "signup" ? (
+								<>
+									<form
+										onSubmit={form.onSubmit((values) =>
+											handleEmailSignUp(values.email, values.password)
+										)}
+									>
+										<TextInput
+											c="white"
+											{...form.getInputProps("email")}
+											label="Email"
+											placeholder="Enter your email"
+											mb="md"
+											withAsterisk
+										/>
+										<PasswordInput
+											{...form.getInputProps("password")}
+											label="Password"
+											placeholder="Create a password"
+											mb={4}
+											withAsterisk
+										/>
+
+										<Stack
+											gap="5"
+											mb="lg"
+											mt="md"
+										>
+											<Group
+												gap={8}
+												align="center"
+											>
+												<Checkbox
+													checked={form.values.password.length >= 8}
+													readOnly
+													size="xs"
+												/>
+												<Text
+													fz="xs"
+													c="dimmed"
+												>
+													Must be at least 8 characters
+												</Text>
+											</Group>
+											<Group
+												gap={8}
+												align="center"
+											>
+												<Checkbox
+													checked={/[^A-Za-z0-9]/.test(form.values.password)}
+													readOnly
+													size="xs"
+												/>
+												<Text
+													fz="xs"
+													c="dimmed"
+												>
+													Must contain one special character
+												</Text>
+											</Group>
+										</Stack>
+										<Button
+											type="submit"
+											fullWidth
+											color="teal"
+											mb="md"
+										>
+											Sign up
+										</Button>
+										<Divider
+											label="or"
+											labelPosition="center"
+											mb="md"
+										/>
+										<Stack gap="xs">
+											<Button
+												variant="default"
+												leftSection={icon}
+												fullWidth
+												onClick={handleGoogleSignUp}
+											>
+												Sign up with Google
+											</Button>
+											<Button
+												variant="default"
+												fullWidth
+												onClick={handleGuestAccess}
+											>
+												Start without an account
+											</Button>
+										</Stack>
+									</form>
+									<Stack gap="xs">
+										{error && (
+											<Text
+												c="red"
+												fz="sm"
+												ta="center"
+											>
+												{error}
+											</Text>
+										)}
+										<Text
+											ta="center"
+											fz="sm"
+											mt="xs"
+										>
+											Already have an account?{" "}
+											<Anchor
+												component={Link}
+												to=""
+												onClick={() => setActiveTab("login")}
+											>
+												Log in
+											</Anchor>
+										</Text>
+									</Stack>
+								</>
+							) : (
+								<>
+									<form
+										onSubmit={form.onSubmit((values) =>
+											handleEmailSignIn(values.email, values.password)
+										)}
+									>
+										<TextInput
+											c="white"
+											{...form.getInputProps("email")}
+											label="Email"
+											placeholder="Enter your email"
+											mb="md"
+											withAsterisk
+										/>
+										<PasswordInput
+											{...form.getInputProps("password")}
+											label="Password"
+											placeholder="Enter your password"
+											mb="md"
+											withAsterisk
+										/>
+										<Button
+											type="submit"
+											fullWidth
+											color="teal"
+											mb="md"
+										>
+											Log in
+										</Button>
+										<Divider
+											label="or"
+											labelPosition="center"
+											mb="md"
+										/>
+										<Stack gap="xs">
+											<Button
+												variant="default"
+												leftSection={icon}
+												fullWidth
+												onClick={handleGoogleSignUp}
+											>
+												Log in with Google
+											</Button>
+											<Button
+												variant="default"
+												fullWidth
+												onClick={handleGuestAccess}
+											>
+												Sign in as a guest
+											</Button>
+										</Stack>
+									</form>
+
+									<Stack gap="xs">
+										{error && (
+											<Text
+												c="red"
+												fz="sm"
+												ta="center"
+											>
+												{error}
+											</Text>
+										)}
+										<Text
+											ta="center"
+											fz="sm"
+											mt="md"
+										>
+											Don''t have an account?{" "}
+											<Anchor
+												component={Link}
+												to=""
+												onClick={() => setActiveTab("signup")}
+											>
+												Sign up
+											</Anchor>
+										</Text>
+									</Stack>
+								</>
+							)}
 						</>
 					)}
 				</Stack>

@@ -8,12 +8,10 @@ const Protected: React.FC<ProtectedProps> = ({
 }) => {
 	const { user } = UserAuth();
 
-	if (!user) {
-		return allowGuest ? children : <Navigate to="/" />;
-	}
+	const hasAccess = user && (allowGuest || !user.isAnonymous);
 
-	if (user.isAnonymous) {
-		return allowGuest ? children : <Navigate to="/" />;
+	if (!hasAccess) {
+		return <Navigate to="/" />;
 	}
 
 	return children;

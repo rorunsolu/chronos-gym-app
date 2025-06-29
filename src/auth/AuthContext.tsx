@@ -62,7 +62,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
 			setLoading(false);
 
 			// eslint-disable-next-line
-			console.log("The current user is:", currentUser);
+			console.log("Current user is:", currentUser);
 		});
 
 		return () => {

@@ -44,5 +44,24 @@ body {
 
 .m_5df29311 {
 	height: 100%;
-	// mantine modal full height
+	/* mantine modal full height */
+}
+
+.restTimerView {
+	display: flex;
+	align-items: center;
+	gap: 0;
+
+	border: 1px solid transparent;
+	border-radius: var(--mantine-radius-sm);
+	border-color: var(--mantine-color-dark-4);
+
+	max-width: fit-content;
+
+	input.restTimerInput {
+		//width: 40px;
+		width: 50px;
+
+		padding: 0 7px;
+	}
 }

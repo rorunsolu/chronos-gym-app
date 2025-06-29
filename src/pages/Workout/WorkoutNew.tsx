@@ -1,4 +1,5 @@
 import { useExercisesHook } from "../../hooks/useExercisesHook";
+import "@/App.css";
 import { getSessionStats } from "@/common/singleSessionStats";
 import ExerciseCardList from "@/components/Exercises/ExerciseCardList";
 import { useWorkOutHook } from "@/hooks/useWorkoutHook";
@@ -52,7 +53,6 @@ const WorkoutNew = () => {
 	const { FBExercises, fetchFBExercises } = useExercisesHook();
 	const { totalSeconds, seconds, minutes, hours, pause, start } = useStopwatch({
 		autoStart: true,
-		interval: 20,
 	});
 
 	const handleExerciseRender = (

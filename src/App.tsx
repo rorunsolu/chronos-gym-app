@@ -19,6 +19,8 @@ import "@mantine/charts/styles.css";
 import "@mantine/core/styles.css";
 import "@mantine/core/styles.layer.css";
 import { useDisclosure } from "@mantine/hooks";
+import { Notifications } from "@mantine/notifications";
+import "@mantine/notifications/styles.css";
 import { BicepsFlexed, ChevronsUpDown, Home, LogOut, User } from "lucide-react";
 import { useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
@@ -54,6 +56,7 @@ function App() {
 		} catch (error) {
 			// eslint-disable-next-line
 			console.log(error);
+			throw new Error("Failed to log out. Please try again.");
 		}
 	};
 
@@ -77,6 +80,7 @@ function App() {
 				theme={theme}
 				defaultColorScheme="dark"
 			>
+				<Notifications />
 				<AppShell
 					bg="dark.9"
 					header={{ height: 50 }}
@@ -249,7 +253,7 @@ function App() {
 							<Route
 								path="/home"
 								element={
-									<Protected>
+									<Protected allowGuest>
 										<Homepage />
 									</Protected>
 								}
@@ -257,7 +261,7 @@ function App() {
 							<Route
 								path="/profile-page"
 								element={
-									<Protected>
+									<Protected allowGuest>
 										<ProfilePage />
 									</Protected>
 								}
@@ -266,7 +270,7 @@ function App() {
 							<Route
 								path="/new-workout"
 								element={
-									<Protected>
+									<Protected allowGuest>
 										<WorkoutNew />
 									</Protected>
 								}
@@ -274,7 +278,7 @@ function App() {
 							<Route
 								path="/workout-about/:id"
 								element={
-									<Protected>
+									<Protected allowGuest>
 										<WorkoutAbout />
 									</Protected>
 								}
@@ -283,7 +287,7 @@ function App() {
 							<Route
 								path="/new-routine"
 								element={
-									<Protected>
+									<Protected allowGuest>
 										<RoutineNew />
 									</Protected>
 								}
@@ -291,7 +295,7 @@ function App() {
 							<Route
 								path="/routine-about/:id"
 								element={
-									<Protected>
+									<Protected allowGuest>
 										<RoutineAbout />
 									</Protected>
 								}
@@ -299,7 +303,7 @@ function App() {
 							<Route
 								path="/routines/:id"
 								element={
-									<Protected>
+									<Protected allowGuest>
 										<RoutineSession />
 									</Protected>
 								}
@@ -308,7 +312,7 @@ function App() {
 							<Route
 								path="/bulk"
 								element={
-									<Protected>
+									<Protected allowGuest>
 										<BulkExUpload />
 									</Protected>
 								}
@@ -317,7 +321,7 @@ function App() {
 							<Route
 								path="/exercise-page"
 								element={
-									<Protected>
+									<Protected allowGuest>
 										<ExercisePage />
 									</Protected>
 								}
@@ -326,7 +330,7 @@ function App() {
 							<Route
 								path="/exercise-about/:id"
 								element={
-									<Protected>
+									<Protected allowGuest>
 										<ExerciseAbout />
 									</Protected>
 								}
@@ -334,7 +338,7 @@ function App() {
 							<Route
 								path="/new-exercise"
 								element={
-									<Protected>
+									<Protected allowGuest>
 										<ExerciseCreate />
 									</Protected>
 								}
