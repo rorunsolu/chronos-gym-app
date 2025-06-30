@@ -61,7 +61,7 @@ const WorkoutPage = () => {
 					mb="lg"
 				>
 					<Stack gap={0}>
-						<Title order={1}>Home</Title>
+						<Title order={2}>Home</Title>
 					</Stack>
 
 					<div className="flex flex-col md:flex-row items-center justify-between flex-grow-0 gap-3">

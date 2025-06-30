@@ -1,4 +1,4 @@
-export const localExerciseInfo = [
+export const localExercises = [
 	{
 		name: "Barbell Bench Press",
 		muscleGroup: "Chest",
@@ -534,24 +534,3 @@ export const localExerciseInfo = [
 		],
 	},
 ];
-
-const equipmentValues = localExerciseInfo
-	.flat()
-	.map((exercise) => exercise.equipment);
-export const equipment = Array.from(new Set(equipmentValues)).sort((a, b) =>
-	a.localeCompare(b)
-);
-
-const muscleGroupValues = localExerciseInfo
-	.flat()
-	.map((exercise) => exercise.muscleGroup);
-export const primaryMuscleGroups = Array.from(new Set(muscleGroupValues)).sort(
-	(a, b) => a.localeCompare(b)
-);
-
-const secondaryMuscleGroupValues = localExerciseInfo
-	.flat()
-	.map((exercise) => exercise.secondaryMuscleGroup);
-export const secondaryMuscleGroups = Array.from(
-	new Set(secondaryMuscleGroupValues)
-).sort((a, b) => a.localeCompare(b));

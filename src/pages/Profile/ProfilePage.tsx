@@ -130,7 +130,7 @@ const Profile = () => {
 			px="sm"
 			py="md"
 		>
-			<Title order={1}>My Profile</Title>
+			<Title order={2}>My Profile</Title>
 			<Stack
 				gap="lg"
 				mt="md"

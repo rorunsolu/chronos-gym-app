@@ -48,7 +48,7 @@ const Exercise = () => {
 				gap="md"
 				mb="lg"
 			>
-				<Title order={1}>Exercises</Title>{" "}
+				<Title order={2}>Exercises</Title>{" "}
 				<Stack>
 					<div className="flex flex-col md:flex-row items-center justify-between flex-grow-0 gap-3">
 						<TextInput

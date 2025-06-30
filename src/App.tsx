@@ -312,7 +312,7 @@ function App() {
 							<Route
 								path="/bulk"
 								element={
-									<Protected allowGuest>
+									<Protected>
 										<BulkExUpload />
 									</Protected>
 								}

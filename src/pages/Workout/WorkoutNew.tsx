@@ -538,7 +538,7 @@ const WorkoutNew = () => {
 				opened={opened}
 				onClose={close}
 				title="Add Exercise"
-				fullScreen
+				size="md"
 				transitionProps={{ transition: "fade", duration: 200 }}
 			>
 				<Stack gap="sm">
@@ -665,7 +665,7 @@ const WorkoutNew = () => {
 				onClose={close}
 				title="Add Exercise"
 				bg="dark.9"
-				fullScreen
+				size="md"
 				transitionProps={{ transition: "fade", duration: 200 }}
 			>
 				<Stack gap="xs">
