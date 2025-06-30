@@ -36,7 +36,7 @@ const WorkoutPage = () => {
 	const { user } = UserAuth();
 	const [, setLoading] = useState(true);
 	const { workouts, fetchWorkouts, deleteWorkout } = useWorkOutHook();
-	const { routines, fetchRoutines } = useRoutinesHook();
+	const { routines, deleteRoutine, fetchRoutines } = useRoutinesHook();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -184,6 +184,38 @@ const WorkoutPage = () => {
 											>
 												{routine.name}
 											</Text>
+											<Menu
+												withinPortal
+												position="bottom-end"
+												shadow="md"
+											>
+												<Menu.Target>
+													<Button
+														px="5"
+														py="0"
+														variant="subtle"
+														color="gray"
+														onClick={(e) => {
+															e.stopPropagation();
+														}}
+													>
+														<EllipsisVertical size={16} />
+													</Button>
+												</Menu.Target>
+												<Menu.Dropdown bg="dark.9">
+													<Menu.Item
+														color="red"
+														leftSection={<Trash size={14} />}
+														className={styles.hover}
+														onClick={(e) => {
+															e.stopPropagation();
+															deleteRoutine(routine.id);
+														}}
+													>
+														Delete
+													</Menu.Item>
+												</Menu.Dropdown>
+											</Menu>
 										</Group>
 									</Stack>
 								</Paper>

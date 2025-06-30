@@ -21,21 +21,25 @@ import {
 import { type ExerciseData } from "@/common/types";
 
 const RoutineAbout = () => {
+	const { user } = UserAuth();
 	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
+
+	const [notes, setNotes] = useState<string>("");
+	const [date, setDate] = useState<Timestamp | undefined>();
 	const [routineName, setRoutineName] = useState<string>("");
 	const [exercises, setExercises] = useState<ExerciseData[]>([]);
-	const [notes, setNotes] = useState<string>("");
-	const [totalElapsedTime, setTotalElapsedTime] = useState<number>(0);
+
 	const [errorMessage, setErrorMessage] = useState<string>("");
-	const [, setIsLoading] = useState(true);
-	const { user } = UserAuth();
+	const [totalElapsedTime, setTotalElapsedTime] = useState<number>(0);
+
 	const [stats, setStats] = useState<{
 		totalVolume: number;
 		totalSets: number;
 		totalExercises: number;
 	} | null>(null);
-	const [date, setDate] = useState<Timestamp | undefined>();
+
+	const [, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchRoutineData = async () => {
@@ -190,19 +194,21 @@ const RoutineAbout = () => {
 					)}
 				</Stack>
 
-				<Button
-					fullWidth
-					size="sm"
-					variant="filled"
-					color="teal"
-					aria-label="Start routine"
-					leftSection={<Play size={20} />}
-					onClick={() => {
-						navigate(`/routines/${id}`);
-					}}
-				>
-					Start Routine
-				</Button>
+				<Group>
+					<Button
+						fullWidth
+						size="sm"
+						variant="filled"
+						color="teal"
+						aria-label="Start routine"
+						leftSection={<Play size={20} />}
+						onClick={() => {
+							navigate(`/routines/${id}`);
+						}}
+					>
+						Start Routine
+					</Button>
+				</Group>
 
 				<Divider
 					label="Exercises"

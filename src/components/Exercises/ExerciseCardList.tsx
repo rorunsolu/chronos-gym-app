@@ -84,7 +84,7 @@ const ExerciseCardList = ({
 
 			<Stack
 				gap="xs"
-				mt="lg"
+				mt="md"
 			>
 				{filtered.map((exercise, id) => (
 					<Card
