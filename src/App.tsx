@@ -1,7 +1,6 @@
 import "@/App.css";
 import { UserAuth } from "@/auth/AuthContext";
 import Protected from "@/auth/Protected";
-import BulkExUpload from "@/BulkExUpload";
 import ChronosLogoSmall from "@/components/Branding/ChronosLogoSmall";
 import ExerciseAbout from "@/pages/Exercise/ExerciseAbout";
 import ExerciseCreate from "@/pages/Exercise/ExerciseCreate";
@@ -24,6 +23,7 @@ import "@mantine/notifications/styles.css";
 import { BicepsFlexed, ChevronsUpDown, Home, LogOut, User } from "lucide-react";
 import { useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
+// import BulkExUpload from "@/BulkExUpload";
 import {
 	ActionIcon,
 	AppShell,
@@ -309,14 +309,14 @@ function App() {
 								}
 							/>
 
-							<Route
+							{/* <Route
 								path="/bulk"
 								element={
 									<Protected>
 										<BulkExUpload />
 									</Protected>
 								}
-							/>
+							/> */}
 
 							<Route
 								path="/exercise-page"
