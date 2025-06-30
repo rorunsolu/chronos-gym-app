@@ -39,7 +39,7 @@ body {
 	--input-bg: var(--mantine-color-dark-9) !important;
 	/* the above is for the input field background color */
 	/* --input-bd-focus: var(--mantine-primary-color-filled); */
-	--input-bd-focus: var(--mantine-color-dark-2) !important;
+	--input-bd-focus: var(--mantine-color-dark-3) !important;
 }
 
 .m_5df29311 {

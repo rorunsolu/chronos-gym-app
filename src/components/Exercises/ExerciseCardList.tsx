@@ -5,7 +5,7 @@ import type { FBExerciseData } from "@/common/types";
 
 interface ExerciseCardListProps {
 	exercises: FBExerciseData[];
-	onSelect: (exercise: FBExerciseData) => void;
+	onSelect?: (exercise: FBExerciseData) => void;
 	search?: string;
 }
 
@@ -60,7 +60,7 @@ const ExerciseCardList = ({
 
 	return (
 		<>
-			<Stack gap="xs">
+			<Stack gap="8">
 				<Select
 					placeholder="All Muscles"
 					data={mainMuscles}
@@ -84,7 +84,7 @@ const ExerciseCardList = ({
 
 			<Stack
 				gap="xs"
-				mt="xs"
+				mt="lg"
 			>
 				{filtered.map((exercise, id) => (
 					<Card
@@ -94,7 +94,7 @@ const ExerciseCardList = ({
 						radius="md"
 						p="sm"
 						style={{ cursor: "pointer" }}
-						onClick={() => onSelect(exercise)}
+						onClick={() => onSelect?.(exercise)}
 					>
 						<Stack
 							gap="8"

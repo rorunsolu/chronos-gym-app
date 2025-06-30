@@ -1,18 +1,9 @@
+import ExerciseCardList from "@/components/Exercises/ExerciseCardList";
 import { useExercisesHook } from "@/hooks/useExercisesHook";
-import styles from "@/style.module.css";
+import { Button, Container, Stack, TextInput, Title } from "@mantine/core";
 import { Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-	Container,
-	Stack,
-	Group,
-	Badge,
-	Title,
-	Card,
-	Button,
-	TextInput,
-} from "@mantine/core";
 
 const Exercise = () => {
 	const [, setLoading] = useState(true);
@@ -30,13 +21,13 @@ const Exercise = () => {
 		// eslint-disable-next-line
 	}, []);
 
-	const filteredExercises = FBExercises.filter((exercise) => {
-		const matchesSearch = exercise.name
-			.toLowerCase()
-			.includes(search.toLowerCase());
+	// const filteredExercises = FBExercises.filter((exercise) => {
+	// 	const matchesSearch = exercise.name
+	// 		.toLowerCase()
+	// 		.includes(search.toLowerCase());
 
-		return matchesSearch;
-	});
+	// 	return matchesSearch;
+	// });
 
 	return (
 		<Container
@@ -46,7 +37,7 @@ const Exercise = () => {
 		>
 			<Stack
 				gap="md"
-				mb="lg"
+				mb="sm"
 			>
 				<Title order={2}>Exercises</Title>{" "}
 				<Stack>
@@ -73,70 +64,10 @@ const Exercise = () => {
 				</Stack>
 			</Stack>
 
-			<Stack
-				mt="lg"
-				gap="xs"
-			>
-				{filteredExercises.map((exercise, id) => (
-					<Card
-						key={id}
-						p="sm"
-						withBorder
-						shadow="md"
-						bg="dark.9"
-						onClick={() => navigate(`/exercise-about/${exercise.id}`)}
-						style={{
-							cursor: "pointer",
-						}}
-						className={styles.hover}
-					>
-						<Stack gap="8">
-							<Title
-								order={5}
-								fw={500}
-								c="white"
-							>
-								{exercise.name}
-							</Title>
-							<Group gap={5}>
-								{exercise.muscleGroup && (
-									<Badge
-										variant="dot"
-										color="teal"
-										fw={500}
-										size="sm"
-										className="border-man"
-									>
-										{exercise.muscleGroup}
-									</Badge>
-								)}
-								{exercise.secondaryMuscleGroup && (
-									<Badge
-										variant="dot"
-										color="blue"
-										fw={500}
-										size="sm"
-										className="border-man"
-									>
-										{exercise.secondaryMuscleGroup}
-									</Badge>
-								)}
-								{exercise.equipment && (
-									<Badge
-										variant="dot"
-										color="orange"
-										fw={500}
-										size="sm"
-										className="border-man"
-									>
-										{exercise.equipment}
-									</Badge>
-								)}
-							</Group>
-						</Stack>
-					</Card>
-				))}
-			</Stack>
+			<ExerciseCardList
+				exercises={FBExercises}
+				search={search}
+			/>
 		</Container>
 	);
 };
