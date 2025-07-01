@@ -1,54 +1,66 @@
-# React + TypeScript + Vite
+# Chronos Gym App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+I live in the gym and after thinking about what projects I should try creating after my last one (a Productivity App) I settled on this one. I wanted to create a workout app similar to the same app that I already personally use (it's called Hevy. Been using it since 2023). Functionality wise it is mostly
+identical other than the social side of things. When I have time I'll try add that in later on.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Stack
 
-## Expanding the ESLint configuration
+- React
+- TypeScript
+- JavaScript
+- Vite
+- Firebase
+- Tailwind CSS / CSS
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Features
 
-```js
-export default tseslint.config({
-	extends: [
-		// Remove ...tseslint.configs.recommended and replace with this
-		...tseslint.configs.recommendedTypeChecked,
-		// Alternatively, use this for stricter rules
-		...tseslint.configs.strictTypeChecked,
-		// Optionally, add this for stylistic rules
-		...tseslint.configs.stylisticTypeChecked,
-	],
-	languageOptions: {
-		// other options...
-		parserOptions: {
-			project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-			tsconfigRootDir: import.meta.dirname,
-		},
-	},
-});
+- **Authentication**: Secure login and account management using Firebase.
+- **Exercise Tracking**: Create, view, and manage exercises with detailed statistics.
+- **Routine Management**: Plan and execute workout routines with session tracking.
+- **Timers**: Rest timers for workouts.
+- **Profile Management**: View and update user profiles.
+- **Statistics**: Calculate and display single exercise and session stats.
+
+## Project Structure
+
+The project is organized into the following main directories:
+
+- **src/common**: Includes shared utilities like stats calculation and type definitions.
+- **src/components**: Reusable UI components such as logos, exercise cards, and timers.
+- **src/contexts**: Context providers for managing global state (e.g., Account, Exercise, Routine, Workout).
+- **src/hooks**: Custom React hooks for accessing and manipulating context data.
+- **src/pages**: Page components for different sections of the app (e.g., Homepage, Profile, Exercise, Routine, Workout).
+
+## Installation
+
+1. Clone the repository:
+   ```powershell
+   git clone https://github.com/rorunsolu/chronos-gym-app
+   ```
+2. Navigate to the root project directory:
+3. Install dependencies:
+   ```powershell
+   npm install
+   ```
+
+## Development
+
+To start the development server:
+
+```powershell
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Build
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
+To create a production build:
 
-export default tseslint.config({
-	plugins: {
-		// Add the react-x and react-dom plugins
-		"react-x": reactX,
-		"react-dom": reactDom,
-	},
-	rules: {
-		// other rules...
-		// Enable its recommended typescript rules
-		...reactX.configs["recommended-typescript"].rules,
-		...reactDom.configs.recommended.rules,
-	},
-});
+```powershell
+npm run build
 ```
+
+## Deployment
+
+The app is configured for deployment on Vercel. Ensure the `vercel.json` file is properly set up.
