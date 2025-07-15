@@ -1,6 +1,6 @@
 import { db } from "@/auth/Firebase";
+import { getAuthenticatedUser } from "@/common/authChecker";
 import { ExerciseContext } from "@/hooks/useExercisesHook";
-// import { getAuthenticatedUser } from "@/common/authChecker";
 import {
 	addDoc,
 	collection,
@@ -8,7 +8,6 @@ import {
 	doc,
 	query,
 	getDocs,
-	//where,
 } from "firebase/firestore";
 import { useState, type ReactNode } from "react";
 import type { FBExerciseData } from "@/common/types";
@@ -52,14 +51,14 @@ export const ExerciseProvider = ({ children }: { children: ReactNode }) => {
 		secondaryMuscleGroup?: string,
 		instructions?: string[]
 	) => {
-		//const user = getAuthenticatedUser();
+		const user = getAuthenticatedUser();
 		const data = {
 			name,
 			muscleGroup,
 			secondaryMuscleGroup,
 			equipment,
 			instructions: instructions || [],
-			// userId: user.uid,
+			userId: user.uid,
 		};
 		try {
 			const exerciseDocRef = await addDoc(collection(db, "exercises"), data);

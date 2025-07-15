@@ -1,15 +1,24 @@
 import ExerciseCardList from "@/components/Exercises/ExerciseCardList";
 import { useExercisesHook } from "@/hooks/useExercisesHook";
-import { Button, Container, Stack, TextInput, Title } from "@mantine/core";
-import { Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+	//Button,
+	Container,
+	Stack,
+	TextInput,
+	Title,
+} from "@mantine/core";
+import {
+	//Plus,
+	Search,
+} from "lucide-react";
+//import { useNavigate } from "react-router-dom";
 
 const Exercise = () => {
 	const [, setLoading] = useState(true);
 	const [search, setSearch] = useState("");
 	const { FBExercises, fetchFBExercises } = useExercisesHook();
-	const navigate = useNavigate();
+	//const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -20,14 +29,6 @@ const Exercise = () => {
 		fetchData();
 		// eslint-disable-next-line
 	}, []);
-
-	// const filteredExercises = FBExercises.filter((exercise) => {
-	// 	const matchesSearch = exercise.name
-	// 		.toLowerCase()
-	// 		.includes(search.toLowerCase());
-
-	// 	return matchesSearch;
-	// });
 
 	return (
 		<Container
@@ -51,7 +52,7 @@ const Exercise = () => {
 							w="100%"
 						/>
 
-						<Button
+						{/* <Button
 							variant="filled"
 							leftSection={<Plus size={20} />}
 							onClick={() => navigate("/new-exercise")}
@@ -59,7 +60,7 @@ const Exercise = () => {
 							fullWidth
 						>
 							Create Exercise
-						</Button>
+						</Button> */}
 					</div>
 				</Stack>
 			</Stack>
